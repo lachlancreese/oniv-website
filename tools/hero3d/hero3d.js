@@ -28,22 +28,46 @@ function bottleProfile() {
   return pts;
 }
 
-// Screwcap outline (radius, height), from the bottom of the skirt to the centre of the top.
+// Screwcap, modelled on a gloss-black wine screwcap: smooth top section with a crisp rounded edge,
+// a knurled tamper band set between two grooves, then a smooth skirt down to a rolled hem.
+const CAP = { R: 1.66, top: HEIGHT + 0.12, base: HEIGHT - 5.3, bandTop: HEIGHT + 0.12 - 2.2, bandH: 0.6 };
+
 function capProfile() {
-  const R = 1.66, top = HEIGHT + 0.12, base = HEIGHT - 5.3;
+  const { R, top, base, bandTop, bandH } = CAP;
+  const bandBottom = bandTop - bandH;
   const pts = [
     new Vector2(1.5, base), new Vector2(1.6, base - 0.02), new Vector2(R + 0.02, base + 0.06), // rolled hem
     new Vector2(R + 0.03, base + 0.16), new Vector2(R, base + 0.26),
-    new Vector2(R, top - 1.95),
-    new Vector2(R - 0.035, top - 1.9), new Vector2(R - 0.035, top - 1.78), new Vector2(R, top - 1.73), // tamper ring
-    new Vector2(R, top - 0.32),
+    new Vector2(R, bandBottom - 0.16), new Vector2(R - 0.06, bandBottom - 0.1), new Vector2(R - 0.07, bandBottom), // lower groove
+    new Vector2(R - 0.07, bandTop), new Vector2(R - 0.06, bandTop + 0.1), new Vector2(R, bandTop + 0.16), // upper groove
+    new Vector2(R, top - 0.16),
   ];
-  for (let i = 1; i <= 10; i++) { // rounded top edge
-    const a = (i / 10) * (Math.PI / 2);
-    pts.push(new Vector2(R - 0.32 + 0.32 * Math.cos(a), top - 0.32 + 0.32 * Math.sin(a)));
+  for (let i = 1; i <= 8; i++) { // crisp rounded top edge
+    const a = (i / 8) * (Math.PI / 2);
+    pts.push(new Vector2(R - 0.16 + 0.16 * Math.cos(a), top - 0.16 + 0.16 * Math.sin(a)));
   }
-  pts.push(new Vector2(0.9, top + 0.02), new Vector2(0, top + 0.03)); // slight dome
+  pts.push(new Vector2(0, top));
   return pts;
+}
+
+// The knurled band: fine vertical ribs around the cap.
+function knurlGeometry() {
+  const { R, bandTop, bandH } = CAP;
+  const ribs = 72, segs = ribs * 6;
+  const geo = new CylinderGeometry(R, R, bandH, segs, 1, true);
+  const pos = geo.attributes.position;
+  for (let i = 0; i < pos.count; i++) {
+    const x = pos.getX(i), z = pos.getZ(i);
+    const theta = Math.atan2(x, z);
+    const wave = 0.5 + 0.5 * Math.cos(theta * ribs);       // 1 at a rib's crest, 0 in the gap
+    const r = R - 0.065 + 0.06 * Math.pow(wave, 0.6);
+    const k = r / Math.hypot(x, z);
+    pos.setX(i, x * k);
+    pos.setZ(i, z * k);
+  }
+  geo.computeVertexNormals();
+  geo.translate(0, bandTop - bandH / 2, 0);
+  return geo;
 }
 
 function shadowTexture() {
@@ -136,13 +160,13 @@ async function start(stage) {
   });
   bottle.add(new Mesh(new LatheGeometry(bottleProfile(), 96), glass));
 
-  // Screwcap: satin black powder-coated aluminium, turned as one piece with a rolled hem at the bottom,
-  // the perforated tamper ring below the top, a softly rounded top edge and a slightly domed top.
+  // Gloss-black screwcap.
   const cap = new MeshPhysicalMaterial({
-    color: new Color("#161514"), metalness: 0.35, roughness: 0.46, clearcoat: 0.35, clearcoatRoughness: 0.35,
-    envMapIntensity: 1.1,
+    color: new Color("#0a0a0a"), metalness: 0.15, roughness: 0.14, clearcoat: 1, clearcoatRoughness: 0.04,
+    envMapIntensity: 1.3,
   });
-  bottle.add(new Mesh(new LatheGeometry(capProfile(), 128), cap));
+  bottle.add(new Mesh(new LatheGeometry(capProfile(), 160), cap));
+  bottle.add(new Mesh(knurlGeometry(), cap));
 
   // Front and back labels, wrapped around the body.
   const r = BODY_R + 0.015;
