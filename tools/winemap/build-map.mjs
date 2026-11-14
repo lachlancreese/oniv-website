@@ -61,7 +61,7 @@ const statePaths = states.features.map((f) => `<path d="${path(f)}"/>`).join("\n
 const dots = regions.map((r) => {
   const side = r.label || "right";
   const anchor = side === "left" ? "end" : side === "right" ? "start" : "middle";
-  return `<g class="wm-dot" data-id="${r.id}" data-state="${r.state}" data-tags="${r.tags.join(" ")}" tabindex="0" role="button" aria-label="${esc(r.name)}, ${esc(STATE_NAMES[r.state])}" aria-pressed="${r.id === DEFAULT}">` +
+  return `<g class="wm-dot${r.tier === 2 ? " tier-2" : ""}" data-id="${r.id}" data-state="${r.state}" data-tags="${r.tags.join(" ")}" tabindex="0" role="button" aria-label="${esc(r.name)}, ${esc(STATE_NAMES[r.state])}" aria-pressed="${r.id === DEFAULT}">` +
     `<circle cx="${r.x}" cy="${r.y}" r="7"/>` +
     `<text x="${r.x}" y="${r.y}" data-side="${side}" text-anchor="${anchor}">${esc(r.name)}</text></g>`;
 }).join("\n          ");
@@ -75,7 +75,7 @@ const articles = regions.map((r) => `<article class="wm-region" id="region-${r.i
         </article>`).join("\n        ");
 
 const rows = ORDER.map((s) => {
-  const rs = regions.filter((r) => r.state === s);
+  const rs = regions.filter((r) => r.state === s).sort((a, b) => a.tier - b.tier);
   return `<tbody>
             <tr><th colspan="3" scope="colgroup">${esc(STATE_NAMES[s])}</th></tr>
             ${rs.map((r) => `<tr><td><a href="#region-${r.id}" data-id="${r.id}">${esc(r.name)}</a></td><td>${esc(r.climate)}</td><td>${esc(r.known.join(", "))}</td></tr>`).join("\n            ")}
@@ -88,7 +88,7 @@ const block = `<!--winemap-->
     <div class="section-head">
       <p class="eyebrow">Wine regions</p>
       <h2 id="map-title" class="h2">australia's wine regions.</h2>
-      <p class="muted">Australia has 65 official wine regions, from the warm Barossa to cool Tasmania. These are the ${regions.length} you're most likely to see on a label. Choose a region to see its climate and what it's known for.</p>
+      <p class="muted">Australia has ${regions.length} official wine regions, from the warm Barossa to cool Tasmania. The larger dots are the ${regions.filter((r) => r.tier === 1).length} you're most likely to see on a label. Choose any region to see its climate and what it's known for.</p>
     </div>
     <div class="winemap" data-winemap data-default="${DEFAULT}" data-views='${JSON.stringify(views)}'>
       <div class="wm-controls">
@@ -105,6 +105,7 @@ const block = `<!--winemap-->
       </div>
       <div class="wm-body">
         <div class="wm-map">
+          <p class="wm-legend" aria-hidden="true"><span class="key key-1"></span>Best known <span class="key key-2"></span>Other regions</p>
           <svg viewBox="0 0 ${W} ${H}" role="group" aria-label="Map of Australia's main wine regions">
           <g class="wm-states">
           ${statePaths}

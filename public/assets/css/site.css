@@ -524,7 +524,15 @@ a.label-card:hover h3 { text-decoration: underline; text-underline-offset: 4px; 
 .wm-dot:hover circle:not(.wm-hit) { fill: var(--ink); }
 .wm-dot[aria-pressed="true"] circle:not(.wm-hit) { fill: var(--ink); stroke-width: 3; }
 .wm-dot:focus-visible circle:not(.wm-hit) { stroke: var(--ink); stroke-width: 3; }
+.wm-dot.tier-2 circle:not(.wm-hit) { fill: var(--sage); stroke-width: 1.5; }
+.wm-dot.tier-2 text { font-weight: 500; }
+.wm-dot.tier-2[aria-pressed="true"] circle:not(.wm-hit) { fill: var(--ink); }
 .wm-dot.is-dim { opacity: 0.18; }
+.wm-map { position: relative; }
+.wm-legend { position: absolute; left: 16px; bottom: 12px; display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--ink-muted); pointer-events: none; }
+.wm-legend .key { display: inline-block; border-radius: 50%; border: 1.5px solid var(--paper); }
+.wm-legend .key-1 { width: 12px; height: 12px; background: var(--sage-deep); }
+.wm-legend .key-2 { width: 9px; height: 9px; background: var(--sage); margin-left: 10px; }
 .wm-dot text { display: none; font-family: var(--sans); font-weight: 600; fill: var(--ink); stroke: var(--paper); paint-order: stroke; pointer-events: none; }
 .winemap.is-zoomed .wm-dot.in-zoom text, .wm-dot[aria-pressed="true"] text { display: block; }
 .winemap.is-zoomed .wm-dot.in-zoom.is-dim text { display: none; }

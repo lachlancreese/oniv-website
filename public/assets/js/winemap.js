@@ -26,48 +26,72 @@
     g.insertBefore(hit, c);
   });
 
+  // Put a dot's label to its left, right, top or bottom.
+  function place(g, side) {
+    var t = g.querySelector("text"), r = g._r, px = g._px;
+    if (side === "top" || side === "bottom") {
+      t.setAttribute("text-anchor", "middle");
+      t.setAttribute("x", g._x);
+      t.setAttribute("y", side === "top" ? g._y - r - 5 * px : g._y + r + 14 * px);
+    } else {
+      t.setAttribute("text-anchor", side === "left" ? "end" : "start");
+      t.setAttribute("x", g._x + (side === "left" ? -1 : 1) * (r + 5 * px));
+      t.setAttribute("y", g._y + 4.5 * px);
+    }
+  }
+
   // Keep dots and labels the same size on screen at every zoom level.
   function draw(vb) {
     svg.setAttribute("viewBox", vb.join(" "));
     var px = vb[2] / (svg.clientWidth || 600);
     dots.forEach(function (g) {
       var on = g.getAttribute("aria-pressed") === "true";
-      var r = (on ? 9 : 6) * px;
+      var minor = g.classList.contains("tier-2");
+      var r = (on ? 9 : minor ? 4 : 6) * px;
       var c = g.querySelector("circle:not(.wm-hit)");
       c.setAttribute("r", r);
-      g.querySelector(".wm-hit").setAttribute("r", 15 * px);
+      g.querySelector(".wm-hit").setAttribute("r", (minor ? 11 : 15) * px);
       var t = g.querySelector("text");
-      var side = t.getAttribute("data-side");
       t.setAttribute("font-size", (svg.clientWidth < 560 ? 11.5 : 13) * px);
       t.setAttribute("stroke-width", 4 * px);
-      if (side === "top" || side === "bottom") {
-        t.setAttribute("x", g._x);
-        t.setAttribute("y", side === "top" ? g._y - r - 5 * px : g._y + r + 14 * px);
-      } else {
-        t.setAttribute("x", g._x + (side === "left" ? -1 : 1) * (r + 5 * px));
-        t.setAttribute("y", g._y + 4.5 * px);
-      }
+      g._r = r;
+      g._px = px;
+      place(g, t.getAttribute("data-side"));
     });
   }
 
   // Hide any label that would overlap another label or run off the map; the chosen region always keeps its label.
   function declutter() {
-    var vb = current, placed = [];
-    dots.forEach(function (g) { if (!g.classList.contains("is-dim")) placed.push(g.querySelector("circle:not(.wm-hit)").getBBox()); });
-    var order = dots.slice().sort(function (a, b) {
-      return (b.getAttribute("aria-pressed") === "true") - (a.getAttribute("aria-pressed") === "true");
+    var vb = current, labels = [], majorDots = [], minorDots = [];
+    dots.forEach(function (g) {
+      if (g.classList.contains("is-dim")) return;
+      (g.classList.contains("tier-2") ? minorDots : majorDots).push(g.querySelector("circle:not(.wm-hit)").getBBox());
     });
+    var rank = function (g) { return g.getAttribute("aria-pressed") === "true" ? 0 : g.classList.contains("tier-2") ? 2 : 1; };
+    var order = dots.slice().sort(function (a, b) { return rank(a) - rank(b); });
+    var overlaps = function (b, list) {
+      return list.some(function (p) { return b.x < p.x + p.width && b.x + b.width > p.x && b.y < p.y + p.height && b.y + b.height > p.y; });
+    };
     order.forEach(function (g) {
       var t = g.querySelector("text");
       g.classList.remove("lbl-off");
-      var shown = g.getAttribute("aria-pressed") === "true" || (zoom !== "ALL" && g.classList.contains("in-zoom") && !g.classList.contains("is-dim"));
-      if (!shown) return;
-      var b = t.getBBox();
       var chosen = g.getAttribute("aria-pressed") === "true";
-      var out = b.x < vb[0] || b.y < vb[1] || b.x + b.width > vb[0] + vb[2] || b.y + b.height > vb[1] + vb[3];
-      var hit = placed.some(function (p) { return b.x < p.x + p.width && b.x + b.width > p.x && b.y < p.y + p.height && b.y + b.height > p.y; });
-      if (!chosen && (out || hit)) { g.classList.add("lbl-off"); return; }
-      placed.push(b);
+      var shown = chosen || (zoom !== "ALL" && g.classList.contains("in-zoom") && !g.classList.contains("is-dim"));
+      if (!shown) return;
+      // Try the preferred side first, then the others; hide the label if none fits.
+      // Best-known regions may sit over the small dots; smaller regions' labels give way to every dot.
+      var pref = t.getAttribute("data-side");
+      var sides = [pref].concat(["right", "left", "top", "bottom"].filter(function (s) { return s !== pref; }));
+      for (var i = 0; i < sides.length; i++) {
+        place(g, sides[i]);
+        var b = t.getBBox();
+        var out = b.x < vb[0] || b.y < vb[1] || b.x + b.width > vb[0] + vb[2] || b.y + b.height > vb[1] + vb[3];
+        var blocked = overlaps(b, labels) || overlaps(b, majorDots) || (rank(g) === 2 && overlaps(b, minorDots));
+        if (!out && !blocked) { labels.push(b); return; }
+      }
+      place(g, pref);
+      if (chosen) { labels.push(t.getBBox()); return; }
+      g.classList.add("lbl-off");
     });
   }
 

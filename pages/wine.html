@@ -86,9 +86,9 @@ index: yes
     <div class="section-head">
       <p class="eyebrow">Wine regions</p>
       <h2 id="map-title" class="h2">australia's wine regions.</h2>
-      <p class="muted">Australia has 65 official wine regions, from the warm Barossa to cool Tasmania. These are the 33 you're most likely to see on a label. Choose a region to see its climate and what it's known for.</p>
+      <p class="muted">Australia has 65 official wine regions, from the warm Barossa to cool Tasmania. The larger dots are the 33 you're most likely to see on a label. Choose any region to see its climate and what it's known for.</p>
     </div>
-    <div class="winemap" data-winemap data-default="mclaren-vale" data-views='{"ALL":"0 0 1000 860","WA":"79.9 536.8 157.5 135.5","SA":"552.5 574 157.5 135.5","VIC":"652.4 622.7 157.5 135.5","NSW":"721.5 539 194.3 167.1","QLD":"727.3 343 350 301","TAS":"647.8 722 210 180.6"}'>
+    <div class="winemap" data-winemap data-default="mclaren-vale" data-views='{"ALL":"0 0 1000 860","WA":"79.9 536.8 157.5 135.5","SA":"514.3 548 209.5 180.2","VIC":"628.7 583.9 186.3 160.2","NSW":"665.6 466.1 309.9 266.5","QLD":"730 316.8 350 301","TAS":"647.8 722 210 180.6"}'>
       <div class="wm-controls">
         <div class="wm-chips" role="group" aria-label="Zoom to a state">
           <button type="button" class="wm-chip" data-zoom="ALL" aria-pressed="true">All Australia</button>
@@ -119,6 +119,7 @@ index: yes
       </div>
       <div class="wm-body">
         <div class="wm-map">
+          <p class="wm-legend" aria-hidden="true"><span class="key key-1"></span>Best known <span class="key key-2"></span>Other regions</p>
           <svg viewBox="0 0 1000 860" role="group" aria-label="Map of Australia's main wine regions">
           <g class="wm-states">
           <path d="M60,436L61,437L62,438L61,440L56,433L54,427L54,426L55,426L59,433L60,434ZM90,300L91,297L92,299L92,300L91,303L89,302L89,301ZM290,141L291,142L292,143L292,144L291,145L290,145L290,144L289,143L289,142L289,141ZM304,120L304,122L305,123L303,125L302,123L302,121L303,120ZM408,402L413,545L412,545L404,550L394,555L386,557L379,561L374,562L368,562L354,562L350,563L343,569L341,570L337,572L327,579L322,581L319,582L317,583L314,586L312,595L310,598L306,605L303,607L300,607L297,609L294,607L292,607L288,608L276,611L274,609L271,608L267,609L260,609L248,611L243,613L241,614L236,614L229,616L227,618L225,619L222,626L218,629L215,629L211,630L204,638L197,645L195,646L192,647L188,648L187,649L178,649L172,649L165,649L158,647L153,646L147,640L144,638L137,636L136,636L135,637L132,635L131,633L130,630L130,624L129,617L131,618L133,620L137,619L139,616L141,612L142,607L141,603L138,594L139,593L140,592L140,587L138,575L137,570L130,561L126,553L123,550L120,544L117,536L115,531L114,523L114,519L113,516L110,509L104,503L103,501L102,498L101,496L96,490L91,485L90,483L87,472L85,468L76,456L66,447L64,443L62,442L63,441L64,442L65,443L66,443L66,442L65,440L66,439L66,439L68,441L71,447L72,450L76,450L77,449L78,447L77,443L75,441L74,441L71,438L68,433L65,429L65,428L66,426L68,427L70,429L72,431L73,435L73,437L73,438L74,438L75,439L76,438L76,435L77,435L79,441L80,442L83,444L84,442L85,441L84,437L84,433L83,430L77,423L71,414L68,410L65,403L63,401L60,398L59,393L59,390L60,383L60,380L64,371L63,368L63,365L63,361L63,359L62,356L59,352L60,344L62,334L64,332L66,331L67,333L66,339L69,343L69,347L70,346L72,345L73,342L74,340L77,332L79,328L82,326L88,322L95,318L97,314L101,311L103,307L106,305L118,295L120,293L123,292L127,292L130,291L134,293L136,293L142,290L146,288L151,283L153,282L159,280L166,277L173,270L179,269L184,270L188,267L198,265L203,263L213,257L216,255L220,252L223,247L226,242L228,237L229,234L230,230L231,227L232,225L236,223L242,217L244,215L244,213L242,213L241,212L239,206L238,202L237,199L237,196L239,191L241,189L243,187L245,186L247,184L250,182L251,180L252,176L253,173L255,173L258,179L260,183L263,187L266,193L269,196L270,197L271,198L271,197L271,196L271,191L271,187L271,186L271,186L272,186L275,188L276,188L277,188L276,185L277,183L277,182L275,182L274,180L272,178L270,177L268,174L267,173L268,172L269,172L270,171L271,169L269,166L270,165L272,165L276,170L277,169L278,167L280,166L282,167L283,168L286,169L290,169L292,169L296,168L298,168L297,168L295,167L293,167L290,167L289,167L288,164L289,162L289,162L291,162L292,162L292,159L293,157L294,156L294,154L293,155L290,158L289,155L287,153L287,150L288,147L289,146L291,147L293,145L294,143L293,142L294,141L295,141L301,144L302,145L303,144L303,143L303,141L302,141L299,141L298,141L298,140L297,138L299,136L300,136L301,135L301,134L301,134L302,134L305,134L308,136L309,136L310,135L310,133L306,132L306,130L305,128L304,126L306,125L307,123L308,122L310,122L312,121L314,120L314,117L314,115L314,114L316,115L316,118L316,120L316,121L316,121L317,120L317,119L319,119L320,121L320,122L321,123L323,120L324,120L324,117L325,114L325,113L326,112L326,110L325,109L324,107L326,106L328,107L329,110L330,111L331,110L331,109L333,107L335,109L337,111L340,109L342,105L342,103L342,101L345,100L347,101L350,103L354,104L359,106L360,108L364,110L366,112L370,117L377,122L377,123L377,125L376,127L375,131L375,137L376,137L377,135L378,135L379,136L379,135L379,134L377,132L377,130L378,129L380,128L381,127L382,126L383,125L384,124L387,123L388,123L397,125Z"/>
@@ -135,7 +136,7 @@ index: yes
           <g class="wm-dot" data-id="geographe" data-state="WA" data-tags="chardonnay shiraz cabernet" tabindex="0" role="button" aria-label="Geographe, Western Australia" aria-pressed="false"><circle cx="144.3" cy="615.8" r="7"/><text x="144.3" y="615.8" data-side="right" text-anchor="start">Geographe</text></g>
           <g class="wm-dot" data-id="pemberton" data-state="WA" data-tags="chardonnay pinot sauvignon" tabindex="0" role="button" aria-label="Pemberton, Western Australia" aria-pressed="false"><circle cx="153.1" cy="637.2" r="7"/><text x="153.1" y="637.2" data-side="bottom" text-anchor="middle">Pemberton</text></g>
           <g class="wm-dot" data-id="great-southern" data-state="WA" data-tags="riesling shiraz cabernet pinot" tabindex="0" role="button" aria-label="Great Southern, Western Australia" aria-pressed="false"><circle cx="185.4" cy="637.4" r="7"/><text x="185.4" y="637.4" data-side="right" text-anchor="start">Great Southern</text></g>
-          <g class="wm-dot" data-id="swan-valley" data-state="WA" data-tags="fortified" tabindex="0" role="button" aria-label="Swan Valley, Western Australia" aria-pressed="false"><circle cx="143.7" cy="571.7" r="7"/><text x="143.7" y="571.7" data-side="right" text-anchor="start">Swan Valley</text></g>
+          <g class="wm-dot" data-id="swan-district" data-state="WA" data-tags="fortified" tabindex="0" role="button" aria-label="Swan District, Western Australia" aria-pressed="false"><circle cx="143.7" cy="571.7" r="7"/><text x="143.7" y="571.7" data-side="right" text-anchor="start">Swan District</text></g>
           <g class="wm-dot" data-id="clare-valley" data-state="SA" data-tags="riesling shiraz cabernet" tabindex="0" role="button" aria-label="Clare Valley, South Australia" aria-pressed="false"><circle cx="612" cy="597.8" r="7"/><text x="612" y="597.8" data-side="right" text-anchor="start">Clare Valley</text></g>
           <g class="wm-dot" data-id="barossa-valley" data-state="SA" data-tags="shiraz grenache" tabindex="0" role="button" aria-label="Barossa Valley, South Australia" aria-pressed="false"><circle cx="618.5" cy="615.5" r="7"/><text x="618.5" y="615.5" data-side="left" text-anchor="end">Barossa Valley</text></g>
           <g class="wm-dot" data-id="eden-valley" data-state="SA" data-tags="riesling shiraz chardonnay" tabindex="0" role="button" aria-label="Eden Valley, South Australia" aria-pressed="false"><circle cx="621.8" cy="617.8" r="7"/><text x="621.8" y="617.8" data-side="right" text-anchor="start">Eden Valley</text></g>
@@ -164,6 +165,38 @@ index: yes
           <g class="wm-dot" data-id="hunter-valley" data-state="NSW" data-tags="semillon shiraz chardonnay" tabindex="0" role="button" aria-label="Hunter Valley, New South Wales &amp; ACT" aria-pressed="false"><circle cx="874.1" cy="594" r="7"/><text x="874.1" y="594" data-side="left" text-anchor="end">Hunter Valley</text></g>
           <g class="wm-dot" data-id="granite-belt" data-state="QLD" data-tags="shiraz cabernet" tabindex="0" role="button" aria-label="Granite Belt, Queensland" aria-pressed="false"><circle cx="902.3" cy="493.5" r="7"/><text x="902.3" y="493.5" data-side="right" text-anchor="start">Granite Belt</text></g>
           <g class="wm-dot" data-id="tasmania" data-state="TAS" data-tags="sparkling pinot chardonnay riesling" tabindex="0" role="button" aria-label="Tasmania, Tasmania" aria-pressed="false"><circle cx="767" cy="808.8" r="7"/><text x="767" y="808.8" data-side="right" text-anchor="start">Tasmania</text></g>
+          <g class="wm-dot tier-2" data-id="perth-hills" data-state="WA" data-tags="shiraz cabernet chardonnay" tabindex="0" role="button" aria-label="Perth Hills, Western Australia" aria-pressed="false"><circle cx="148.2" cy="577.4" r="7"/><text x="148.2" y="577.4" data-side="right" text-anchor="start">Perth Hills</text></g>
+          <g class="wm-dot tier-2" data-id="peel" data-state="WA" data-tags="shiraz" tabindex="0" role="button" aria-label="Peel, Western Australia" aria-pressed="false"><circle cx="144.1" cy="592.4" r="7"/><text x="144.1" y="592.4" data-side="left" text-anchor="end">Peel</text></g>
+          <g class="wm-dot tier-2" data-id="blackwood-valley" data-state="WA" data-tags="shiraz cabernet chardonnay" tabindex="0" role="button" aria-label="Blackwood Valley, Western Australia" aria-pressed="false"><circle cx="153.7" cy="624.8" r="7"/><text x="153.7" y="624.8" data-side="right" text-anchor="start">Blackwood Valley</text></g>
+          <g class="wm-dot tier-2" data-id="manjimup" data-state="WA" data-tags="chardonnay pinot" tabindex="0" role="button" aria-label="Manjimup, Western Australia" aria-pressed="false"><circle cx="154.8" cy="631.7" r="7"/><text x="154.8" y="631.7" data-side="right" text-anchor="start">Manjimup</text></g>
+          <g class="wm-dot tier-2" data-id="southern-flinders-ranges" data-state="SA" data-tags="shiraz cabernet" tabindex="0" role="button" aria-label="Southern Flinders Ranges, South Australia" aria-pressed="false"><circle cx="603.4" cy="578" r="7"/><text x="603.4" y="578" data-side="right" text-anchor="start">Southern Flinders Ranges</text></g>
+          <g class="wm-dot tier-2" data-id="adelaide-plains" data-state="SA" data-tags="shiraz cabernet chardonnay" tabindex="0" role="button" aria-label="Adelaide Plains, South Australia" aria-pressed="false"><circle cx="610.2" cy="618.1" r="7"/><text x="610.2" y="618.1" data-side="left" text-anchor="end">Adelaide Plains</text></g>
+          <g class="wm-dot tier-2" data-id="kangaroo-island" data-state="SA" data-tags="shiraz cabernet chardonnay" tabindex="0" role="button" aria-label="Kangaroo Island, South Australia" aria-pressed="false"><circle cx="584.1" cy="645.9" r="7"/><text x="584.1" y="645.9" data-side="left" text-anchor="end">Kangaroo Island</text></g>
+          <g class="wm-dot tier-2" data-id="southern-fleurieu" data-state="SA" data-tags="shiraz sauvignon pinot" tabindex="0" role="button" aria-label="Southern Fleurieu, South Australia" aria-pressed="false"><circle cx="606.4" cy="640.4" r="7"/><text x="606.4" y="640.4" data-side="left" text-anchor="end">Southern Fleurieu</text></g>
+          <g class="wm-dot tier-2" data-id="currency-creek" data-state="SA" data-tags="shiraz cabernet sauvignon" tabindex="0" role="button" aria-label="Currency Creek, South Australia" aria-pressed="false"><circle cx="613.5" cy="638.2" r="7"/><text x="613.5" y="638.2" data-side="right" text-anchor="start">Currency Creek</text></g>
+          <g class="wm-dot tier-2" data-id="padthaway" data-state="SA" data-tags="chardonnay shiraz" tabindex="0" role="button" aria-label="Padthaway, South Australia" aria-pressed="false"><circle cx="647.3" cy="668.7" r="7"/><text x="647.3" y="668.7" data-side="left" text-anchor="end">Padthaway</text></g>
+          <g class="wm-dot tier-2" data-id="mount-benson" data-state="SA" data-tags="sauvignon shiraz cabernet" tabindex="0" role="button" aria-label="Mount Benson, South Australia" aria-pressed="false"><circle cx="633" cy="676.2" r="7"/><text x="633" y="676.2" data-side="left" text-anchor="end">Mount Benson</text></g>
+          <g class="wm-dot tier-2" data-id="robe" data-state="SA" data-tags="chardonnay cabernet shiraz" tabindex="0" role="button" aria-label="Robe, South Australia" aria-pressed="false"><circle cx="633.7" cy="682.4" r="7"/><text x="633.7" y="682.4" data-side="left" text-anchor="end">Robe</text></g>
+          <g class="wm-dot tier-2" data-id="wrattonbully" data-state="SA" data-tags="cabernet shiraz" tabindex="0" role="button" aria-label="Wrattonbully, South Australia" aria-pressed="false"><circle cx="653.9" cy="677.2" r="7"/><text x="653.9" y="677.2" data-side="right" text-anchor="start">Wrattonbully</text></g>
+          <g class="wm-dot tier-2" data-id="mount-gambier" data-state="SA" data-tags="pinot chardonnay sauvignon" tabindex="0" role="button" aria-label="Mount Gambier, South Australia" aria-pressed="false"><circle cx="651.7" cy="698.1" r="7"/><text x="651.7" y="698.1" data-side="right" text-anchor="start">Mount Gambier</text></g>
+          <g class="wm-dot tier-2" data-id="south-burnett" data-state="QLD" data-tags="shiraz chardonnay" tabindex="0" role="button" aria-label="South Burnett, Queensland" aria-pressed="false"><circle cx="907.6" cy="441" r="7"/><text x="907.6" y="441" data-side="right" text-anchor="start">South Burnett</text></g>
+          <g class="wm-dot tier-2" data-id="new-england-australia" data-state="NSW" data-tags="chardonnay shiraz riesling" tabindex="0" role="button" aria-label="New England Australia, New South Wales &amp; ACT" aria-pressed="false"><circle cx="889.6" cy="538.5" r="7"/><text x="889.6" y="538.5" data-side="right" text-anchor="start">New England Australia</text></g>
+          <g class="wm-dot tier-2" data-id="hastings-river" data-state="NSW" data-tags="chardonnay semillon" tabindex="0" role="button" aria-label="Hastings River, New South Wales &amp; ACT" aria-pressed="false"><circle cx="909.1" cy="565.4" r="7"/><text x="909.1" y="565.4" data-side="right" text-anchor="start">Hastings River</text></g>
+          <g class="wm-dot tier-2" data-id="cowra" data-state="NSW" data-tags="chardonnay shiraz" tabindex="0" role="button" aria-label="Cowra, New South Wales &amp; ACT" aria-pressed="false"><circle cx="818" cy="613.3" r="7"/><text x="818" y="613.3" data-side="left" text-anchor="end">Cowra</text></g>
+          <g class="wm-dot tier-2" data-id="southern-highlands" data-state="NSW" data-tags="pinot chardonnay riesling" tabindex="0" role="button" aria-label="Southern Highlands, New South Wales &amp; ACT" aria-pressed="false"><circle cx="850.7" cy="633.7" r="7"/><text x="850.7" y="633.7" data-side="right" text-anchor="start">Southern Highlands</text></g>
+          <g class="wm-dot tier-2" data-id="shoalhaven-coast" data-state="NSW" data-tags="chardonnay" tabindex="0" role="button" aria-label="Shoalhaven Coast, New South Wales &amp; ACT" aria-pressed="false"><circle cx="853.4" cy="644.1" r="7"/><text x="853.4" y="644.1" data-side="right" text-anchor="start">Shoalhaven Coast</text></g>
+          <g class="wm-dot tier-2" data-id="gundagai" data-state="NSW" data-tags="shiraz cabernet" tabindex="0" role="button" aria-label="Gundagai, New South Wales &amp; ACT" aria-pressed="false"><circle cx="802.6" cy="642.7" r="7"/><text x="802.6" y="642.7" data-side="left" text-anchor="end">Gundagai</text></g>
+          <g class="wm-dot tier-2" data-id="perricoota" data-state="NSW" data-tags="shiraz cabernet chardonnay" tabindex="0" role="button" aria-label="Perricoota, New South Wales &amp; ACT" aria-pressed="false"><circle cx="732" cy="660.2" r="7"/><text x="732" y="660.2" data-side="right" text-anchor="start">Perricoota</text></g>
+          <g class="wm-dot tier-2" data-id="murray-darling" data-state="VIC" data-tags="chardonnay shiraz cabernet" tabindex="0" role="button" aria-label="Murray Darling, Victoria" aria-pressed="false"><circle cx="684" cy="610.6" r="7"/><text x="684" y="610.6" data-side="right" text-anchor="start">Murray Darling</text></g>
+          <g class="wm-dot tier-2" data-id="swan-hill" data-state="VIC" data-tags="shiraz chardonnay" tabindex="0" role="button" aria-label="Swan Hill, Victoria" aria-pressed="false"><circle cx="710.4" cy="640.9" r="7"/><text x="710.4" y="640.9" data-side="left" text-anchor="end">Swan Hill</text></g>
+          <g class="wm-dot tier-2" data-id="glenrowan" data-state="VIC" data-tags="shiraz fortified" tabindex="0" role="button" aria-label="Glenrowan, Victoria" aria-pressed="false"><circle cx="761.4" cy="673.3" r="7"/><text x="761.4" y="673.3" data-side="left" text-anchor="end">Glenrowan</text></g>
+          <g class="wm-dot tier-2" data-id="alpine-valleys" data-state="VIC" data-tags="italian chardonnay pinotgris" tabindex="0" role="button" aria-label="Alpine Valleys, Victoria" aria-pressed="false"><circle cx="774.3" cy="680.8" r="7"/><text x="774.3" y="680.8" data-side="right" text-anchor="start">Alpine Valleys</text></g>
+          <g class="wm-dot tier-2" data-id="strathbogie-ranges" data-state="VIC" data-tags="riesling shiraz sparkling" tabindex="0" role="button" aria-label="Strathbogie Ranges, Victoria" aria-pressed="false"><circle cx="751.2" cy="681.8" r="7"/><text x="751.2" y="681.8" data-side="right" text-anchor="start">Strathbogie Ranges</text></g>
+          <g class="wm-dot tier-2" data-id="upper-goulburn" data-state="VIC" data-tags="chardonnay riesling pinot" tabindex="0" role="button" aria-label="Upper Goulburn, Victoria" aria-pressed="false"><circle cx="754.7" cy="687.1" r="7"/><text x="754.7" y="687.1" data-side="right" text-anchor="start">Upper Goulburn</text></g>
+          <g class="wm-dot tier-2" data-id="bendigo" data-state="VIC" data-tags="shiraz cabernet" tabindex="0" role="button" aria-label="Bendigo, Victoria" aria-pressed="false"><circle cx="721.7" cy="676.8" r="7"/><text x="721.7" y="676.8" data-side="left" text-anchor="end">Bendigo</text></g>
+          <g class="wm-dot tier-2" data-id="pyrenees" data-state="VIC" data-tags="shiraz cabernet" tabindex="0" role="button" aria-label="Pyrenees, Victoria" aria-pressed="false"><circle cx="704.2" cy="684.1" r="7"/><text x="704.2" y="684.1" data-side="left" text-anchor="end">Pyrenees</text></g>
+          <g class="wm-dot tier-2" data-id="sunbury" data-state="VIC" data-tags="shiraz chardonnay" tabindex="0" role="button" aria-label="Sunbury, Victoria" aria-pressed="false"><circle cx="729.3" cy="698" r="7"/><text x="729.3" y="698" data-side="bottom" text-anchor="middle">Sunbury</text></g>
+          <g class="wm-dot tier-2" data-id="henty" data-state="VIC" data-tags="riesling pinot sparkling" tabindex="0" role="button" aria-label="Henty, Victoria" aria-pressed="false"><circle cx="669.4" cy="700.3" r="7"/><text x="669.4" y="700.3" data-side="right" text-anchor="start">Henty</text></g>
           </g>
           </svg>
         </div>
@@ -196,12 +229,12 @@ index: yes
           <ul class="styles"><li>Riesling</li><li>Shiraz</li><li>Cabernet Sauvignon</li></ul>
           <p>A large region on WA's south coast with five subregions, from Frankland River to Albany. Known for taut, citrusy Riesling and peppery, cool-climate Shiraz.</p>
         </article>
-        <article class="wm-region" id="region-swan-valley" data-id="swan-valley" hidden>
+        <article class="wm-region" id="region-swan-district" data-id="swan-district" hidden>
           <p class="eyebrow">Western Australia</p>
-          <h3>Swan Valley</h3>
+          <h3>Swan District</h3>
           <p class="wm-climate"><b>Climate</b> Hot, dry</p>
           <ul class="styles"><li>Chenin Blanc</li><li>Verdelho</li><li>Fortified</li></ul>
-          <p>Western Australia's oldest wine region, on Perth's doorstep. Hot summers suit generous whites like Chenin Blanc and Verdelho, and rich fortified wines.</p>
+          <p>Western Australia's oldest wine region, including the Swan Valley on Perth's doorstep. Hot summers suit generous whites like Chenin Blanc and Verdelho, and rich fortified wines.</p>
         </article>
         <article class="wm-region" id="region-clare-valley" data-id="clare-valley" hidden>
           <p class="eyebrow">South Australia</p>
@@ -399,10 +432,234 @@ index: yes
           <ul class="styles"><li>Sparkling</li><li>Pinot Noir</li><li>Chardonnay</li><li>Riesling</li></ul>
           <p>Australia's coolest wine state, from the Tamar Valley in the north to the Coal River and Huon valleys in the south. World-class sparkling, Pinot Noir, Chardonnay and Riesling.</p>
         </article>
+        <article class="wm-region" id="region-perth-hills" data-id="perth-hills" hidden>
+          <p class="eyebrow">Western Australia</p>
+          <h3>Perth Hills</h3>
+          <p class="wm-climate"><b>Climate</b> Warm, elevated</p>
+          <ul class="styles"><li>Shiraz</li><li>Cabernet Sauvignon</li><li>Chardonnay</li></ul>
+          <p>In the Darling Range east of Perth, where altitude takes the edge off the heat. Small producers make Shiraz, Cabernet and Chardonnay.</p>
+        </article>
+        <article class="wm-region" id="region-peel" data-id="peel" hidden>
+          <p class="eyebrow">Western Australia</p>
+          <h3>Peel</h3>
+          <p class="wm-climate"><b>Climate</b> Warm, Mediterranean</p>
+          <ul class="styles"><li>Shiraz</li><li>Chenin Blanc</li></ul>
+          <p>A small region south of Perth around Mandurah and the Peel Inlet, with warm weather suited to Shiraz and Chenin Blanc.</p>
+        </article>
+        <article class="wm-region" id="region-blackwood-valley" data-id="blackwood-valley" hidden>
+          <p class="eyebrow">Western Australia</p>
+          <h3>Blackwood Valley</h3>
+          <p class="wm-climate"><b>Climate</b> Warm, continental</p>
+          <ul class="styles"><li>Shiraz</li><li>Cabernet Sauvignon</li><li>Chardonnay</li></ul>
+          <p>Inland from Margaret River around Bridgetown and Boyup Brook, with warm days and cool nights for Shiraz, Cabernet and Chardonnay.</p>
+        </article>
+        <article class="wm-region" id="region-manjimup" data-id="manjimup" hidden>
+          <p class="eyebrow">Western Australia</p>
+          <h3>Manjimup</h3>
+          <p class="wm-climate"><b>Climate</b> Cool, inland</p>
+          <ul class="styles"><li>Chardonnay</li><li>Pinot Noir</li><li>Merlot</li></ul>
+          <p>Among the karri and jarrah forests of the south-west, Manjimup's cool climate suits Chardonnay, Pinot Noir and Merlot.</p>
+        </article>
+        <article class="wm-region" id="region-southern-flinders-ranges" data-id="southern-flinders-ranges" hidden>
+          <p class="eyebrow">South Australia</p>
+          <h3>Southern Flinders Ranges</h3>
+          <p class="wm-climate"><b>Climate</b> Warm, elevated</p>
+          <ul class="styles"><li>Shiraz</li><li>Cabernet Sauvignon</li></ul>
+          <p>North of the Clare Valley in the foothills of the Flinders Ranges, making full-flavoured Shiraz and Cabernet.</p>
+        </article>
+        <article class="wm-region" id="region-adelaide-plains" data-id="adelaide-plains" hidden>
+          <p class="eyebrow">South Australia</p>
+          <h3>Adelaide Plains</h3>
+          <p class="wm-climate"><b>Climate</b> Hot, dry</p>
+          <ul class="styles"><li>Shiraz</li><li>Cabernet Sauvignon</li><li>Chardonnay</li></ul>
+          <p>On the flat, warm plains north of Adelaide, making ripe, generous reds and whites.</p>
+        </article>
+        <article class="wm-region" id="region-kangaroo-island" data-id="kangaroo-island" hidden>
+          <p class="eyebrow">South Australia</p>
+          <h3>Kangaroo Island</h3>
+          <p class="wm-climate"><b>Climate</b> Cool, maritime</p>
+          <ul class="styles"><li>Shiraz</li><li>Cabernet Sauvignon</li><li>Chardonnay</li></ul>
+          <p>Surrounded by the Southern Ocean, the island's maritime climate gives fresh, elegant wines from a small number of producers.</p>
+        </article>
+        <article class="wm-region" id="region-southern-fleurieu" data-id="southern-fleurieu" hidden>
+          <p class="eyebrow">South Australia</p>
+          <h3>Southern Fleurieu</h3>
+          <p class="wm-climate"><b>Climate</b> Cool, maritime</p>
+          <ul class="styles"><li>Shiraz</li><li>Sauvignon Blanc</li><li>Pinot Noir</li></ul>
+          <p>South of McLaren Vale, cooled by breezes from two coastlines, making fresh whites and elegant Shiraz.</p>
+        </article>
+        <article class="wm-region" id="region-currency-creek" data-id="currency-creek" hidden>
+          <p class="eyebrow">South Australia</p>
+          <h3>Currency Creek</h3>
+          <p class="wm-climate"><b>Climate</b> Moderate, maritime</p>
+          <ul class="styles"><li>Shiraz</li><li>Cabernet Sauvignon</li><li>Sauvignon Blanc</li></ul>
+          <p>Near Goolwa and the mouth of the Murray, with sea and lake breezes moderating the warmth.</p>
+        </article>
+        <article class="wm-region" id="region-padthaway" data-id="padthaway" hidden>
+          <p class="eyebrow">South Australia</p>
+          <h3>Padthaway</h3>
+          <p class="wm-climate"><b>Climate</b> Moderate</p>
+          <ul class="styles"><li>Chardonnay</li><li>Shiraz</li></ul>
+          <p>On the Limestone Coast, long a source of quality Chardonnay and Shiraz for both blends and estate wines.</p>
+        </article>
+        <article class="wm-region" id="region-mount-benson" data-id="mount-benson" hidden>
+          <p class="eyebrow">South Australia</p>
+          <h3>Mount Benson</h3>
+          <p class="wm-climate"><b>Climate</b> Cool, maritime</p>
+          <ul class="styles"><li>Sauvignon Blanc</li><li>Shiraz</li><li>Cabernet Sauvignon</li></ul>
+          <p>Close to the Southern Ocean near Kingston SE, with cool sea breezes for crisp whites and medium-bodied reds.</p>
+        </article>
+        <article class="wm-region" id="region-robe" data-id="robe" hidden>
+          <p class="eyebrow">South Australia</p>
+          <h3>Robe</h3>
+          <p class="wm-climate"><b>Climate</b> Cool, maritime</p>
+          <ul class="styles"><li>Chardonnay</li><li>Cabernet Sauvignon</li><li>Shiraz</li></ul>
+          <p>A small coastal region around the fishing town of Robe, with a cool, maritime climate.</p>
+        </article>
+        <article class="wm-region" id="region-wrattonbully" data-id="wrattonbully" hidden>
+          <p class="eyebrow">South Australia</p>
+          <h3>Wrattonbully</h3>
+          <p class="wm-climate"><b>Climate</b> Moderate</p>
+          <ul class="styles"><li>Cabernet Sauvignon</li><li>Shiraz</li><li>Merlot</li></ul>
+          <p>Just north of Coonawarra, with similar terra rossa soils over limestone, known for Cabernet and Shiraz.</p>
+        </article>
+        <article class="wm-region" id="region-mount-gambier" data-id="mount-gambier" hidden>
+          <p class="eyebrow">South Australia</p>
+          <h3>Mount Gambier</h3>
+          <p class="wm-climate"><b>Climate</b> Cool</p>
+          <ul class="styles"><li>Pinot Noir</li><li>Chardonnay</li><li>Sauvignon Blanc</li></ul>
+          <p>One of South Australia's coolest regions, near the Victorian border, suited to Pinot Noir, Chardonnay and Sauvignon Blanc.</p>
+        </article>
+        <article class="wm-region" id="region-south-burnett" data-id="south-burnett" hidden>
+          <p class="eyebrow">Queensland</p>
+          <h3>South Burnett</h3>
+          <p class="wm-climate"><b>Climate</b> Warm, subtropical</p>
+          <ul class="styles"><li>Shiraz</li><li>Verdelho</li><li>Chardonnay</li></ul>
+          <p>Queensland's other wine region, around Kingaroy, with warm summers and a mix of reds and whites.</p>
+        </article>
+        <article class="wm-region" id="region-new-england-australia" data-id="new-england-australia" hidden>
+          <p class="eyebrow">New South Wales &amp; ACT</p>
+          <h3>New England Australia</h3>
+          <p class="wm-climate"><b>Climate</b> Cool, high altitude</p>
+          <ul class="styles"><li>Chardonnay</li><li>Shiraz</li><li>Riesling</li></ul>
+          <p>On the Northern Tablelands, where high vineyards give cool-climate whites and reds.</p>
+        </article>
+        <article class="wm-region" id="region-hastings-river" data-id="hastings-river" hidden>
+          <p class="eyebrow">New South Wales &amp; ACT</p>
+          <h3>Hastings River</h3>
+          <p class="wm-climate"><b>Climate</b> Warm, humid</p>
+          <ul class="styles"><li>Chambourcin</li><li>Chardonnay</li><li>Semillon</li></ul>
+          <p>On the subtropical mid-north coast around Port Macquarie, where humidity favours hardy varieties like Chambourcin.</p>
+        </article>
+        <article class="wm-region" id="region-cowra" data-id="cowra" hidden>
+          <p class="eyebrow">New South Wales &amp; ACT</p>
+          <h3>Cowra</h3>
+          <p class="wm-climate"><b>Climate</b> Warm, continental</p>
+          <ul class="styles"><li>Chardonnay</li><li>Shiraz</li></ul>
+          <p>Best known for generous, fruit-forward Chardonnay from warm, sunny vineyards.</p>
+        </article>
+        <article class="wm-region" id="region-southern-highlands" data-id="southern-highlands" hidden>
+          <p class="eyebrow">New South Wales &amp; ACT</p>
+          <h3>Southern Highlands</h3>
+          <p class="wm-climate"><b>Climate</b> Cool, elevated</p>
+          <ul class="styles"><li>Pinot Noir</li><li>Chardonnay</li><li>Riesling</li></ul>
+          <p>In the elevated country south-west of Sydney, cool and relatively wet, suited to Pinot Noir, Chardonnay and aromatic whites.</p>
+        </article>
+        <article class="wm-region" id="region-shoalhaven-coast" data-id="shoalhaven-coast" hidden>
+          <p class="eyebrow">New South Wales &amp; ACT</p>
+          <h3>Shoalhaven Coast</h3>
+          <p class="wm-climate"><b>Climate</b> Warm, humid</p>
+          <ul class="styles"><li>Chambourcin</li><li>Chardonnay</li><li>Verdelho</li></ul>
+          <p>On the NSW South Coast around Nowra and Berry, with warm, humid summers and a mix of varieties including Chambourcin.</p>
+        </article>
+        <article class="wm-region" id="region-gundagai" data-id="gundagai" hidden>
+          <p class="eyebrow">New South Wales &amp; ACT</p>
+          <h3>Gundagai</h3>
+          <p class="wm-climate"><b>Climate</b> Warm, continental</p>
+          <ul class="styles"><li>Shiraz</li><li>Cabernet Sauvignon</li></ul>
+          <p>Between the Riverina and the high country, making full-bodied Shiraz and Cabernet.</p>
+        </article>
+        <article class="wm-region" id="region-perricoota" data-id="perricoota" hidden>
+          <p class="eyebrow">New South Wales &amp; ACT</p>
+          <h3>Perricoota</h3>
+          <p class="wm-climate"><b>Climate</b> Hot, inland</p>
+          <ul class="styles"><li>Shiraz</li><li>Cabernet Sauvignon</li><li>Chardonnay</li></ul>
+          <p>On the NSW side of the Murray River near Moama, a warm region making generous reds and whites.</p>
+        </article>
+        <article class="wm-region" id="region-murray-darling" data-id="murray-darling" hidden>
+          <p class="eyebrow">Victoria</p>
+          <h3>Murray Darling</h3>
+          <p class="wm-climate"><b>Climate</b> Hot, inland</p>
+          <ul class="styles"><li>Chardonnay</li><li>Shiraz</li><li>Cabernet Sauvignon</li></ul>
+          <p>Straddling the Victoria–NSW border around Mildura, one of Australia's biggest producing regions, irrigated by the Murray.</p>
+        </article>
+        <article class="wm-region" id="region-swan-hill" data-id="swan-hill" hidden>
+          <p class="eyebrow">Victoria</p>
+          <h3>Swan Hill</h3>
+          <p class="wm-climate"><b>Climate</b> Hot, inland</p>
+          <ul class="styles"><li>Shiraz</li><li>Chardonnay</li></ul>
+          <p>Along the Murray around Swan Hill, straddling Victoria and NSW, with warm, irrigated vineyards.</p>
+        </article>
+        <article class="wm-region" id="region-glenrowan" data-id="glenrowan" hidden>
+          <p class="eyebrow">Victoria</p>
+          <h3>Glenrowan</h3>
+          <p class="wm-climate"><b>Climate</b> Hot, continental</p>
+          <ul class="styles"><li>Durif</li><li>Shiraz</li><li>Fortified</li></ul>
+          <p>Next to Rutherglen in north-east Victoria, known for robust reds and fortified wines.</p>
+        </article>
+        <article class="wm-region" id="region-alpine-valleys" data-id="alpine-valleys" hidden>
+          <p class="eyebrow">Victoria</p>
+          <h3>Alpine Valleys</h3>
+          <p class="wm-climate"><b>Climate</b> Cool to moderate, valleys</p>
+          <ul class="styles"><li>Italian and alternative varieties</li><li>Chardonnay</li><li>Pinot Gris</li></ul>
+          <p>Valleys at the foot of the Victorian Alps around Myrtleford and Bright, known for Italian and alternative varieties.</p>
+        </article>
+        <article class="wm-region" id="region-strathbogie-ranges" data-id="strathbogie-ranges" hidden>
+          <p class="eyebrow">Victoria</p>
+          <h3>Strathbogie Ranges</h3>
+          <p class="wm-climate"><b>Climate</b> Cool, elevated</p>
+          <ul class="styles"><li>Riesling</li><li>Shiraz</li><li>Sparkling</li></ul>
+          <p>Granite hills between Nagambie and the high country, cool and elevated, making Riesling, Shiraz and sparkling base.</p>
+        </article>
+        <article class="wm-region" id="region-upper-goulburn" data-id="upper-goulburn" hidden>
+          <p class="eyebrow">Victoria</p>
+          <h3>Upper Goulburn</h3>
+          <p class="wm-climate"><b>Climate</b> Cool, elevated</p>
+          <ul class="styles"><li>Chardonnay</li><li>Riesling</li><li>Pinot Noir</li></ul>
+          <p>Around Mansfield and Lake Eildon in the foothills of the Alps, making cool-climate whites and reds.</p>
+        </article>
+        <article class="wm-region" id="region-bendigo" data-id="bendigo" hidden>
+          <p class="eyebrow">Victoria</p>
+          <h3>Bendigo</h3>
+          <p class="wm-climate"><b>Climate</b> Warm, continental</p>
+          <ul class="styles"><li>Shiraz</li><li>Cabernet Sauvignon</li></ul>
+          <p>Historic gold-rush country, where warm days make rich Shiraz and Cabernet.</p>
+        </article>
+        <article class="wm-region" id="region-pyrenees" data-id="pyrenees" hidden>
+          <p class="eyebrow">Victoria</p>
+          <h3>Pyrenees</h3>
+          <p class="wm-climate"><b>Climate</b> Warm, continental</p>
+          <ul class="styles"><li>Shiraz</li><li>Cabernet Sauvignon</li></ul>
+          <p>Around Avoca and Moonambel in western Victoria, known for robust Shiraz and Cabernet.</p>
+        </article>
+        <article class="wm-region" id="region-sunbury" data-id="sunbury" hidden>
+          <p class="eyebrow">Victoria</p>
+          <h3>Sunbury</h3>
+          <p class="wm-climate"><b>Climate</b> Cool, windy</p>
+          <ul class="styles"><li>Shiraz</li><li>Chardonnay</li></ul>
+          <p>Just north-west of Melbourne, cool and windy, known for elegant Shiraz and Chardonnay.</p>
+        </article>
+        <article class="wm-region" id="region-henty" data-id="henty" hidden>
+          <p class="eyebrow">Victoria</p>
+          <h3>Henty</h3>
+          <p class="wm-climate"><b>Climate</b> Very cool, maritime</p>
+          <ul class="styles"><li>Riesling</li><li>Pinot Noir</li><li>Sparkling</li></ul>
+          <p>In Victoria's far south-west, one of mainland Australia's coolest wine regions, known for fine Riesling, Pinot Noir and sparkling.</p>
+        </article>
         </div>
       </div>
       <details class="wm-table">
-        <summary>All 33 regions at a glance</summary>
+        <summary>All 65 regions at a glance</summary>
         <div class="wm-table-wrap">
         <table>
           <thead><tr><th scope="col">Region</th><th scope="col">Climate</th><th scope="col">Known for</th></tr></thead>
@@ -412,7 +669,11 @@ index: yes
             <tr><td><a href="#region-geographe" data-id="geographe">Geographe</a></td><td>Warm, maritime</td><td>Chardonnay, Shiraz, Cabernet Sauvignon</td></tr>
             <tr><td><a href="#region-pemberton" data-id="pemberton">Pemberton</a></td><td>Cool, wetter</td><td>Chardonnay, Pinot Noir, Sauvignon Blanc</td></tr>
             <tr><td><a href="#region-great-southern" data-id="great-southern">Great Southern</a></td><td>Cool, maritime</td><td>Riesling, Shiraz, Cabernet Sauvignon</td></tr>
-            <tr><td><a href="#region-swan-valley" data-id="swan-valley">Swan Valley</a></td><td>Hot, dry</td><td>Chenin Blanc, Verdelho, Fortified</td></tr>
+            <tr><td><a href="#region-swan-district" data-id="swan-district">Swan District</a></td><td>Hot, dry</td><td>Chenin Blanc, Verdelho, Fortified</td></tr>
+            <tr><td><a href="#region-perth-hills" data-id="perth-hills">Perth Hills</a></td><td>Warm, elevated</td><td>Shiraz, Cabernet Sauvignon, Chardonnay</td></tr>
+            <tr><td><a href="#region-peel" data-id="peel">Peel</a></td><td>Warm, Mediterranean</td><td>Shiraz, Chenin Blanc</td></tr>
+            <tr><td><a href="#region-blackwood-valley" data-id="blackwood-valley">Blackwood Valley</a></td><td>Warm, continental</td><td>Shiraz, Cabernet Sauvignon, Chardonnay</td></tr>
+            <tr><td><a href="#region-manjimup" data-id="manjimup">Manjimup</a></td><td>Cool, inland</td><td>Chardonnay, Pinot Noir, Merlot</td></tr>
           </tbody>
           <tbody>
             <tr><th colspan="3" scope="colgroup">South Australia</th></tr>
@@ -424,6 +685,16 @@ index: yes
             <tr><td><a href="#region-langhorne-creek" data-id="langhorne-creek">Langhorne Creek</a></td><td>Moderate, lake breezes</td><td>Cabernet Sauvignon, Shiraz, Malbec</td></tr>
             <tr><td><a href="#region-riverland" data-id="riverland">Riverland</a></td><td>Hot, inland</td><td>Shiraz, Chardonnay, Alternative varieties</td></tr>
             <tr><td><a href="#region-coonawarra" data-id="coonawarra">Coonawarra</a></td><td>Cool, maritime</td><td>Cabernet Sauvignon, Shiraz</td></tr>
+            <tr><td><a href="#region-southern-flinders-ranges" data-id="southern-flinders-ranges">Southern Flinders Ranges</a></td><td>Warm, elevated</td><td>Shiraz, Cabernet Sauvignon</td></tr>
+            <tr><td><a href="#region-adelaide-plains" data-id="adelaide-plains">Adelaide Plains</a></td><td>Hot, dry</td><td>Shiraz, Cabernet Sauvignon, Chardonnay</td></tr>
+            <tr><td><a href="#region-kangaroo-island" data-id="kangaroo-island">Kangaroo Island</a></td><td>Cool, maritime</td><td>Shiraz, Cabernet Sauvignon, Chardonnay</td></tr>
+            <tr><td><a href="#region-southern-fleurieu" data-id="southern-fleurieu">Southern Fleurieu</a></td><td>Cool, maritime</td><td>Shiraz, Sauvignon Blanc, Pinot Noir</td></tr>
+            <tr><td><a href="#region-currency-creek" data-id="currency-creek">Currency Creek</a></td><td>Moderate, maritime</td><td>Shiraz, Cabernet Sauvignon, Sauvignon Blanc</td></tr>
+            <tr><td><a href="#region-padthaway" data-id="padthaway">Padthaway</a></td><td>Moderate</td><td>Chardonnay, Shiraz</td></tr>
+            <tr><td><a href="#region-mount-benson" data-id="mount-benson">Mount Benson</a></td><td>Cool, maritime</td><td>Sauvignon Blanc, Shiraz, Cabernet Sauvignon</td></tr>
+            <tr><td><a href="#region-robe" data-id="robe">Robe</a></td><td>Cool, maritime</td><td>Chardonnay, Cabernet Sauvignon, Shiraz</td></tr>
+            <tr><td><a href="#region-wrattonbully" data-id="wrattonbully">Wrattonbully</a></td><td>Moderate</td><td>Cabernet Sauvignon, Shiraz, Merlot</td></tr>
+            <tr><td><a href="#region-mount-gambier" data-id="mount-gambier">Mount Gambier</a></td><td>Cool</td><td>Pinot Noir, Chardonnay, Sauvignon Blanc</td></tr>
           </tbody>
           <tbody>
             <tr><th colspan="3" scope="colgroup">Victoria</th></tr>
@@ -438,6 +709,16 @@ index: yes
             <tr><td><a href="#region-king-valley" data-id="king-valley">King Valley</a></td><td>Cool, alpine foothills</td><td>Prosecco, Pinot Grigio, Sangiovese, Nebbiolo</td></tr>
             <tr><td><a href="#region-beechworth" data-id="beechworth">Beechworth</a></td><td>Cool to moderate, elevated</td><td>Chardonnay, Shiraz</td></tr>
             <tr><td><a href="#region-rutherglen" data-id="rutherglen">Rutherglen</a></td><td>Hot, continental</td><td>Fortified Muscat and Topaque, Durif, Shiraz</td></tr>
+            <tr><td><a href="#region-murray-darling" data-id="murray-darling">Murray Darling</a></td><td>Hot, inland</td><td>Chardonnay, Shiraz, Cabernet Sauvignon</td></tr>
+            <tr><td><a href="#region-swan-hill" data-id="swan-hill">Swan Hill</a></td><td>Hot, inland</td><td>Shiraz, Chardonnay</td></tr>
+            <tr><td><a href="#region-glenrowan" data-id="glenrowan">Glenrowan</a></td><td>Hot, continental</td><td>Durif, Shiraz, Fortified</td></tr>
+            <tr><td><a href="#region-alpine-valleys" data-id="alpine-valleys">Alpine Valleys</a></td><td>Cool to moderate, valleys</td><td>Italian and alternative varieties, Chardonnay, Pinot Gris</td></tr>
+            <tr><td><a href="#region-strathbogie-ranges" data-id="strathbogie-ranges">Strathbogie Ranges</a></td><td>Cool, elevated</td><td>Riesling, Shiraz, Sparkling</td></tr>
+            <tr><td><a href="#region-upper-goulburn" data-id="upper-goulburn">Upper Goulburn</a></td><td>Cool, elevated</td><td>Chardonnay, Riesling, Pinot Noir</td></tr>
+            <tr><td><a href="#region-bendigo" data-id="bendigo">Bendigo</a></td><td>Warm, continental</td><td>Shiraz, Cabernet Sauvignon</td></tr>
+            <tr><td><a href="#region-pyrenees" data-id="pyrenees">Pyrenees</a></td><td>Warm, continental</td><td>Shiraz, Cabernet Sauvignon</td></tr>
+            <tr><td><a href="#region-sunbury" data-id="sunbury">Sunbury</a></td><td>Cool, windy</td><td>Shiraz, Chardonnay</td></tr>
+            <tr><td><a href="#region-henty" data-id="henty">Henty</a></td><td>Very cool, maritime</td><td>Riesling, Pinot Noir, Sparkling</td></tr>
           </tbody>
           <tbody>
             <tr><th colspan="3" scope="colgroup">New South Wales &amp; ACT</th></tr>
@@ -448,10 +729,18 @@ index: yes
             <tr><td><a href="#region-orange" data-id="orange">Orange</a></td><td>Cool, high altitude</td><td>Chardonnay, Sauvignon Blanc, Pinot Noir, Shiraz</td></tr>
             <tr><td><a href="#region-mudgee" data-id="mudgee">Mudgee</a></td><td>Warm, continental</td><td>Shiraz, Cabernet Sauvignon, Chardonnay</td></tr>
             <tr><td><a href="#region-hunter-valley" data-id="hunter-valley">Hunter Valley</a></td><td>Warm, humid</td><td>Semillon, Shiraz, Chardonnay</td></tr>
+            <tr><td><a href="#region-new-england-australia" data-id="new-england-australia">New England Australia</a></td><td>Cool, high altitude</td><td>Chardonnay, Shiraz, Riesling</td></tr>
+            <tr><td><a href="#region-hastings-river" data-id="hastings-river">Hastings River</a></td><td>Warm, humid</td><td>Chambourcin, Chardonnay, Semillon</td></tr>
+            <tr><td><a href="#region-cowra" data-id="cowra">Cowra</a></td><td>Warm, continental</td><td>Chardonnay, Shiraz</td></tr>
+            <tr><td><a href="#region-southern-highlands" data-id="southern-highlands">Southern Highlands</a></td><td>Cool, elevated</td><td>Pinot Noir, Chardonnay, Riesling</td></tr>
+            <tr><td><a href="#region-shoalhaven-coast" data-id="shoalhaven-coast">Shoalhaven Coast</a></td><td>Warm, humid</td><td>Chambourcin, Chardonnay, Verdelho</td></tr>
+            <tr><td><a href="#region-gundagai" data-id="gundagai">Gundagai</a></td><td>Warm, continental</td><td>Shiraz, Cabernet Sauvignon</td></tr>
+            <tr><td><a href="#region-perricoota" data-id="perricoota">Perricoota</a></td><td>Hot, inland</td><td>Shiraz, Cabernet Sauvignon, Chardonnay</td></tr>
           </tbody>
           <tbody>
             <tr><th colspan="3" scope="colgroup">Queensland</th></tr>
             <tr><td><a href="#region-granite-belt" data-id="granite-belt">Granite Belt</a></td><td>Cool, high altitude</td><td>Shiraz, Cabernet Sauvignon, Alternative varieties</td></tr>
+            <tr><td><a href="#region-south-burnett" data-id="south-burnett">South Burnett</a></td><td>Warm, subtropical</td><td>Shiraz, Verdelho, Chardonnay</td></tr>
           </tbody>
           <tbody>
             <tr><th colspan="3" scope="colgroup">Tasmania</th></tr>

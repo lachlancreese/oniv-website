@@ -28,6 +28,24 @@ function bottleProfile() {
   return pts;
 }
 
+// Screwcap outline (radius, height), from the bottom of the skirt to the centre of the top.
+function capProfile() {
+  const R = 1.66, top = HEIGHT + 0.12, base = HEIGHT - 5.3;
+  const pts = [
+    new Vector2(1.5, base), new Vector2(1.6, base - 0.02), new Vector2(R + 0.02, base + 0.06), // rolled hem
+    new Vector2(R + 0.03, base + 0.16), new Vector2(R, base + 0.26),
+    new Vector2(R, top - 1.95),
+    new Vector2(R - 0.035, top - 1.9), new Vector2(R - 0.035, top - 1.78), new Vector2(R, top - 1.73), // tamper ring
+    new Vector2(R, top - 0.32),
+  ];
+  for (let i = 1; i <= 10; i++) { // rounded top edge
+    const a = (i / 10) * (Math.PI / 2);
+    pts.push(new Vector2(R - 0.32 + 0.32 * Math.cos(a), top - 0.32 + 0.32 * Math.sin(a)));
+  }
+  pts.push(new Vector2(0.9, top + 0.02), new Vector2(0, top + 0.03)); // slight dome
+  return pts;
+}
+
 function shadowTexture() {
   const c = document.createElement("canvas");
   c.width = c.height = 256;
@@ -118,14 +136,13 @@ async function start(stage) {
   });
   bottle.add(new Mesh(new LatheGeometry(bottleProfile(), 96), glass));
 
-  // Screwcap / capsule over the neck.
-  const cap = new MeshStandardMaterial({ color: new Color("#1c1917"), roughness: 0.38, metalness: 0.55 });
-  const capMesh = new Mesh(new CylinderGeometry(1.66, 1.66, 5.2, 64), cap);
-  capMesh.position.y = HEIGHT - 2.55;
-  bottle.add(capMesh);
-  const capTop = new Mesh(new CylinderGeometry(1.6, 1.66, 0.12, 64), cap);
-  capTop.position.y = HEIGHT + 0.08;
-  bottle.add(capTop);
+  // Screwcap: satin black powder-coated aluminium, turned as one piece with a rolled hem at the bottom,
+  // the perforated tamper ring below the top, a softly rounded top edge and a slightly domed top.
+  const cap = new MeshPhysicalMaterial({
+    color: new Color("#161514"), metalness: 0.35, roughness: 0.46, clearcoat: 0.35, clearcoatRoughness: 0.35,
+    envMapIntensity: 1.1,
+  });
+  bottle.add(new Mesh(new LatheGeometry(capProfile(), 128), cap));
 
   // Front and back labels, wrapped around the body.
   const r = BODY_R + 0.015;

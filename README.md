@@ -92,7 +92,7 @@ To preview locally: `npx wrangler dev`, then open http://localhost:8787.
 
 The hero on the homepage is a 3D bottle (`public/assets/js/hero3d.js`, built from `tools/hero3d/hero3d.js` with three.js).
 It spins slowly, turns further as the page scrolls, and can be dragged sideways. It holds still for visitors who have
-reduced motion turned on, and shows the still image `hero-bottle-*.webp` on devices without graphics hardware.
+reduced motion turned on, and shows the still image `hero-bottle-2-*.webp` (give it a new name whenever the bottle changes, so browsers fetch the new one) on devices without graphics hardware.
 
 To change the labels, replace `public/assets/img/labels/oniv-shiraz-front.webp` and `-back.webp` (or point the
 `data-front` / `data-back` attributes in `pages/index.html` at new files). Label images should be about 1024 px wide at
