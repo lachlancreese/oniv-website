@@ -11,5 +11,9 @@
     "html_handling": "auto-trailing-slash",
     "run_worker_first": ["/*", "!/assets/*"]
   },
+  "vars": {
+    "TO_EMAIL": "alex@oniv.com.au",
+    "FROM_EMAIL": "ONIV website <enquiries@oniv.com.au>"
+  },
   "observability": { "enabled": true }
 }

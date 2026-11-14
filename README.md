@@ -27,10 +27,9 @@ Resend, free up to 3,000 emails a month:
 
 1. Sign up at resend.com, add the domain `oniv.com.au`, and add the DNS records it gives you.
 2. Create an API key.
-3. In Cloudflare → Workers & Pages → `oniv-website` → Settings → Variables and secrets, add:
-   - `RESEND_API_KEY` = the API key (type: Secret)
-   - `TO_EMAIL` = `alex@oniv.com.au`
-   - `FROM_EMAIL` = `ONIV website <enquiries@oniv.com.au>`
+3. In Cloudflare → Workers & Pages → `oniv-website` → Settings → Variables and secrets, add
+   `RESEND_API_KEY` = the API key, with **Secret** ticked.
+   The recipient and sender addresses (`TO_EMAIL`, `FROM_EMAIL`) are set in `wrangler.jsonc`; change them there.
 4. Redeploy, then send a test enquiry.
 
 ## Domain
