@@ -60,12 +60,18 @@ To swap a photo, replace both sizes of the file with the same names, in portrait
 | FAQ | `pages/faq.html` | `/faq` |
 | Enquiry form | `pages/contact.html` | `/contact` |
 | Christmas wine gifts (seasonal; update dates each year) | `pages/christmas-wine-gifts.html` | `/christmas-wine-gifts` |
+| Settlement gifts (agents, builders) | `pages/settlement-gifts.html` | `/settlement-gifts` |
+| Wedding wine and bomboniere | `pages/wedding-wine.html` | `/wedding-wine` |
+| 21st and milestone birthdays | `pages/21st-birthday-wine.html` | `/21st-birthday-wine` |
+| Art galleries | `pages/art-gallery-wine.html` | `/art-gallery-wine` |
+| Charity and fundraising | `pages/charity-fundraising-wine.html` | `/charity-fundraising-wine` |
+| About | `pages/about.html` | `/about` |
 | Terms and conditions | `pages/terms.html` | `/terms` |
 | Privacy, thank-you, not found | `pages/privacy.html`, `thanks.html`, `404.html` | `/privacy`, `/thanks` |
 
 ## Editing text
 
-1. Edit the page in `pages/`. The header menu, footer, Christmas banner, phone number and email are in `build.py`.
+1. Edit the page in `pages/`. The header menu (`NAV`), the footer's "Wine for" list (`WINE_FOR`), Christmas banner, phone number and email are in `build.py`.
 2. Run `python3 build.py` (Python 3, no packages needed).
 3. Commit both `pages/` and `public/`, then push.
 

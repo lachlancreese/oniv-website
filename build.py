@@ -35,6 +35,19 @@ NAV = [
     ("how", "How it works", "/how-it-works"),
     ("pricing", "Pricing", "/pricing"),
     ("faq", "FAQ", "/faq"),
+    ("about", "About", "/about"),
+]
+
+# Footer "Wine for" column: one link per use-case page
+WINE_FOR = [
+    ("Corporate gifts", "/corporate"),
+    ("Christmas gifts", "/christmas-wine-gifts"),
+    ("Settlement gifts", "/settlement-gifts"),
+    ("Art galleries", "/art-gallery-wine"),
+    ("Charity &amp; fundraising", "/charity-fundraising-wine"),
+    ("Weddings", "/wedding-wine"),
+    ("21sts &amp; milestones", "/21st-birthday-wine"),
+    ("All occasions", "/occasions"),
 ]
 
 WARNING = ("Warning: Under the Liquor Control Reform Act 1998 it is an offence to supply alcohol to a person "
@@ -49,7 +62,7 @@ def asset(path):
 
 
 ORG_ID = SITE + "/#organization"
-CRUMBS = {"/christmas-wine-gifts": "Christmas wine gifts", "/contact": "Free mockup", "/privacy": "Privacy policy", "/terms": "Terms and conditions"}
+CRUMBS = {"/christmas-wine-gifts": "Christmas wine gifts", "/settlement-gifts": "Settlement gifts", "/wedding-wine": "Wedding wine", "/21st-birthday-wine": "21st and milestone birthday wine", "/art-gallery-wine": "Art gallery wine", "/charity-fundraising-wine": "Charity and fundraising wine", "/contact": "Free mockup", "/privacy": "Privacy policy", "/terms": "Terms and conditions"}
 
 
 def ld(data):
@@ -175,10 +188,10 @@ def head(meta, extra_head):
 </head>"""
 
 
-def header(active):
+def header(active, path):
     links = []
     for key, label, href in NAV:
-        cur = ' aria-current="page"' if key == active else ""
+        cur = (' aria-current="page"' if href == path else ' aria-current="true"') if key == active else ""
         links.append(f'<a href="{href}"{cur}>{label}</a>')
     nav_links = "\n        ".join(links)
     return f"""<body>
@@ -210,7 +223,9 @@ def header(active):
 
 
 def footer(show_bar):
-    cols = "\n".join(f'          <li><a href="{href}">{label}</a></li>' for key, label, href in NAV)
+    wine_for = "\n".join(f'            <li><a href="{href}">{label}</a></li>' for label, href in WINE_FOR)
+    explore = "\n".join(f'            <li><a href="{href}">{label}</a></li>' for key, label, href in NAV
+                         if key not in ("corporate", "occasions"))
     bar = f"""
 <div class="action-bar" role="region" aria-label="Quick actions">
   <a class="action-call" href="tel:{PHONE_TEL}"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>Call</a>
@@ -227,9 +242,15 @@ def footer(show_bar):
       </div>
       <nav class="footer-cols" aria-label="Footer">
         <div>
+          <h2>Wine for</h2>
+          <ul>
+{wine_for}
+          </ul>
+        </div>
+        <div>
           <h2>Explore</h2>
           <ul>
-{cols}
+{explore}
           </ul>
         </div>
         <div>
@@ -276,7 +297,7 @@ def build():
     for src in sorted(PAGES.glob("*.html")):
         meta, body, extra_head = parse(src.read_text())
         extra_head = structured_data(meta, body) + extra_head
-        out = (head(meta, extra_head) + "\n" + header(meta.get("nav", "")) + '\n<main id="main">\n'
+        out = (head(meta, extra_head) + "\n" + header(meta.get("nav", ""), meta["path"]) + '\n<main id="main">\n'
                + body + "\n</main>\n" + footer(meta.get("bar", "yes") != "no"))
         name = "index.html" if meta["path"] == "/" else meta["path"].strip("/") + ".html"
         (OUT / name).write_text(out)
