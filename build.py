@@ -12,6 +12,7 @@ Each page file starts with a comment block of settings:
     index: yes              (list in sitemap; "no" to hide from search)
     -->
 """
+import hashlib
 import html
 import pathlib
 import re
@@ -36,6 +37,12 @@ NAV = [
 WARNING = ("Warning: Under the Liquor Control Reform Act 1998 it is an offence to supply alcohol to a person "
            "under the age of 18 years (Penalty exceeds $25,000) and for a person under the age of 18 years to "
            "purchase or receive liquor (Penalty exceeds $1,000).")
+
+
+def asset(path):
+    """Add a content hash so browsers fetch a fresh copy whenever the file changes."""
+    digest = hashlib.sha256((OUT / path.lstrip("/")).read_bytes()).hexdigest()[:10]
+    return f"{path}?v={digest}"
 
 
 def head(meta, extra_head):
@@ -65,7 +72,7 @@ def head(meta, extra_head):
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" href="/assets/fonts/dm-serif-display-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/dm-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/css/site.css">{extra_head}
+<link rel="stylesheet" href="{asset('/assets/css/site.css')}">{extra_head}
 </head>"""
 
 
@@ -144,7 +151,7 @@ def footer(show_bar):
   </div>
 </footer>{bar}
 
-<script src="/assets/js/site.js" defer></script>
+<script src="{asset('/assets/js/site.js')}" defer></script>
 </body>
 </html>
 """
