@@ -14,30 +14,30 @@ const HEIGHT = 30;
 const LABEL = { w: 9, h: 10, bottom: 5.5 };
 
 function bottleProfile() {
+  // Bordeaux shape: straight body, rounded shoulder, then a slim neck (about 29 mm) the screwcap sits flush on.
   const pts = [];
   pts.push(new Vector2(0, 0.25), new Vector2(3.55, 0), new Vector2(3.75, 0.15), new Vector2(BODY_R, 0.6));
-  pts.push(new Vector2(BODY_R, 19.6));
-  // Shoulder: a smooth S-curve from the body to the neck.
-  const steps = 16;
+  pts.push(new Vector2(BODY_R, 18.8));
+  const steps = 18;
   for (let i = 1; i <= steps; i++) {
     const t = i / steps;
     const ease = t * t * (3 - 2 * t);
-    pts.push(new Vector2(BODY_R - (BODY_R - 1.48) * ease, 19.6 + 4.6 * t));
+    pts.push(new Vector2(BODY_R - (BODY_R - 1.44) * ease, 18.8 + 4.4 * t));
   }
-  pts.push(new Vector2(1.45, 28.9), new Vector2(1.6, 29.1), new Vector2(1.6, HEIGHT - 0.15), new Vector2(1.5, HEIGHT), new Vector2(0, HEIGHT));
+  pts.push(new Vector2(1.42, 26.5), new Vector2(1.41, 28.9), new Vector2(1.5, 29.05), new Vector2(1.5, HEIGHT - 0.15), new Vector2(1.44, HEIGHT), new Vector2(0, HEIGHT));
   return pts;
 }
 
 // Screwcap, modelled on a gloss-black wine screwcap: smooth top section with a crisp rounded edge,
 // a knurled tamper band set between two grooves, then a smooth skirt down to a rolled hem.
-const CAP = { R: 1.66, top: HEIGHT + 0.12, base: HEIGHT - 5.3, bandTop: HEIGHT + 0.12 - 2.2, bandH: 0.6 };
+const CAP = { R: 1.53, top: HEIGHT + 0.1, base: HEIGHT - 5.0, bandTop: HEIGHT + 0.1 - 2.05, bandH: 0.48 };
 
 function capProfile() {
   const { R, top, base, bandTop, bandH } = CAP;
   const bandBottom = bandTop - bandH;
   const pts = [
-    new Vector2(1.5, base), new Vector2(1.6, base - 0.02), new Vector2(R + 0.02, base + 0.06), // rolled hem
-    new Vector2(R + 0.03, base + 0.16), new Vector2(R, base + 0.26),
+    new Vector2(1.4, base), new Vector2(R - 0.04, base - 0.01), new Vector2(R + 0.015, base + 0.05), // rolled hem
+    new Vector2(R + 0.02, base + 0.13), new Vector2(R, base + 0.22),
     new Vector2(R, bandBottom - 0.16), new Vector2(R - 0.06, bandBottom - 0.1), new Vector2(R - 0.07, bandBottom), // lower groove
     new Vector2(R - 0.07, bandTop), new Vector2(R - 0.06, bandTop + 0.1), new Vector2(R, bandTop + 0.16), // upper groove
     new Vector2(R, top - 0.16),
@@ -53,14 +53,14 @@ function capProfile() {
 // The knurled band: fine vertical ribs around the cap.
 function knurlGeometry() {
   const { R, bandTop, bandH } = CAP;
-  const ribs = 72, segs = ribs * 6;
+  const ribs = 80, segs = ribs * 6;
   const geo = new CylinderGeometry(R, R, bandH, segs, 1, true);
   const pos = geo.attributes.position;
   for (let i = 0; i < pos.count; i++) {
     const x = pos.getX(i), z = pos.getZ(i);
     const theta = Math.atan2(x, z);
     const wave = 0.5 + 0.5 * Math.cos(theta * ribs);       // 1 at a rib's crest, 0 in the gap
-    const r = R - 0.065 + 0.06 * Math.pow(wave, 0.6);
+    const r = R - 0.06 + 0.055 * Math.pow(wave, 0.6);
     const k = r / Math.hypot(x, z);
     pos.setX(i, x * k);
     pos.setZ(i, z * k);
