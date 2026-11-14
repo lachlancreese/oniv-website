@@ -1,0 +1,617 @@
+[
+ {
+  "name": "Margaret River",
+  "state": "WA",
+  "lat": -33.95,
+  "lon": 115.07,
+  "label": "left",
+  "climate": "Mild, maritime",
+  "known": [
+   "Cabernet Sauvignon",
+   "Chardonnay",
+   "Semillon–Sauvignon Blanc"
+  ],
+  "tags": [
+   "cabernet",
+   "chardonnay",
+   "sauvignon",
+   "semillon"
+  ],
+  "text": "Surrounded on three sides by the Indian and Southern oceans, Margaret River's mild, even climate gives elegant, structured Cabernet and some of Australia's most celebrated Chardonnay."
+ },
+ {
+  "name": "Geographe",
+  "state": "WA",
+  "lat": -33.55,
+  "lon": 115.75,
+  "label": "right",
+  "climate": "Warm, maritime",
+  "known": [
+   "Chardonnay",
+   "Shiraz",
+   "Cabernet Sauvignon"
+  ],
+  "tags": [
+   "chardonnay",
+   "shiraz",
+   "cabernet"
+  ],
+  "text": "Just north of Margaret River, Geographe runs from the coast into the hills, with sea breezes tempering warm days for bright Chardonnay and medium-bodied reds."
+ },
+ {
+  "name": "Pemberton",
+  "state": "WA",
+  "lat": -34.45,
+  "lon": 116.03,
+  "label": "bottom",
+  "climate": "Cool, wetter",
+  "known": [
+   "Chardonnay",
+   "Pinot Noir",
+   "Sauvignon Blanc"
+  ],
+  "tags": [
+   "chardonnay",
+   "pinot",
+   "sauvignon"
+  ],
+  "text": "Among the tall karri forests of WA's south-west, Pemberton's cooler, wetter climate suits fine Chardonnay and Pinot Noir."
+ },
+ {
+  "name": "Great Southern",
+  "state": "WA",
+  "lat": -34.63,
+  "lon": 117.6,
+  "label": "right",
+  "climate": "Cool, maritime",
+  "known": [
+   "Riesling",
+   "Shiraz",
+   "Cabernet Sauvignon"
+  ],
+  "tags": [
+   "riesling",
+   "shiraz",
+   "cabernet",
+   "pinot"
+  ],
+  "text": "A large region on WA's south coast with five subregions, from Frankland River to Albany. Known for taut, citrusy Riesling and peppery, cool-climate Shiraz."
+ },
+ {
+  "name": "Swan Valley",
+  "state": "WA",
+  "lat": -31.8,
+  "lon": 116.02,
+  "label": "right",
+  "climate": "Hot, dry",
+  "known": [
+   "Chenin Blanc",
+   "Verdelho",
+   "Fortified"
+  ],
+  "tags": [
+   "fortified"
+  ],
+  "text": "Western Australia's oldest wine region, on Perth's doorstep. Hot summers suit generous whites like Chenin Blanc and Verdelho, and rich fortified wines."
+ },
+ {
+  "name": "Clare Valley",
+  "state": "SA",
+  "lat": -33.83,
+  "lon": 138.6,
+  "label": "right",
+  "climate": "Warm days, cool nights",
+  "known": [
+   "Riesling",
+   "Shiraz",
+   "Cabernet Sauvignon"
+  ],
+  "tags": [
+   "riesling",
+   "shiraz",
+   "cabernet"
+  ],
+  "text": "Clare's warm days and cold nights give bone-dry, lime-scented Riesling that ages beautifully, along with firm, savoury Shiraz and Cabernet."
+ },
+ {
+  "name": "Barossa Valley",
+  "state": "SA",
+  "lat": -34.53,
+  "lon": 138.95,
+  "label": "left",
+  "climate": "Warm, dry",
+  "known": [
+   "Shiraz",
+   "Grenache",
+   "Mataro (Mourvèdre)"
+  ],
+  "tags": [
+   "shiraz",
+   "grenache"
+  ],
+  "text": "Home to some of the world's oldest Shiraz vines, the Barossa makes rich, generous reds full of dark fruit and spice, and old-vine Grenache and Mataro."
+ },
+ {
+  "name": "Eden Valley",
+  "state": "SA",
+  "lat": -34.62,
+  "lon": 139.12,
+  "label": "right",
+  "climate": "Cool, elevated",
+  "known": [
+   "Riesling",
+   "Shiraz",
+   "Chardonnay"
+  ],
+  "tags": [
+   "riesling",
+   "shiraz",
+   "chardonnay"
+  ],
+  "text": "Higher and cooler than its Barossa neighbour, Eden Valley is famous for fine, floral Riesling and elegant, perfumed Shiraz."
+ },
+ {
+  "name": "Adelaide Hills",
+  "state": "SA",
+  "lat": -34.98,
+  "lon": 138.78,
+  "label": "right",
+  "climate": "Cool, elevated",
+  "known": [
+   "Sauvignon Blanc",
+   "Chardonnay",
+   "Pinot Noir"
+  ],
+  "tags": [
+   "sauvignon",
+   "chardonnay",
+   "pinot",
+   "sparkling"
+  ],
+  "text": "In the Mount Lofty Ranges above Adelaide, altitude keeps things cool: crisp Sauvignon Blanc, fine Chardonnay, Pinot Noir and sparkling."
+ },
+ {
+  "name": "McLaren Vale",
+  "state": "SA",
+  "lat": -35.22,
+  "lon": 138.54,
+  "label": "left",
+  "climate": "Mediterranean, maritime",
+  "known": [
+   "Shiraz",
+   "Grenache",
+   "Cabernet Sauvignon"
+  ],
+  "tags": [
+   "shiraz",
+   "grenache",
+   "cabernet"
+  ],
+  "text": "Between the Mount Lofty Ranges and the sea, McLaren Vale's Mediterranean climate gives ripe, generous Shiraz with a savoury edge, and celebrated old-vine Grenache."
+ },
+ {
+  "name": "Langhorne Creek",
+  "state": "SA",
+  "lat": -35.3,
+  "lon": 139.04,
+  "label": "right",
+  "climate": "Moderate, lake breezes",
+  "known": [
+   "Cabernet Sauvignon",
+   "Shiraz",
+   "Malbec"
+  ],
+  "tags": [
+   "cabernet",
+   "shiraz"
+  ],
+  "text": "Cooled by breezes off Lake Alexandrina, Langhorne Creek makes soft, generous reds, and its grapes find their way into many well-known blends."
+ },
+ {
+  "name": "Riverland",
+  "state": "SA",
+  "lat": -34.2,
+  "lon": 140.6,
+  "label": "left",
+  "climate": "Hot, inland",
+  "known": [
+   "Shiraz",
+   "Chardonnay",
+   "Alternative varieties"
+  ],
+  "tags": [
+   "shiraz",
+   "chardonnay"
+  ],
+  "text": "Irrigated by the Murray River, the Riverland is one of Australia's biggest producing regions, and a growing home for Mediterranean and alternative varieties."
+ },
+ {
+  "name": "Coonawarra",
+  "state": "SA",
+  "lat": -37.29,
+  "lon": 140.83,
+  "label": "left",
+  "climate": "Cool, maritime",
+  "known": [
+   "Cabernet Sauvignon",
+   "Shiraz"
+  ],
+  "tags": [
+   "cabernet",
+   "shiraz"
+  ],
+  "text": "A narrow strip of red terra rossa soil over limestone gives Coonawarra its famous Cabernet Sauvignon: blackcurrant, mint and fine, firm tannins."
+ },
+ {
+  "name": "Grampians",
+  "state": "VIC",
+  "lat": -37.15,
+  "lon": 142.75,
+  "label": "right",
+  "climate": "Cool, continental",
+  "known": [
+   "Shiraz",
+   "Sparkling",
+   "Riesling"
+  ],
+  "tags": [
+   "shiraz",
+   "sparkling",
+   "riesling"
+  ],
+  "text": "Around Great Western, the Grampians has a long history of sparkling wine, including sparkling Shiraz, and makes peppery, medium-bodied still Shiraz."
+ },
+ {
+  "name": "Heathcote",
+  "state": "VIC",
+  "lat": -36.92,
+  "lon": 144.71,
+  "label": "left",
+  "climate": "Warm, continental",
+  "known": [
+   "Shiraz"
+  ],
+  "tags": [
+   "shiraz"
+  ],
+  "text": "Deep red Cambrian soils, formed more than 500 million years ago, give Heathcote's Shiraz its depth, structure and dark, plummy fruit."
+ },
+ {
+  "name": "Goulburn Valley",
+  "state": "VIC",
+  "lat": -36.78,
+  "lon": 145.17,
+  "label": "top",
+  "climate": "Warm",
+  "known": [
+   "Shiraz",
+   "Marsanne",
+   "Cabernet Sauvignon"
+  ],
+  "tags": [
+   "shiraz",
+   "cabernet"
+  ],
+  "text": "Along the Goulburn River, including the Nagambie Lakes subregion, known for structured Shiraz and long-lived Marsanne."
+ },
+ {
+  "name": "Macedon Ranges",
+  "state": "VIC",
+  "lat": -37.4,
+  "lon": 144.55,
+  "label": "left",
+  "climate": "Very cool, elevated",
+  "known": [
+   "Sparkling",
+   "Chardonnay",
+   "Pinot Noir"
+  ],
+  "tags": [
+   "sparkling",
+   "chardonnay",
+   "pinot"
+  ],
+  "text": "One of mainland Australia's coolest wine regions, just north-west of Melbourne. Ideal for fine sparkling, taut Chardonnay and Pinot Noir."
+ },
+ {
+  "name": "Geelong",
+  "state": "VIC",
+  "lat": -38.15,
+  "lon": 144.35,
+  "label": "left",
+  "climate": "Cool, maritime",
+  "known": [
+   "Pinot Noir",
+   "Chardonnay",
+   "Shiraz"
+  ],
+  "tags": [
+   "pinot",
+   "chardonnay",
+   "shiraz"
+  ],
+  "text": "Around Port Phillip and the Bellarine Peninsula, Geelong's cool, windy climate makes intense Pinot Noir, Chardonnay and spicy Shiraz."
+ },
+ {
+  "name": "Yarra Valley",
+  "state": "VIC",
+  "lat": -37.7,
+  "lon": 145.45,
+  "label": "right",
+  "climate": "Cool",
+  "known": [
+   "Chardonnay",
+   "Pinot Noir",
+   "Sparkling",
+   "Cabernet Sauvignon"
+  ],
+  "tags": [
+   "chardonnay",
+   "pinot",
+   "sparkling",
+   "cabernet"
+  ],
+  "text": "Victoria's first wine region, an hour from Melbourne. Elegant Chardonnay and Pinot Noir, fine sparkling, and medium-bodied Cabernet and Shiraz."
+ },
+ {
+  "name": "Mornington Peninsula",
+  "state": "VIC",
+  "lat": -38.35,
+  "lon": 145.05,
+  "label": "bottom",
+  "climate": "Cool, maritime",
+  "known": [
+   "Pinot Noir",
+   "Chardonnay",
+   "Pinot Gris"
+  ],
+  "tags": [
+   "pinot",
+   "chardonnay",
+   "pinotgris"
+  ],
+  "text": "Surrounded by sea on three sides, the Peninsula's cool maritime climate is made for Pinot Noir, Chardonnay and textural Pinot Gris."
+ },
+ {
+  "name": "Gippsland",
+  "state": "VIC",
+  "lat": -38.2,
+  "lon": 146.6,
+  "label": "right",
+  "climate": "Cool, maritime",
+  "known": [
+   "Pinot Noir",
+   "Chardonnay"
+  ],
+  "tags": [
+   "pinot",
+   "chardonnay"
+  ],
+  "text": "A large, sparsely planted region east of Melbourne, with small producers making characterful Pinot Noir and Chardonnay."
+ },
+ {
+  "name": "King Valley",
+  "state": "VIC",
+  "lat": -36.6,
+  "lon": 146.4,
+  "label": "right",
+  "climate": "Cool, alpine foothills",
+  "known": [
+   "Prosecco",
+   "Pinot Grigio",
+   "Sangiovese",
+   "Nebbiolo"
+  ],
+  "tags": [
+   "pinotgris",
+   "sparkling",
+   "italian"
+  ],
+  "text": "Settled by Italian families, the King Valley is the home of Australian Prosecco and a hub for Italian varieties like Pinot Grigio, Sangiovese and Nebbiolo."
+ },
+ {
+  "name": "Beechworth",
+  "state": "VIC",
+  "lat": -36.36,
+  "lon": 146.69,
+  "label": "right",
+  "climate": "Cool to moderate, elevated",
+  "known": [
+   "Chardonnay",
+   "Shiraz"
+  ],
+  "tags": [
+   "chardonnay",
+   "shiraz"
+  ],
+  "text": "A small, high region in north-east Victoria with a big reputation for powerful, complex Chardonnay and Shiraz."
+ },
+ {
+  "name": "Rutherglen",
+  "state": "VIC",
+  "lat": -36.05,
+  "lon": 146.46,
+  "label": "left",
+  "climate": "Hot, continental",
+  "known": [
+   "Fortified Muscat and Topaque",
+   "Durif",
+   "Shiraz"
+  ],
+  "tags": [
+   "fortified",
+   "shiraz"
+  ],
+  "text": "Famous for its world-class fortified Muscat and Topaque, aged for decades, and big, inky reds from Durif and Shiraz."
+ },
+ {
+  "name": "Riverina",
+  "state": "NSW",
+  "lat": -34.29,
+  "lon": 146.05,
+  "label": "right",
+  "climate": "Hot, inland",
+  "known": [
+   "Botrytis Semillon",
+   "Shiraz",
+   "Chardonnay"
+  ],
+  "tags": [
+   "semillon",
+   "shiraz",
+   "chardonnay"
+  ],
+  "text": "Around Griffith, irrigated vineyards make a large share of Australia's everyday wine, and the region is famous for luscious botrytis Semillon dessert wine."
+ },
+ {
+  "name": "Tumbarumba",
+  "state": "NSW",
+  "lat": -35.78,
+  "lon": 148.01,
+  "label": "left",
+  "climate": "Cool, high altitude",
+  "known": [
+   "Chardonnay",
+   "Pinot Noir",
+   "Sparkling"
+  ],
+  "tags": [
+   "chardonnay",
+   "pinot",
+   "sparkling"
+  ],
+  "text": "In the foothills of the Snowy Mountains, Tumbarumba's high, cool vineyards give fine Chardonnay and base wine for top sparkling."
+ },
+ {
+  "name": "Canberra District",
+  "state": "NSW",
+  "lat": -35.05,
+  "lon": 149.1,
+  "label": "right",
+  "climate": "Cool, continental",
+  "known": [
+   "Shiraz (often with Viognier)",
+   "Riesling"
+  ],
+  "tags": [
+   "shiraz",
+   "riesling"
+  ],
+  "text": "Spanning the ACT and southern NSW, the Canberra District is known for fragrant Shiraz, often co-fermented with a little Viognier, and fine Riesling."
+ },
+ {
+  "name": "Hilltops",
+  "state": "NSW",
+  "lat": -34.33,
+  "lon": 148.3,
+  "label": "left",
+  "climate": "Continental, elevated",
+  "known": [
+   "Shiraz",
+   "Cabernet Sauvignon"
+  ],
+  "tags": [
+   "shiraz",
+   "cabernet"
+  ],
+  "text": "Around Young, Hilltops' elevated vineyards and warm days give deeply coloured, full-flavoured Shiraz and Cabernet."
+ },
+ {
+  "name": "Orange",
+  "state": "NSW",
+  "lat": -33.28,
+  "lon": 149.1,
+  "label": "left",
+  "climate": "Cool, high altitude",
+  "known": [
+   "Chardonnay",
+   "Sauvignon Blanc",
+   "Pinot Noir",
+   "Shiraz"
+  ],
+  "tags": [
+   "chardonnay",
+   "sauvignon",
+   "pinot",
+   "shiraz"
+  ],
+  "text": "Defined by altitude, with vineyards above 600 metres on the slopes of Mount Canobolas. Crisp whites, Pinot Noir and cool-climate Shiraz."
+ },
+ {
+  "name": "Mudgee",
+  "state": "NSW",
+  "lat": -32.6,
+  "lon": 149.6,
+  "label": "right",
+  "climate": "Warm, continental",
+  "known": [
+   "Shiraz",
+   "Cabernet Sauvignon",
+   "Chardonnay"
+  ],
+  "tags": [
+   "shiraz",
+   "cabernet",
+   "chardonnay"
+  ],
+  "text": "On the western slopes of the Great Dividing Range, Mudgee makes generous, full-bodied reds and rich Chardonnay."
+ },
+ {
+  "name": "Hunter Valley",
+  "state": "NSW",
+  "lat": -32.78,
+  "lon": 151.28,
+  "label": "left",
+  "climate": "Warm, humid",
+  "known": [
+   "Semillon",
+   "Shiraz",
+   "Chardonnay"
+  ],
+  "tags": [
+   "semillon",
+   "shiraz",
+   "chardonnay"
+  ],
+  "text": "One of Australia's oldest wine regions. Hunter Semillon is picked early, light in alcohol and ages for decades; Hunter Shiraz is medium-bodied and earthy."
+ },
+ {
+  "name": "Granite Belt",
+  "state": "QLD",
+  "lat": -28.65,
+  "lon": 151.95,
+  "label": "right",
+  "climate": "Cool, high altitude",
+  "known": [
+   "Shiraz",
+   "Cabernet Sauvignon",
+   "Alternative varieties"
+  ],
+  "tags": [
+   "shiraz",
+   "cabernet"
+  ],
+  "text": "Queensland's high-country wine region, with vineyards at altitude on granite soils, and a reputation for alternative 'Strange Bird' varieties."
+ },
+ {
+  "name": "Tasmania",
+  "state": "TAS",
+  "lat": -41.95,
+  "lon": 147.2,
+  "label": "right",
+  "climate": "Cool, maritime",
+  "known": [
+   "Sparkling",
+   "Pinot Noir",
+   "Chardonnay",
+   "Riesling"
+  ],
+  "tags": [
+   "sparkling",
+   "pinot",
+   "chardonnay",
+   "riesling"
+  ],
+  "text": "Australia's coolest wine state, from the Tamar Valley in the north to the Coal River and Huon valleys in the south. World-class sparkling, Pinot Noir, Chardonnay and Riesling."
+ }
+]

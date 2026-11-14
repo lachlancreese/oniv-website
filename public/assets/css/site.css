@@ -496,3 +496,71 @@ a.label-card:hover h3 { text-decoration: underline; text-underline-offset: 4px; 
 .hero-canvas { opacity: 0; transition: opacity 0.6s ease; }
 .hero-stage.is-live .hero-canvas { opacity: 1; }
 .hero-stage.is-live .hero-poster { opacity: 0; transition: opacity 0.6s ease; }
+
+/* Wine regions map (/wine) */
+.winemap { display: flex; flex-direction: column; gap: 20px; min-width: 0; width: 100%; }
+.winemap > *, .wm-controls > * { min-width: 0; }
+.wm-controls { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; justify-content: space-between; }
+.wm-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.wm-chip {
+  min-height: 40px; padding: 8px 16px; border: 1px solid var(--stone); border-radius: 999px; background: var(--paper);
+  font: inherit; font-size: 14px; color: var(--ink); cursor: pointer; white-space: nowrap;
+}
+.wm-chip:hover { border-color: var(--ink); }
+.wm-chip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+.wm-filter { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 600; }
+.wm-filter select {
+  min-height: 40px; padding: 8px 36px 8px 14px; border: 1px solid var(--stone); border-radius: 999px; font: inherit; font-weight: 400;
+  background: var(--paper) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%231C1917' stroke-width='1.6'/%3E%3C/svg%3E") no-repeat right 14px center;
+  appearance: none; -webkit-appearance: none; color: var(--ink);
+}
+.wm-body { scroll-margin-top: 96px; display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 32px; align-items: start; }
+.wm-map { background: var(--sand); border-radius: var(--radius); padding: 8px; overflow: hidden; }
+.wm-map svg { display: block; width: 100%; height: auto; aspect-ratio: 1000 / 860; }
+.wm-states path { fill: var(--paper); stroke: var(--stone); stroke-width: 1; vector-effect: non-scaling-stroke; stroke-linejoin: round; }
+.wm-dot { cursor: pointer; outline: none; transition: opacity 0.2s; }
+.wm-dot .wm-hit { fill: transparent; }
+.wm-dot circle:not(.wm-hit) { fill: var(--sage-deep); stroke: var(--paper); stroke-width: 2; vector-effect: non-scaling-stroke; }
+.wm-dot:hover circle:not(.wm-hit) { fill: var(--ink); }
+.wm-dot[aria-pressed="true"] circle:not(.wm-hit) { fill: var(--ink); stroke-width: 3; }
+.wm-dot:focus-visible circle:not(.wm-hit) { stroke: var(--ink); stroke-width: 3; }
+.wm-dot.is-dim { opacity: 0.18; }
+.wm-dot text { display: none; font-family: var(--sans); font-weight: 600; fill: var(--ink); stroke: var(--paper); paint-order: stroke; pointer-events: none; }
+.winemap.is-zoomed .wm-dot.in-zoom text, .wm-dot[aria-pressed="true"] text { display: block; }
+.winemap.is-zoomed .wm-dot.in-zoom.is-dim text { display: none; }
+.wm-dot.lbl-off text { visibility: hidden; }
+.wm-panel { background: var(--sand); border-radius: var(--radius); padding: 28px; min-height: 100%; }
+.wm-region { display: flex; flex-direction: column; gap: 12px; }
+.wm-region h3 { font-family: var(--serif); font-weight: 400; font-size: 34px; line-height: 1.1; }
+.wm-region .styles li { background: var(--paper); }
+.wm-climate { font-size: 15px; color: var(--ink-muted); }
+.wm-climate b { color: var(--ink); font-weight: 600; margin-right: 6px; }
+.wm-table summary { cursor: pointer; font-weight: 600; min-height: 44px; display: flex; align-items: center; }
+.wm-table-wrap { overflow-x: auto; padding-top: 8px; }
+.wm-table table { width: 100%; border-collapse: collapse; font-size: 15px; }
+.wm-table th, .wm-table td { text-align: left; padding: 10px 12px 10px 0; border-bottom: 1px solid var(--hairline); vertical-align: top; }
+.wm-table thead th { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); font-weight: 600; }
+.wm-table tbody th { padding-top: 22px; font-family: var(--serif); font-weight: 400; font-size: 20px; }
+.wm-table td:first-child a { font-weight: 600; }
+.wm-table td + td { color: var(--ink-muted); }
+
+/* Styles guide (/wine) */
+.guide { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px; align-items: start; }
+.guide > div { display: flex; flex-direction: column; gap: 16px; }
+.guide .pour { font-size: 14px; color: var(--sage-deep); font-weight: 600; }
+
+@media (max-width: 959px) {
+  .wm-body { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .guide { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+}
+@media (max-width: 640px) {
+  .wm-chips { flex-wrap: nowrap; overflow-x: auto; margin-inline: calc(var(--gutter) * -1); padding-inline: var(--gutter); scrollbar-width: none; }
+  .wm-chips::-webkit-scrollbar { display: none; }
+  .wm-controls { flex-direction: column; flex-wrap: nowrap; align-items: stretch; }
+  .wm-filter select { flex: 1; }
+  .wm-panel { padding: 22px; }
+  .wm-region h3 { font-size: 28px; }
+  .wm-table thead { display: none; }
+  .wm-table tr { display: flex; flex-direction: column; gap: 2px; padding: 10px 0; border-bottom: 1px solid var(--hairline); }
+  .wm-table th, .wm-table td { border: 0; padding: 0; }
+}

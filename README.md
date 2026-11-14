@@ -97,3 +97,15 @@ reduced motion turned on, and shows the still image `hero-bottle-*.webp` on devi
 To change the labels, replace `public/assets/img/labels/oniv-shiraz-front.webp` and `-back.webp` (or point the
 `data-front` / `data-back` attributes in `pages/index.html` at new files). Label images should be about 1024 px wide at
 roughly 9 × 10 cm proportions. Re-render the still image afterwards so it matches.
+
+## Wine regions map (/wine)
+
+The interactive map on The wine page is generated from `tools/winemap/regions.json` (region names, map position,
+climate, what each region is known for, and a short description) and `tools/winemap/au-states.geojson`
+(state outlines from Natural Earth, public domain). To change a region or add one:
+
+1. Edit `tools/winemap/regions.json`. `label` sets where the name sits next to the dot: left, right, top or bottom.
+2. In `tools/winemap`, run `npm install` once, then `npm run build`. This rewrites the map block in `pages/wine.html`.
+3. Run `python3 build.py` in the site folder, then commit and push.
+
+The map's behaviour (zooming to a state, the style filter, choosing a region) is in `public/assets/js/winemap.js`.

@@ -1,0 +1,8 @@
+{
+  "name": "oniv-winemap",
+  "private": true,
+  "description": "Generates the wine regions map on pages/wine.html from regions.json and au-states.geojson (Natural Earth, public domain). Run `npm install && npm run build` here, then `python3 build.py` in the site folder.",
+  "type": "module",
+  "scripts": { "build": "node build-map.mjs" },
+  "devDependencies": { "d3-geo": "3.1.1" }
+}
