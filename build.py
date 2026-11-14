@@ -299,6 +299,8 @@ def build():
         extra_head = structured_data(meta, body) + extra_head
         out = (head(meta, extra_head) + "\n" + header(meta.get("nav", ""), meta["path"]) + '\n<main id="main">\n'
                + body + "\n</main>\n" + footer(meta.get("bar", "yes") != "no"))
+        # Page-specific scripts and styles get the same content hash as the shared ones.
+        out = re.sub(r'(src|href)="(/assets/(?:js|css)/[\w.-]+\.(?:js|css))"', lambda m: f'{m.group(1)}="{asset(m.group(2))}"', out)
         name = "index.html" if meta["path"] == "/" else meta["path"].strip("/") + ".html"
         (OUT / name).write_text(out)
         if meta.get("index", "yes") != "no":

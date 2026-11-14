@@ -1,0 +1,12 @@
+{
+  "name": "oniv-hero3d",
+  "private": true,
+  "description": "Source for public/assets/js/hero3d.js (the spinning bottle on the homepage). Run `npm install && npm run build` here after editing hero3d.js.",
+  "scripts": {
+    "build": "esbuild hero3d.js --bundle --minify --format=esm --target=es2020 --legal-comments=none --outfile=../../public/assets/js/hero3d.js"
+  },
+  "devDependencies": {
+    "esbuild": "0.24.2",
+    "three": "0.170.0"
+  }
+}

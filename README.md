@@ -87,3 +87,13 @@ To preview locally: `npx wrangler dev`, then open http://localhost:8787.
 - `build.py` adds Google's structured data automatically: business and website details on the homepage, breadcrumbs on every page, questions and answers on the FAQ, and the product and price on Pricing. Change prices there too if they change.
 - `sitemap.xml` is rebuilt with each page's last-changed date every time you run `build.py`.
 - Old addresses that should redirect to a new page go in `MOVED` at the top of `src/worker.js`.
+
+## Homepage spinning bottle
+
+The hero on the homepage is a 3D bottle (`public/assets/js/hero3d.js`, built from `tools/hero3d/hero3d.js` with three.js).
+It spins slowly, turns further as the page scrolls, and can be dragged sideways. It holds still for visitors who have
+reduced motion turned on, and shows the still image `hero-bottle-*.webp` on devices without graphics hardware.
+
+To change the labels, replace `public/assets/img/labels/chocolate-blonde-front.webp` and `-back.webp` (or point the
+`data-front` / `data-back` attributes in `pages/index.html` at new files). Label images should be about 1024 px wide at
+roughly 9 × 10 cm proportions. Re-render the still image afterwards so it matches.
