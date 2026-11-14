@@ -130,7 +130,8 @@ async function start(stage) {
   // Front and back labels, wrapped around the body.
   const r = BODY_R + 0.015;
   const theta = LABEL.w / r;
-  const paper = (map) => new MeshStandardMaterial({ map, roughness: 0.82, metalness: 0, side: DoubleSide, toneMapped: false });
+  // The colour multiplier keeps printed colours true to the artwork under the studio lighting.
+  const paper = (map) => new MeshStandardMaterial({ map, color: new Color(0.56, 0.56, 0.56), roughness: 0.82, metalness: 0, side: DoubleSide, toneMapped: false });
   const frontLabel = new Mesh(new CylinderGeometry(r, r, LABEL.h, 64, 1, true, -theta / 2, theta), paper(front));
   const backLabel = new Mesh(new CylinderGeometry(r, r, LABEL.h, 64, 1, true, Math.PI - theta / 2, theta), paper(back));
   frontLabel.position.y = backLabel.position.y = LABEL.bottom + LABEL.h / 2;
