@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://oniv.com.au/</loc><lastmod>2026-11-14</lastmod></url>
-  <url><loc>https://oniv.com.au/privacy</loc><lastmod>2026-11-14</lastmod></url>
+  <url><loc>https://oniv.com.au/contact</loc></url>
+  <url><loc>https://oniv.com.au/corporate</loc></url>
+  <url><loc>https://oniv.com.au/faq</loc></url>
+  <url><loc>https://oniv.com.au/how-it-works</loc></url>
+  <url><loc>https://oniv.com.au/</loc></url>
+  <url><loc>https://oniv.com.au/occasions</loc></url>
+  <url><loc>https://oniv.com.au/pricing</loc></url>
+  <url><loc>https://oniv.com.au/privacy</loc></url>
+  <url><loc>https://oniv.com.au/wine</loc></url>
 </urlset>

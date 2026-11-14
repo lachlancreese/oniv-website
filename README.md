@@ -1,14 +1,15 @@
 # oniv.com.au
 
-Website for ONIV Pty Ltd, hosted on Cloudflare Workers (static assets plus a small Worker for the enquiry form). No build step.
+Website for ONIV Pty Ltd, hosted on Cloudflare Workers (static assets plus a small Worker for the enquiry form).
+Cloudflare runs no build step: the finished pages in `public/` are committed.
 
 ## Files
 
 | Path | What it is |
 |---|---|
-| `public/` | Everything the site serves: pages, CSS, JS, fonts, images, `_headers`, `robots.txt`, `sitemap.xml` |
-| `public/index.html` | Homepage |
-| `public/privacy.html`, `thanks.html`, `404.html` | Privacy policy, form thank-you page (no-JavaScript fallback), not-found page |
+| `pages/` | The text of each page. Edit these, not the HTML in `public/` |
+| `build.py` | Wraps each page in the shared header, footer and mobile call bar, and writes `public/` and `sitemap.xml` |
+| `public/` | Everything the site serves: built pages, CSS, JS, fonts, images, `_headers`, `robots.txt`, `sitemap.xml` |
 | `src/worker.js` | Sends `/api/enquiry` to the form handler; serves everything else from `public/` |
 | `src/enquiry.js` | Emails each enquiry, with the logo attached, through Resend |
 | `wrangler.jsonc` | Cloudflare config. The Worker name here must match the name in the Cloudflare dashboard |
@@ -41,12 +42,34 @@ Then add `oniv.com.au` and `www.oniv.com.au` as custom domains on the Worker.
 
 ## Photos
 
-The photos are studio-style cut-outs of real client bottles, in `assets/img/` as WebP at two sizes each:
+The photos are studio-style cut-outs of real client bottles, in `public/assets/img/` as WebP at two sizes each:
 `hero-*`, `label-business-*`, `label-milestone-*`, `label-brand-*`.
 
 Before going live, get written permission from each client whose label appears (SEIVA, Ben's family, Chocolate Blonde Salon).
 To swap a photo, replace both sizes of the file with the same names, in portrait 4:5.
 
+## Pages
+
+| Page | File | Address |
+|---|---|---|
+| Home | `pages/index.html` | `/` |
+| Corporate | `pages/corporate.html` | `/corporate` |
+| Occasions | `pages/occasions.html` | `/occasions` |
+| The wine | `pages/wine.html` | `/wine` |
+| How it works | `pages/how-it-works.html` | `/how-it-works` |
+| Pricing and delivery | `pages/pricing.html` | `/pricing` |
+| FAQ | `pages/faq.html` | `/faq` |
+| Enquiry form | `pages/contact.html` | `/contact` |
+| Privacy, thank-you, not found | `pages/privacy.html`, `thanks.html`, `404.html` | `/privacy`, `/thanks` |
+
 ## Editing text
 
-Text lives in `index.html`. Prices, delivery terms and dates appear in a few places: the hero, the pricing card and the FAQ. Search for `$24`, `$35` and `14 December` and change every match.
+1. Edit the page in `pages/`. The header menu, footer, Christmas banner, phone number and email are in `build.py`.
+2. Run `python3 build.py` (Python 3, no packages needed).
+3. Commit both `pages/` and `public/`, then push.
+
+To add a page, copy one in `pages/`, change the settings block at the top (title, description, address), and add it to `NAV` in `build.py` if it belongs in the menu.
+
+Prices, delivery terms and dates appear on several pages. Search `pages/` and `build.py` for `$24`, `$288`, `$35` and `14 December` and change every match.
+
+To preview locally: `npx wrangler dev`, then open http://localhost:8787.

@@ -1,7 +1,31 @@
 (function () {
-  var year = document.getElementById("year");
-  if (year) year.textContent = String(new Date().getFullYear());
+  // Footer year
+  document.querySelectorAll(".year").forEach(function (el) { el.textContent = String(new Date().getFullYear()); });
 
+  // Header: border once scrolled, and mobile menu
+  var header = document.querySelector(".site-header");
+  var menuBtn = document.querySelector(".menu-btn");
+  var links = document.getElementById("nav-links");
+  if (header) {
+    var onScroll = function () { header.classList.toggle("is-scrolled", window.scrollY > 4); };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+  }
+  if (menuBtn && links) {
+    var label = menuBtn.querySelector(".menu-label");
+    var setOpen = function (open) {
+      if (open) document.documentElement.style.setProperty("--header-bottom", header.getBoundingClientRect().bottom + "px");
+      links.classList.toggle("is-open", open);
+      document.body.classList.toggle("menu-open", open);
+      menuBtn.setAttribute("aria-expanded", String(open));
+      if (label) label.textContent = open ? "Close" : "Menu";
+    };
+    menuBtn.addEventListener("click", function () { setOpen(menuBtn.getAttribute("aria-expanded") !== "true"); });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && links.classList.contains("is-open")) { setOpen(false); menuBtn.focus(); } });
+    window.addEventListener("resize", function () { if (window.innerWidth >= 1100) setOpen(false); });
+  }
+
+  // Enquiry form
   var form = document.getElementById("enquiry-form");
   if (!form) return;
   var statusEl = document.getElementById("form-status");
@@ -32,7 +56,6 @@
       form.elements.logo.focus();
       return;
     }
-
     var live = /(^|\.)oniv\.com\.au$|\.workers\.dev$|\.pages\.dev$|^localhost$|^127\.0\.0\.1$/.test(location.hostname);
     if (!live) {
       showError("This is a preview, so the form doesn't send yet. It will once the site is live on oniv.com.au.");
@@ -42,11 +65,7 @@
     button.disabled = true;
     button.textContent = "Sending…";
 
-    fetch(form.action, {
-      method: "POST",
-      body: new FormData(form),
-      headers: { Accept: "application/json" }
-    })
+    fetch(form.action, { method: "POST", body: new FormData(form), headers: { Accept: "application/json" } })
       .then(function (response) {
         return response.json().catch(function () { return {}; }).then(function (data) {
           if (!response.ok || !data.ok) throw new Error(data.error || "send failed");
