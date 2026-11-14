@@ -39,6 +39,13 @@
     statusEl.hidden = false;
   }
 
+  // Australian mobile, landline, 13/1300/1800, or an overseas number written with + and country code.
+  function validPhone(raw) {
+    var n = String(raw).replace(/[\s().-]/g, "");
+    return /^(?:\+?610?|0)[23478]\d{8}$/.test(n) || /^1[38]00\d{6}$/.test(n) || /^13\d{4}$/.test(n) ||
+      /^\+(?!61)[1-9]\d{7,14}$/.test(n);
+  }
+
   form.addEventListener("submit", function (event) {
     event.preventDefault();
     statusEl.hidden = true;
@@ -48,6 +55,11 @@
     if (!name || !email || !form.elements.email.checkValidity()) {
       showError("Please add your name and a valid email so we can send your mockup.");
       (name ? form.elements.email : form.elements.name).focus();
+      return;
+    }
+    if (!validPhone(form.elements.phone.value)) {
+      showError("Please add a valid phone number, like 0412 345 678, so we can call you about your mockup.");
+      form.elements.phone.focus();
       return;
     }
     var file = form.elements.logo.files && form.elements.logo.files[0];

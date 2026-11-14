@@ -3,10 +3,18 @@
 //
 // Set these in Cloudflare > Workers & Pages > oniv-website > Settings > Variables and secrets:
 //   RESEND_API_KEY  your Resend API key (keep it secret)
-//   TO_EMAIL        where enquiries go, comma-separated (e.g. alex@oniv.com.au,lachlan@oniv.com.au)
+//   TO_EMAIL        where enquiries go, comma-separated (e.g. alex@oniv.com.au)
 //   FROM_EMAIL      a sender on your verified Resend domain (e.g. ONIV website <enquiries@oniv.com.au>)
 
 const MAX_BYTES = 10 * 1024 * 1024;
+
+// Australian mobile, landline, 13/1300/1800, or an overseas number written with + and country code.
+// Keep in step with validPhone() in public/assets/js/site.js.
+export function validPhone(raw) {
+  const n = String(raw).replace(/[\s().-]/g, "");
+  return /^(?:\+?610?|0)[23478]\d{8}$/.test(n) || /^1[38]00\d{6}$/.test(n) || /^13\d{4}$/.test(n) ||
+    /^\+(?!61)[1-9]\d{7,14}$/.test(n);
+}
 
 export async function handleEnquiry(request, env) {
   const wantsJson = (request.headers.get("Accept") || "").includes("application/json");
@@ -40,6 +48,9 @@ export async function handleEnquiry(request, env) {
   };
   if (!data.name || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
     return reply(false, 422, "Name and a valid email are required");
+  }
+  if (!validPhone(data.phone)) {
+    return reply(false, 422, "A valid phone number is required");
   }
 
   const attachments = [];
