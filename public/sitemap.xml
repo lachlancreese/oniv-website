@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://oniv.com.au/contact</loc></url>
-  <url><loc>https://oniv.com.au/corporate</loc></url>
-  <url><loc>https://oniv.com.au/faq</loc></url>
-  <url><loc>https://oniv.com.au/how-it-works</loc></url>
-  <url><loc>https://oniv.com.au/</loc></url>
-  <url><loc>https://oniv.com.au/occasions</loc></url>
-  <url><loc>https://oniv.com.au/pricing</loc></url>
-  <url><loc>https://oniv.com.au/privacy</loc></url>
-  <url><loc>https://oniv.com.au/terms</loc></url>
-  <url><loc>https://oniv.com.au/wine</loc></url>
+  <url><loc>https://oniv.com.au/</loc><lastmod>2026-11-14</lastmod></url>
+  <url><loc>https://oniv.com.au/contact</loc><lastmod>2026-11-14</lastmod></url>
+  <url><loc>https://oniv.com.au/corporate</loc><lastmod>2026-11-14</lastmod></url>
+  <url><loc>https://oniv.com.au/faq</loc><lastmod>2026-11-14</lastmod></url>
+  <url><loc>https://oniv.com.au/how-it-works</loc><lastmod>2026-11-14</lastmod></url>
+  <url><loc>https://oniv.com.au/occasions</loc><lastmod>2026-11-14</lastmod></url>
+  <url><loc>https://oniv.com.au/pricing</loc><lastmod>2026-11-14</lastmod></url>
+  <url><loc>https://oniv.com.au/privacy</loc><lastmod>2026-11-14</lastmod></url>
+  <url><loc>https://oniv.com.au/terms</loc><lastmod>2026-11-14</lastmod></url>
+  <url><loc>https://oniv.com.au/wine</loc><lastmod>2026-11-14</lastmod></url>
 </urlset>

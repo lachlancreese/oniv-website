@@ -12,8 +12,11 @@ Each page file starts with a comment block of settings:
     index: yes              (list in sitemap; "no" to hide from search)
     -->
 """
+import datetime
 import hashlib
 import html
+import json
+import subprocess
 import pathlib
 import re
 
@@ -45,12 +48,104 @@ def asset(path):
     return f"{path}?v={digest}"
 
 
+ORG_ID = SITE + "/#organization"
+CRUMBS = {"/contact": "Free mockup", "/privacy": "Privacy policy", "/terms": "Terms and conditions"}
+
+
+def ld(data):
+    return '\n<script type="application/ld+json">\n' + json.dumps(data, ensure_ascii=False, indent=1) + "\n</script>"
+
+
+def strip_tags(text):
+    return " ".join(html.unescape(re.sub(r"<[^>]+>", " ", text)).split())
+
+
+def structured_data(meta, body):
+    path = meta["path"]
+    blocks = []
+    if path == "/":
+        blocks.append({
+            "@context": "https://schema.org",
+            "@graph": [
+                {
+                    "@type": "Organization",
+                    "@id": ORG_ID,
+                    "name": "ONIV",
+                    "legalName": "ONIV Pty Ltd",
+                    "url": SITE + "/",
+                    "logo": {"@type": "ImageObject", "url": SITE + "/assets/img/oniv-logo-512.png", "width": 512, "height": 512},
+                    "image": SITE + "/assets/img/og-image.png",
+                    "description": "Custom-label Australian wine, sold by the case of 12, for corporate gifts, events and personal occasions. Labels designed with you, printed and applied in Melbourne.",
+                    "email": EMAIL,
+                    "telephone": "+61 475 799 070",
+                    "taxID": "99 699 600 041",
+                    "areaServed": {"@type": "Country", "name": "Australia"},
+                    "contactPoint": {"@type": "ContactPoint", "contactType": "sales", "telephone": "+61 475 799 070",
+                                     "email": EMAIL, "areaServed": "AU", "availableLanguage": "English"},
+                },
+                {
+                    "@type": "WebSite",
+                    "@id": SITE + "/#website",
+                    "url": SITE + "/",
+                    "name": "ONIV",
+                    "inLanguage": "en-AU",
+                    "publisher": {"@id": ORG_ID},
+                },
+            ],
+        })
+    elif meta.get("index", "yes") != "no":
+        label = CRUMBS.get(path) or next((l for k, l, h in NAV if h == path), meta["title"].split("|")[0].strip())
+        blocks.append({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                {"@type": "ListItem", "position": 1, "name": "Home", "item": SITE + "/"},
+                {"@type": "ListItem", "position": 2, "name": label, "item": SITE + path},
+            ],
+        })
+    if path == "/faq":
+        qa = re.findall(r"<dt>(.*?)</dt><dd>(.*?)</dd>", body, re.S)
+        blocks.append({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [{"@type": "Question", "name": strip_tags(q),
+                            "acceptedAnswer": {"@type": "Answer", "text": strip_tags(a)}} for q, a in qa],
+        })
+    if path == "/pricing":
+        blocks.append({
+            "@context": "https://schema.org",
+            "@type": "Product",
+            "name": "Custom-label wine, case of 12",
+            "description": "Twelve 750 mL bottles of one Australian wine, each with your custom label, designed with you and printed and applied in Melbourne. GST and the label are included.",
+            "image": [SITE + "/assets/img/hero-1600.webp", SITE + "/assets/img/label-business-1200.webp",
+                      SITE + "/assets/img/label-milestone-1200.webp"],
+            "brand": {"@type": "Brand", "name": "ONIV"},
+            "offers": {"@type": "AggregateOffer", "lowPrice": "288.00", "priceCurrency": "AUD",
+                       "availability": "https://schema.org/InStock", "url": SITE + "/pricing",
+                       "seller": {"@type": "Organization", "@id": ORG_ID, "name": "ONIV"}},
+        })
+    return "".join(ld(b) for b in blocks)
+
+
+def lastmod(src):
+    """Date the page source last changed: today if it has uncommitted edits, else its last commit."""
+    today = datetime.date.today().isoformat()
+    try:
+        dirty = subprocess.run(["git", "status", "--porcelain", str(src)], cwd=ROOT, capture_output=True, text=True).stdout.strip()
+        if dirty:
+            return today
+        out = subprocess.run(["git", "log", "-1", "--format=%cs", "--", str(src)], cwd=ROOT, capture_output=True, text=True).stdout.strip()
+        return out or today
+    except OSError:
+        return today
+
+
 def head(meta, extra_head):
     title = html.escape(meta["title"])
     desc = html.escape(meta["description"])
     url = SITE + (meta["path"] if meta["path"] != "/" else "/")
     noindex = meta.get("index", "yes") == "no"
-    robots = '\n<meta name="robots" content="noindex">' if noindex else ""
+    robots = '\n<meta name="robots" content="noindex">' if noindex else '\n<meta name="robots" content="max-image-preview:large">'
     canonical = "" if noindex else f'\n<link rel="canonical" href="{url}">'
     return f"""<!doctype html>
 <html lang="en-AU">
@@ -65,10 +160,14 @@ def head(meta, extra_head):
 <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="ONIV">
+<meta property="og:locale" content="en_AU">
 <meta property="og:title" content="{title}">
 <meta property="og:description" content="{desc}">
 <meta property="og:url" content="{url}">
 <meta property="og:image" content="{SITE}/assets/img/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="ONIV: custom-label Australian wine">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" href="/assets/fonts/dm-serif-display-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/dm-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
@@ -176,15 +275,16 @@ def build():
     urls = []
     for src in sorted(PAGES.glob("*.html")):
         meta, body, extra_head = parse(src.read_text())
+        extra_head = structured_data(meta, body) + extra_head
         out = (head(meta, extra_head) + "\n" + header(meta.get("nav", "")) + '\n<main id="main">\n'
                + body + "\n</main>\n" + footer(meta.get("bar", "yes") != "no"))
         name = "index.html" if meta["path"] == "/" else meta["path"].strip("/") + ".html"
         (OUT / name).write_text(out)
         if meta.get("index", "yes") != "no":
-            urls.append(meta["path"])
+            urls.append((meta["path"], lastmod(src)))
         print("built", name)
     sitemap = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
-    sitemap += [f"  <url><loc>{SITE}{u}</loc></url>" for u in urls]
+    sitemap += [f"  <url><loc>{SITE}{u}</loc><lastmod>{d}</lastmod></url>" for u, d in sorted(urls, key=lambda x: (x[0] != "/", x[0]))]
     sitemap.append("</urlset>")
     (OUT / "sitemap.xml").write_text("\n".join(sitemap) + "\n")
 

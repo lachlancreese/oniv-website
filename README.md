@@ -10,7 +10,7 @@ Cloudflare runs no build step: the finished pages in `public/` are committed.
 | `pages/` | The text of each page. Edit these, not the HTML in `public/` |
 | `build.py` | Wraps each page in the shared header, footer and mobile call bar, and writes `public/` and `sitemap.xml` |
 | `public/` | Everything the site serves: built pages, CSS, JS, fonts, images, `_headers`, `robots.txt`, `sitemap.xml` |
-| `src/worker.js` | Sends `/api/enquiry` to the form handler; serves everything else from `public/` |
+| `src/worker.js` | Redirects www, http, `.html` and old Elementor addresses to the right page; sends `/api/enquiry` to the form handler; serves everything else from `public/` |
 | `src/enquiry.js` | Emails each enquiry, with the logo attached, through Resend |
 | `wrangler.jsonc` | Cloudflare config. The Worker name here must match the name in the Cloudflare dashboard |
 
@@ -74,3 +74,10 @@ To add a page, copy one in `pages/`, change the settings block at the top (title
 Prices, delivery terms and dates appear on several pages. Search `pages/` and `build.py` for `$24`, `$288`, `$35` and `14 December` and change every match.
 
 To preview locally: `npx wrangler dev`, then open http://localhost:8787.
+
+## Search (SEO)
+
+- Each page's title and description are in the settings block at the top of its file in `pages/`. Keep titles under about 60 characters and descriptions under about 155.
+- `build.py` adds Google's structured data automatically: business and website details on the homepage, breadcrumbs on every page, questions and answers on the FAQ, and the product and price on Pricing. Change prices there too if they change.
+- `sitemap.xml` is rebuilt with each page's last-changed date every time you run `build.py`.
+- Old addresses that should redirect to a new page go in `MOVED` at the top of `src/worker.js`.
