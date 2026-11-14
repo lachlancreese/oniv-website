@@ -49,7 +49,7 @@ def asset(path):
 
 
 ORG_ID = SITE + "/#organization"
-CRUMBS = {"/contact": "Free mockup", "/privacy": "Privacy policy", "/terms": "Terms and conditions"}
+CRUMBS = {"/christmas-wine-gifts": "Christmas wine gifts", "/contact": "Free mockup", "/privacy": "Privacy policy", "/terms": "Terms and conditions"}
 
 
 def ld(data):
@@ -103,8 +103,8 @@ def structured_data(meta, body):
                 {"@type": "ListItem", "position": 2, "name": label, "item": SITE + path},
             ],
         })
-    if path == "/faq":
-        qa = re.findall(r"<dt>(.*?)</dt><dd>(.*?)</dd>", body, re.S)
+    if 'class="faq-list"' in body:
+        qa = re.findall(r"<dt>(.*?)</dt><dd>(.*?)</dd>", body.split('class="faq-list"', 1)[1], re.S)
         blocks.append({
             "@context": "https://schema.org",
             "@type": "FAQPage",
@@ -187,7 +187,7 @@ def header(active):
 <div class="announce on-dark">
   <div class="wrap">
     <span>Christmas orders: approve your label by 14 December for delivery before Christmas (WA and NT by 3 December).</span>
-    <a href="/contact">Get your free mockup</a>
+    <a href="/christmas-wine-gifts">Christmas wine gifts</a>
   </div>
 </div>
 

@@ -59,6 +59,7 @@ To swap a photo, replace both sizes of the file with the same names, in portrait
 | Pricing and delivery | `pages/pricing.html` | `/pricing` |
 | FAQ | `pages/faq.html` | `/faq` |
 | Enquiry form | `pages/contact.html` | `/contact` |
+| Christmas wine gifts (seasonal; update dates each year) | `pages/christmas-wine-gifts.html` | `/christmas-wine-gifts` |
 | Terms and conditions | `pages/terms.html` | `/terms` |
 | Privacy, thank-you, not found | `pages/privacy.html`, `thanks.html`, `404.html` | `/privacy`, `/thanks` |
 
