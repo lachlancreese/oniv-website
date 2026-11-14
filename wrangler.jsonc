@@ -1,0 +1,15 @@
+{
+  // Cloudflare Workers config for oniv.com.au
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "oniv-website",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-11-14",
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "not_found_handling": "404-page",
+    "html_handling": "auto-trailing-slash",
+    "run_worker_first": ["/api/*"]
+  },
+  "observability": { "enabled": true }
+}

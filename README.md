@@ -1,36 +1,43 @@
 # oniv.com.au
 
-Static website for ONIV Pty Ltd, hosted on Cloudflare Pages. No build step: the files in this folder are the site.
+Website for ONIV Pty Ltd, hosted on Cloudflare Workers (static assets plus a small Worker for the enquiry form). No build step.
 
 ## Files
 
 | Path | What it is |
 |---|---|
-| `index.html` | Homepage |
-| `privacy.html`, `thanks.html`, `404.html` | Privacy policy, form thank-you page (for browsers without JavaScript), not-found page |
-| `assets/css/site.css` | All styles (brand colours and fonts at the top) |
-| `assets/js/site.js` | Enquiry form behaviour |
-| `assets/fonts/` | DM Sans and DM Serif Display, self-hosted (SIL Open Font Licence) |
-| `assets/img/` | Logo, favicon, social share image. Put photos here too |
-| `functions/api/enquiry.js` | Cloudflare Pages Function that emails each enquiry, with the logo attached |
-| `_headers`, `robots.txt`, `sitemap.xml` | Security and caching headers, search engine files |
+| `public/` | Everything the site serves: pages, CSS, JS, fonts, images, `_headers`, `robots.txt`, `sitemap.xml` |
+| `public/index.html` | Homepage |
+| `public/privacy.html`, `thanks.html`, `404.html` | Privacy policy, form thank-you page (no-JavaScript fallback), not-found page |
+| `src/worker.js` | Sends `/api/enquiry` to the form handler; serves everything else from `public/` |
+| `src/enquiry.js` | Emails each enquiry, with the logo attached, through Resend |
+| `wrangler.jsonc` | Cloudflare config. The Worker name here must match the name in the Cloudflare dashboard |
 
-## Go live
+## Deploy
 
-1. **GitHub:** create a private repository (e.g. `oniv-website`) and upload this folder's contents.
-2. **Cloudflare:** Workers & Pages → Create → Pages → Connect to Git → pick the repository.
-   Framework preset: None. Build command: leave empty. Build output directory: `/`.
-3. **Email for the enquiry form** (Resend, free up to 3,000 emails a month):
-   - Sign up at resend.com, add the domain `oniv.com.au`, and add the DNS records it gives you.
-   - Create an API key.
-   - In Cloudflare Pages → Settings → Variables and secrets, add:
-     - `RESEND_API_KEY` = the API key (as a secret)
-     - `TO_EMAIL` = where enquiries go, e.g. `alex@oniv.com.au,lachlan@oniv.com.au`
-     - `FROM_EMAIL` = `ONIV website <enquiries@oniv.com.au>`
-   - Redeploy, then send a test enquiry.
-4. **Domain:** in Cloudflare Pages → Custom domains, add `oniv.com.au` and `www.oniv.com.au`.
-   Moving DNS to Cloudflare is easiest. Before switching nameservers, copy every existing DNS record, especially MX, SPF (TXT) and DMARC, so email keeps working.
-5. **Old site:** once the new site is live, cancel the old hosting.
+Cloudflare builds from GitHub automatically: every push to `main` goes live.
+
+- Cloudflare dashboard: Workers & Pages → `oniv-website` → connected to `lachlancreese/oniv-website`
+- Build command: none. Deploy command: `npx wrangler deploy`
+
+## Email for the enquiry form
+
+Resend, free up to 3,000 emails a month:
+
+1. Sign up at resend.com, add the domain `oniv.com.au`, and add the DNS records it gives you.
+2. Create an API key.
+3. In Cloudflare → Workers & Pages → `oniv-website` → Settings → Variables and secrets, add:
+   - `RESEND_API_KEY` = the API key (type: Secret)
+   - `TO_EMAIL` = `alex@oniv.com.au`
+   - `FROM_EMAIL` = `ONIV website <enquiries@oniv.com.au>`
+4. Redeploy, then send a test enquiry.
+
+## Domain
+
+`oniv.com.au` is registered with Squarespace Domains; email is Microsoft 365.
+In Cloudflare, use "Add a domain" (DNS only, not Transfer), check every Microsoft 365 record was imported
+(MX, autodiscover, SPF, DKIM, DMARC), then change the nameservers in Squarespace Domains to Cloudflare's.
+Then add `oniv.com.au` and `www.oniv.com.au` as custom domains on the Worker.
 
 ## Photos
 

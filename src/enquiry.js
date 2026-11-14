@@ -1,14 +1,14 @@
-// Cloudflare Pages Function: POST /api/enquiry
+// POST /api/enquiry: emails each enquiry (called from src/worker.js)
 // Emails each enquiry (with the logo attached) using Resend (https://resend.com).
 //
-// Set these in Cloudflare Pages > Settings > Environment variables:
+// Set these in Cloudflare > Workers & Pages > oniv-website > Settings > Variables and secrets:
 //   RESEND_API_KEY  your Resend API key (keep it secret)
 //   TO_EMAIL        where enquiries go, comma-separated (e.g. alex@oniv.com.au,lachlan@oniv.com.au)
 //   FROM_EMAIL      a sender on your verified Resend domain (e.g. ONIV website <enquiries@oniv.com.au>)
 
 const MAX_BYTES = 10 * 1024 * 1024;
 
-export async function onRequestPost({ request, env }) {
+export async function handleEnquiry(request, env) {
   const wantsJson = (request.headers.get("Accept") || "").includes("application/json");
   const reply = (ok, status, error) =>
     wantsJson

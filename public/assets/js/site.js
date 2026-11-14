@@ -33,7 +33,7 @@
       return;
     }
 
-    var live = /(^|\.)oniv\.com\.au$|\.pages\.dev$|^localhost$|^127\.0\.0\.1$/.test(location.hostname);
+    var live = /(^|\.)oniv\.com\.au$|\.workers\.dev$|\.pages\.dev$|^localhost$|^127\.0\.0\.1$/.test(location.hostname);
     if (!live) {
       showError("This is a preview, so the form doesn't send yet. It will once the site is live on oniv.com.au.");
       return;
