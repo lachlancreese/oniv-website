@@ -461,3 +461,22 @@ a.label-card:hover h3 { text-decoration: underline; text-underline-offset: 4px; 
   .price-table td:nth-child(2) { grid-column: 1; grid-row: 2; color: var(--ink-muted); }
   .price-table td:nth-child(3) { grid-column: 2; grid-row: 1 / span 2; align-self: center; text-align: right; white-space: normal; max-width: 120px; }
 }
+
+/* Terms and conditions */
+.terms h2[id] { scroll-margin-top: 96px; }
+.terms .clause { display: grid; grid-template-columns: 3.2em minmax(0, 1fr); gap: 0 8px; }
+.terms .n { font-weight: 600; color: var(--ink-muted); font-variant-numeric: tabular-nums; }
+.terms .sub { list-style: none; padding: 0 0 0 3.2em; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+.terms .sub li { display: grid; grid-template-columns: 2.2em minmax(0, 1fr); gap: 0 6px; }
+.terms .callout { margin-top: 8px; }
+.terms .callout p { font-size: 15px; }
+.toc { background: var(--sand); border-radius: var(--radius); padding: 20px 24px; margin-top: 8px; }
+.prose .toc-title { font-family: var(--sans); font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 600; color: var(--ink-muted); margin: 0 0 8px; }
+.toc ol { margin: 0; padding-left: 22px; columns: 2; column-gap: 32px; font-size: 15px; }
+.toc li { break-inside: avoid; padding: 4px 0; }
+@media (max-width: 640px) {
+  .toc ol { columns: 1; }
+  .toc li { padding: 7px 0; }
+  .terms .clause { grid-template-columns: 2.8em minmax(0, 1fr); }
+  .terms .sub { padding-left: 1.2em; }
+}

@@ -34,8 +34,8 @@ NAV = [
 ]
 
 WARNING = ("Warning: Under the Liquor Control Reform Act 1998 it is an offence to supply alcohol to a person "
-           "under the age of 18 years (Penalty exceeds $23,000) and for a person under the age of 18 years to "
-           "purchase or receive liquor (Penalty exceeds $900).")
+           "under the age of 18 years (Penalty exceeds $25,000) and for a person under the age of 18 years to "
+           "purchase or receive liquor (Penalty exceeds $1,000).")
 
 
 def head(meta, extra_head):
@@ -138,7 +138,8 @@ def footer(show_bar):
     </div>
     <div class="footer-legal">
       <p>{WARNING}</p>
-      <p>ONIV Pty Ltd · ACN 699 600 041 · Liquor Licence (VIC) 36315128 · <a href="/privacy">Privacy policy</a> · © <span class="year">2026</span> ONIV Pty Ltd</p>
+      <p>ONIV Pty Ltd · ACN 699 600 041 · ABN 99 699 600 041 · Liquor Licence (VIC) 36315128</p>
+      <p><a href="/terms">Terms and conditions</a> · <a href="/privacy">Privacy policy</a> · © <span class="year">2026</span> ONIV Pty Ltd</p>
     </div>
   </div>
 </footer>{bar}
