@@ -126,6 +126,14 @@ Website lookups go to `/api/brand?d=example.com.au` (`src/brand.js`), which read
 logo (the logo declared for search engines, a logo image or SVG in the header, or failing that the site's app icon).
 Results are cached for a day; nothing is stored. Some sites block automated visits, so the form always offers upload.
 
+## Christmas wine gift guide (/christmas-wine-gift-guide)
+
+The guide is written in `tools/guides/christmas-2026.html` and rendered to
+`public/assets/guides/oniv-christmas-gift-guide.pdf` with `python3 tools/guides/render.py christmas-2026`.
+The page's form posts to `/api/guide` (`src/guide.js`), which emails the PDF from "Alex at ONIV" and tells the team,
+noting whether they ticked the box to be contacted; the page then offers the download straight away.
+Linked from the Christmas and Corporate pages.
+
 ## Wine regions map (/wine)
 
 The interactive map on The wine page is generated from `tools/winemap/regions.json` (region names, map position,

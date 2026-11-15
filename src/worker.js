@@ -3,6 +3,7 @@
 import { handleEnquiry } from "./enquiry.js";
 import { handleBrand } from "./brand.js";
 import { handlePreview } from "./preview.js";
+import { handleGuide } from "./guide.js";
 
 const HOST = "oniv.com.au";
 
@@ -68,6 +69,13 @@ export default {
         return new Response("Method not allowed", { status: 405, headers: { Allow: "POST" } });
       }
       return handleEnquiry(request, env);
+    }
+
+    if (url.pathname === "/api/guide") {
+      if (request.method !== "POST") {
+        return new Response("Method not allowed", { status: 405, headers: { Allow: "POST" } });
+      }
+      return handleGuide(request, env);
     }
 
     if (url.pathname === "/api/preview") {

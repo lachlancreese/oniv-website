@@ -62,7 +62,7 @@ def asset(path):
 
 
 ORG_ID = SITE + "/#organization"
-CRUMBS = {"/christmas-wine-gifts": "Christmas wine gifts", "/settlement-gifts": "Settlement gifts", "/wedding-wine": "Wedding wine", "/21st-birthday-wine": "21st and milestone birthday wine", "/art-gallery-wine": "Art gallery wine", "/charity-fundraising-wine": "Charity and fundraising wine", "/contact": "Free mockup", "/privacy": "Privacy policy", "/terms": "Terms and conditions"}
+CRUMBS = {"/christmas-wine-gifts": "Christmas wine gifts", "/christmas-wine-gift-guide": "Christmas wine gift guide", "/settlement-gifts": "Settlement gifts", "/wedding-wine": "Wedding wine", "/21st-birthday-wine": "21st and milestone birthday wine", "/art-gallery-wine": "Art gallery wine", "/charity-fundraising-wine": "Charity and fundraising wine", "/contact": "Free mockup", "/privacy": "Privacy policy", "/terms": "Terms and conditions"}
 
 
 def ld(data):
