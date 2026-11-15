@@ -7,7 +7,8 @@
 //   data-view                "label" frames the label close up (still bottles); otherwise the whole bottle
 // Every [data-hero3d] stage on the page gets its own bottle. Once a bottle is live the stage fires "hero3d:ready";
 // dispatch a "hero3d:label" CustomEvent on the stage with detail { front, back: <canvas>, face: "front" | "back" }
-// to swap the labels, and the bottle turns to show that face.
+// to swap the labels, and the bottle turns to show that face; "hero3d:bottle" with { type: "still" | "sparkling" }
+// changes the bottle. data-pop="off" stops a sparkling bottle's cork popping on scroll.
 // Falls back to the still image (the poster) if WebGL is unavailable; holds still for reduced motion.
 import {
   WebGLRenderer, Scene, PerspectiveCamera, Group, Mesh, Vector2, LatheGeometry, CylinderGeometry,
@@ -262,49 +263,61 @@ async function start(stage) {
   ]);
 
   const type = stage.dataset.bottle === "sparkling" ? "sparkling" : "still";
-  const bottle = new Group();
+  const bottle = new Group();            // turns; holds the current bottle model
   const paper = (map) => new MeshStandardMaterial({ map, color: new Color(0.56, 0.56, 0.56), roughness: 0.82, metalness: 0, side: DoubleSide, toneMapped: false });
-  let frontLabel = null, backLabel = null;
-  function addLabels(radius, label) {
+  function labels(model, radius, label) {
     // Front and back labels, wrapped around the body. The colour multiplier keeps printed colours true to the artwork.
     const r = radius + 0.015;
     const theta = label.w / r;
-    frontLabel = new Mesh(new CylinderGeometry(r, r, label.h, 64, 1, true, -theta / 2, theta), paper(front));
-    backLabel = new Mesh(new CylinderGeometry(r, r, label.h, 64, 1, true, Math.PI - theta / 2, theta), paper(back));
-    frontLabel.position.y = backLabel.position.y = label.bottom + label.h / 2;
-    bottle.add(frontLabel, backLabel);
+    model.front = new Mesh(new CylinderGeometry(r, r, label.h, 64, 1, true, -theta / 2, theta), paper(front));
+    model.back = new Mesh(new CylinderGeometry(r, r, label.h, 64, 1, true, Math.PI - theta / 2, theta), paper(back));
+    model.front.position.y = model.back.position.y = label.bottom + label.h / 2;
+    model.group.add(model.front, model.back);
   }
-  let cork = null;
 
-  if (type === "still") {
-    // Dark "antique" glass, so the label is the hero, and a screwcap (gloss black, or gold).
-    const glass = new MeshPhysicalMaterial({
-      color: new Color("#0f1913"), roughness: 0.1, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.05, envMapIntensity: 1.5,
-    });
-    bottle.add(new Mesh(new LatheGeometry(bottleProfile(), 96), glass));
-    const cap = stage.dataset.cap === "gold"
-      ? new MeshPhysicalMaterial({ color: new Color("#c09a5c"), metalness: 1, roughness: 0.26, clearcoat: 0.6, clearcoatRoughness: 0.1, envMapIntensity: 1.2 })
-      : new MeshPhysicalMaterial({ color: new Color("#0a0a0a"), metalness: 0.15, roughness: 0.14, clearcoat: 1, clearcoatRoughness: 0.04, envMapIntensity: 1.3 });
-    bottle.add(new Mesh(new LatheGeometry(capProfile(), 160), cap));
-    bottle.add(new Mesh(knurlGeometry(), cap));
-    addLabels(BODY_R, LABEL);
-  } else {
-    // Deep green Champagne-style glass, gold foil collar, natural cork under a wire cage.
-    const glass = new MeshPhysicalMaterial({
-      color: new Color("#10231a"), roughness: 0.08, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.04, envMapIntensity: 1.6,
-    });
-    bottle.add(new Mesh(new LatheGeometry(sparklingProfile(), 110), glass));
-    const gold = new MeshStandardMaterial({ color: new Color("#b8955a"), metalness: 1, roughness: 0.32, envMapIntensity: 1.2 });
-    bottle.add(new Mesh(new LatheGeometry(foilProfile(), 110), gold));
-    const wire = new MeshStandardMaterial({ color: new Color("#d8d8d4"), metalness: 1, roughness: 0.28 });
-    cork = new Group();
-    cork.add(new Mesh(new LatheGeometry(corkProfile(), 64), new MeshStandardMaterial({ map: corkTexture(), roughness: 0.9, metalness: 0 })));
-    cork.add(cage(wire, gold));
-    bottle.add(cork);
-    addLabels(SPK.R, SPK.label);
+  function buildBottle(kind) {
+    const model = { kind, group: new Group(), front: null, back: null, cork: null };
+    const g = model.group;
+    if (kind === "still") {
+      // Dark "antique" glass, so the label is the hero, and a screwcap (gloss black, or gold).
+      const glass = new MeshPhysicalMaterial({
+        color: new Color("#0f1913"), roughness: 0.1, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.05, envMapIntensity: 1.5,
+      });
+      g.add(new Mesh(new LatheGeometry(bottleProfile(), 96), glass));
+      const cap = stage.dataset.cap === "gold"
+        ? new MeshPhysicalMaterial({ color: new Color("#c09a5c"), metalness: 1, roughness: 0.26, clearcoat: 0.6, clearcoatRoughness: 0.1, envMapIntensity: 1.2 })
+        : new MeshPhysicalMaterial({ color: new Color("#0a0a0a"), metalness: 0.15, roughness: 0.14, clearcoat: 1, clearcoatRoughness: 0.04, envMapIntensity: 1.3 });
+      g.add(new Mesh(new LatheGeometry(capProfile(), 160), cap));
+      g.add(new Mesh(knurlGeometry(), cap));
+      labels(model, BODY_R, LABEL);
+    } else {
+      // Deep green Champagne-style glass, gold foil collar, natural cork under a wire cage.
+      const glass = new MeshPhysicalMaterial({
+        color: new Color("#10231a"), roughness: 0.08, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.04, envMapIntensity: 1.6,
+      });
+      g.add(new Mesh(new LatheGeometry(sparklingProfile(), 110), glass));
+      const gold = new MeshStandardMaterial({ color: new Color("#b8955a"), metalness: 1, roughness: 0.32, envMapIntensity: 1.2 });
+      g.add(new Mesh(new LatheGeometry(foilProfile(), 110), gold));
+      const wire = new MeshStandardMaterial({ color: new Color("#d8d8d4"), metalness: 1, roughness: 0.28 });
+      model.cork = new Group();
+      model.cork.add(new Mesh(new LatheGeometry(corkProfile(), 64), new MeshStandardMaterial({ map: corkTexture(), roughness: 0.9, metalness: 0 })));
+      model.cork.add(cage(wire, gold));
+      g.add(model.cork);
+      labels(model, SPK.R, SPK.label);
+    }
+    return model;
+  }
+
+  const models = {};
+  let model = models[type] = buildBottle(type);
+  bottle.add(model.group);
+  let frontLabel = model.front, backLabel = model.back, cork = model.cork;
+  if (type === "sparkling" && stage.dataset.view !== "label") {
     camera.position.set(0, 18, 92);
     camera.lookAt(0, 17.2, 0);
   }
+  // The cork pops as the page scrolls, unless the stage turns that off (data-pop="off").
+  const popOn = stage.dataset.pop !== "off";
 
   scene.add(bottle);
 
@@ -370,7 +383,7 @@ async function start(stage) {
 
   function resetCork() {
     popped = false;
-    bottle.attach(cork);
+    model.group.attach(cork);
     cork.position.set(0, 0, 0);
     cork.rotation.set(0, 0, 0);
     cork.visible = true;
@@ -444,7 +457,7 @@ async function start(stage) {
       angle += SPIN * dt;
     }
     bottle.rotation.y = angle + scrolled + dragAngle;
-    if (!reduce.matches) updateCork(now, dt);
+    if (!reduce.matches && popOn) updateCork(now, dt);
     renderer.render(scene, camera);
     if (visible && !document.hidden) {
       requestAnimationFrame(frame);
@@ -482,21 +495,36 @@ async function start(stage) {
   window.addEventListener("resize", size);
 
   // A new front label (from the "see your logo on a bottle" preview): swap it in and turn the bottle to face the viewer.
-  const swap = (mesh, src, original) => {
-    if (!mesh || !src) return;
+  const custom = { front: null, back: null };   // labels made in the page, kept across bottle changes
+  const swap = (side, src) => {
+    if (!src) return;
     const tex = new CanvasTexture(src);
     tex.colorSpace = SRGBColorSpace;
     tex.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
-    const old = mesh.material.map;
+    if (custom[side]) custom[side].dispose();
+    custom[side] = tex;
+    const mesh = side === "front" ? frontLabel : backLabel;
     mesh.material.map = tex;
     mesh.material.needsUpdate = true;
-    if (old && old !== original) old.dispose();
   };
+  // Change the bottle ("still" or "sparkling"), keeping the labels and the angle.
+  stage.addEventListener("hero3d:bottle", (e) => {
+    const kind = e.detail && e.detail.type === "sparkling" ? "sparkling" : "still";
+    if (kind === model.kind) return;
+    bottle.remove(model.group);
+    model = models[kind] || (models[kind] = buildBottle(kind));
+    bottle.add(model.group);
+    frontLabel = model.front; backLabel = model.back; cork = model.cork;
+    frontLabel.material.map = custom.front || front; frontLabel.material.needsUpdate = true;
+    backLabel.material.map = custom.back || back; backLabel.material.needsUpdate = true;
+    run();
+    if (reduce.matches) renderer.render(scene, camera);
+  });
   stage.addEventListener("hero3d:label", (e) => {
     const d = e.detail || {};
     if (!frontLabel) return;
-    swap(frontLabel, d.front, front);
-    swap(backLabel, d.back, back);
+    swap("front", d.front);
+    swap("back", d.back);
     const scrolled = reduce.matches ? 0 : window.scrollY * SCROLL;
     const total = angle + scrolled + dragAngle;
     const offset = d.face === "back" ? Math.PI : 0;                     // the back label faces the viewer half a turn round

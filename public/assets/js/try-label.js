@@ -21,11 +21,46 @@
     "client reserve": "A wine chosen for the people we're glad to work with. Here's to what we build next.",
   };
   var msgEdited = false, nameEdited = false;
+  var wineSel = root.querySelector("#try-wine");
+  var casesInput = root.querySelector("#try-cases");
+  var dateInput = root.querySelector("#try-date");
+  var priceEl = root.querySelector(".try-price");
+  var styleBtns = root.querySelectorAll("[data-style]");
   var tabs = root.querySelectorAll("[data-tab]");
   var panels = root.querySelectorAll("[data-panel]");
 
   var W = 1024, H = 1138;                      // same proportions as the printed front label
-  var state = { logo: null, kind: "logo", name: "", color: "", site: "", label: null, logoBlob: null };
+  var state = { logo: null, kind: "logo", name: "", color: "", site: "", label: null, logoBlob: null, style: "classic" };
+
+  // ---- Order size and starting price (from $288 a case incl. GST and the label; see /pricing) --------------
+  function cases() { return Math.max(1, Math.min(500, Math.round(Number(casesInput.value) || 1))); }
+  function money(n) { return "$" + n.toLocaleString("en-AU"); }
+  function updatePrice() {
+    var n = cases();
+    priceEl.innerHTML = "<b>" + n + (n === 1 ? " case" : " cases") + " · " + n * 12 + " bottles, from " + money(n * 288) + "</b>" +
+      " including GST and your labels. " + (n >= 2
+        ? "Delivery is included to every capital city and the Gold Coast."
+        : "Delivery is $35 to every capital city and the Gold Coast, or included from two cases.") +
+      " Regional delivery is quoted. We confirm your price on our call.";
+  }
+  casesInput.addEventListener("input", updatePrice);
+  updatePrice();
+
+  // ---- Wine and bottle ---------------------------------------------------------------------------------
+  function sparkling() { return wineSel.value === "Brut NV"; }
+  function varietyText() { return sparkling() ? "BRUT NV" : wineSel.value.toUpperCase() + "  ·  2025"; }
+  function setBottle() {
+    if (stage.classList.contains("is-live")) stage.dispatchEvent(new CustomEvent("hero3d:bottle", { detail: { type: sparkling() ? "sparkling" : "still" } }));
+  }
+  wineSel.addEventListener("change", function () { setBottle(); if (state.logo) draw(); });
+
+  styleBtns.forEach(function (b) {
+    b.addEventListener("click", function () {
+      state.style = b.getAttribute("data-style");
+      styleBtns.forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+      if (state.logo) draw();
+    });
+  });
 
   function say(text, isError) {
     status.textContent = text || "";
@@ -223,12 +258,21 @@
     return size;
   }
 
+  var WHITE = [250, 248, 244], PAPER = [251, 250, 247];
   function draw() {
     var a = analyse(state.logo);
     var hint = parseHex(state.color);
-    var bg, text, accent;
+    var style = state.style;
+    var bg, text, accent, tint = null;                  // tint: draw the logo in one colour (a "reversed" logo)
     if (a.bg) {
       bg = a.bg;                                         // the logo's own background colour fills the label
+    } else if (style === "bold") {
+      bg = [a.brand, hint].filter(Boolean)[0] || NAVY;   // the whole label in the brand colour
+      if (a.light && luminance(bg) > 0.45) bg = NAVY;
+      tint = contrast(bg, INK) >= 4.5 ? INK : WHITE;     // the logo reversed out in one colour, so none of it gets lost
+    } else if (style === "minimal") {
+      bg = PAPER;
+      if (a.light) tint = a.brand && contrast(a.brand, bg) >= 3 ? a.brand : INK;
     } else if (a.light) {
       // A white logo goes on a deep shade of its brand colour (or the site's own dark colour, or navy).
       var deep = a.brand ? a.brand.map(function (v) { return v * 0.32; }) : null;
@@ -236,25 +280,38 @@
     } else {
       bg = CREAM;
     }
-    text = contrast(bg, INK) >= 4.5 ? INK : [250, 248, 244];
-    accent = [a.brand, hint].filter(function (c) { return c && contrast(c, bg) >= 2.2; })[0] || text;
+    text = contrast(bg, INK) >= 4.5 ? INK : WHITE;
+    accent = style === "bold" ? text : [a.brand, hint].filter(function (c) { return c && contrast(c, bg) >= 2.2; })[0] || text;
     state.colors = { bg: bg, text: text, accent: accent };
 
     var c = document.createElement("canvas"); c.width = W; c.height = H;
     var g = c.getContext("2d");
     g.fillStyle = hex(bg); g.fillRect(0, 0, W, H);
-    // Double frame, as on our labels.
-    g.strokeStyle = hex(accent); g.lineWidth = 3; g.strokeRect(34, 34, W - 68, H - 68);
-    g.globalAlpha = 0.55; g.lineWidth = 1.5; g.strokeRect(48, 48, W - 96, H - 96); g.globalAlpha = 1;
+    if (style === "classic") {
+      // Double frame, as on our labels.
+      g.strokeStyle = hex(accent); g.lineWidth = 3; g.strokeRect(34, 34, W - 68, H - 68);
+      g.globalAlpha = 0.55; g.lineWidth = 1.5; g.strokeRect(48, 48, W - 96, H - 96); g.globalAlpha = 1;
+    } else if (style === "bold") {
+      g.strokeStyle = hex(text); g.globalAlpha = 0.45; g.lineWidth = 2; g.strokeRect(40, 40, W - 80, H - 80); g.globalAlpha = 1;
+    }
 
     // The logo, trimmed of empty margins and fitted into the top of the label.
     var icon = state.kind === "icon";
-    var boxW = icon ? 300 : 640, boxH = icon ? 300 : 360, top = icon ? 150 : 150;
+    var minimal = style === "minimal";
+    var boxW = icon ? 300 : minimal ? 540 : 640, boxH = icon ? 300 : minimal ? 300 : 360, top = minimal ? 190 : 150;
     var cr = a.crop, sc = Math.min(boxW / cr.w, boxH / cr.h);
     var dw = cr.w * sc, dh = cr.h * sc;
     var dy = top + (boxH - dh) / 2;
+    var src = state.logo, sx = cr.x, sy = cr.y, sw = cr.w, sh = cr.h;
+    if (tint && !icon) {
+      var t = document.createElement("canvas"); t.width = Math.ceil(dw); t.height = Math.ceil(dh);
+      var tg = t.getContext("2d");
+      tg.drawImage(state.logo, cr.x, cr.y, cr.w, cr.h, 0, 0, t.width, t.height);
+      tg.globalCompositeOperation = "source-in"; tg.fillStyle = hex(tint); tg.fillRect(0, 0, t.width, t.height);
+      src = t; sx = 0; sy = 0; sw = t.width; sh = t.height;
+    }
     if (icon) { g.save(); roundRect(g, (W - dw) / 2, dy, dw, dh, 28); g.clip(); }
-    g.drawImage(state.logo, cr.x, cr.y, cr.w, cr.h, (W - dw) / 2, dy, dw, dh);
+    g.drawImage(src, sx, sy, sw, sh, (W - dw) / 2, dy, dw, dh);
     if (icon) g.restore();
 
     g.fillStyle = hex(text);
@@ -266,18 +323,31 @@
       spaced(g, state.name.toUpperCase(), W / 2, y + 10, 10);
       y += 50;
     }
-    g.fillStyle = hex(accent); g.fillRect(W / 2 - 50, y + 20, 100, 3);
-    g.fillStyle = hex(text);
     var line = (lineInput.value || "").trim().slice(0, 40);
-    if (line) {
-      var size = fitText(g, line, "400 SIZEpx 'DM Serif Display', Georgia, serif", 96, 48, 800);
-      g.fillText(line, W / 2, y + 60 + size * 0.95);
-      y += 60 + size;
+    if (minimal) {
+      // Minimal: no frame or rule, the words in small spaced capitals.
+      g.fillStyle = hex(text);
+      if (line) {
+        fitText(g, line.toUpperCase(), "600 SIZEpx 'DM Sans', Arial, sans-serif", 38, 22, 700);
+        spaced(g, line.toUpperCase(), W / 2, y + 90, 9);
+      }
+      g.font = "400 24px 'DM Sans', Arial, sans-serif";
+      g.globalAlpha = 0.7;
+      spaced(g, varietyText(), W / 2, Math.max(y + 170, 900), 6);
+      g.globalAlpha = 1;
+    } else {
+      g.fillStyle = hex(accent); g.fillRect(W / 2 - 50, y + 20, 100, 3);
+      g.fillStyle = hex(text);
+      if (line) {
+        var size = fitText(g, line, "400 SIZEpx 'DM Serif Display', Georgia, serif", 96, 48, 800);
+        g.fillText(line, W / 2, y + 60 + size * 0.95);
+        y += 60 + size;
+      }
+      g.font = "600 26px 'DM Sans', Arial, sans-serif";
+      g.globalAlpha = 0.8;
+      spaced(g, varietyText(), W / 2, Math.max(y + 110, 930), 7);
+      g.globalAlpha = 1;
     }
-    g.font = "600 26px 'DM Sans', Arial, sans-serif";
-    g.globalAlpha = 0.8;
-    spaced(g, "SHIRAZ  ·  2025", W / 2, Math.max(y + 110, 930), 7);
-    g.globalAlpha = 1;
 
     state.label = c;
     drawBack();
@@ -305,7 +375,7 @@
     var g = c.getContext("2d");
     var PANEL = 168;                                      // height of the compliance panel at the bottom
     g.fillStyle = hex(col.bg); g.fillRect(0, 0, W, H);
-    g.strokeStyle = hex(col.accent); g.lineWidth = 2.5; g.strokeRect(34, 34, W - 68, H - 68 - PANEL);
+    if (state.style !== "minimal") { g.strokeStyle = hex(col.accent); g.lineWidth = 2.5; g.strokeRect(34, 34, W - 68, H - 68 - PANEL); }
     g.textAlign = "center"; g.textBaseline = "alphabetic";
 
     var name = (nameInput.value || "").trim().slice(0, 50);
@@ -365,7 +435,7 @@
       flat.hidden = false;
     }
   }
-  stage.addEventListener("hero3d:ready", function () { show("front"); });
+  stage.addEventListener("hero3d:ready", function () { setBottle(); show("front"); });
 
   // Fonts first, so the label's type is right the first time.
   if (document.fonts && document.fonts.load) {
@@ -384,6 +454,10 @@
         line: (lineInput.value || "").trim().slice(0, 40),
         name: (nameInput.value || "").trim().slice(0, 50) || state.name,
         message: (msgInput.value || "").trim().slice(0, 220),
+        wine: wineSel.value,
+        style: state.style,
+        cases: cases(),
+        date: dateInput.value || "",
         label: state.label.toDataURL("image/jpeg", 0.88),
         back: state.back ? state.back.toDataURL("image/jpeg", 0.85) : "",
         logo: logoUrl,

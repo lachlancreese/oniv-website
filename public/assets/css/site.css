@@ -575,7 +575,11 @@ a.label-card:hover h3 { text-decoration: underline; text-underline-offset: 4px; 
 .hero-caption { margin-top: 10px; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink); opacity: 0.82; text-align: center; }
 
 /* "Try it with your logo" preview */
-.try-split { align-items: center; }
+.try-split { align-items: start; }
+@media (min-width: 960px) {
+  /* the bottle stays in view while the form is filled in, sized to fit the screen */
+  .try-media { position: sticky; top: 96px; width: 100%; max-width: calc((100vh - 290px) * 0.8); margin-inline: auto; }
+}
 .try-form { display: flex; flex-direction: column; gap: 20px; }
 .try-tabs { display: inline-flex; align-self: flex-start; background: var(--paper); border: 1px solid var(--stone); border-radius: 999px; padding: 4px; gap: 4px; }
 .try-tabs button { font: inherit; font-size: 15px; font-weight: 600; color: var(--ink-muted); background: transparent; border: 0; border-radius: 999px; padding: 9px 16px; cursor: pointer; }
@@ -588,6 +592,11 @@ a.label-card:hover h3 { text-decoration: underline; text-underline-offset: 4px; 
 .try-lines { display: flex; flex-wrap: wrap; gap: 8px; }
 .try-chip { font: inherit; font-size: 14px; color: var(--ink); background: var(--paper); border: 1px solid var(--stone); border-radius: 999px; padding: 6px 12px; cursor: pointer; }
 .try-chip:hover { border-color: var(--ink); }
+.try-chip[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.try-label { font-size: 14px; font-weight: 600; }
+.try-pair { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+.try-price { font-size: 15px; background: var(--paper); border-radius: var(--radius); padding: 14px 16px; }
+.try-price b { font-weight: 600; }
 .try-status { font-size: 15px; color: var(--ink-muted); min-height: 1.5em; }
 .try-status.is-error { color: #8C3B26; }
 .try-media { min-width: 0; }

@@ -46,6 +46,8 @@
     card.insertBefore(thumb, card.firstChild);
     if (preview.site) document.getElementById("preview-text").textContent = "Made from " + preview.site + ". We'll send it with your logo, so we can start on your mockup.";
     if (preview.name && !form.elements.company.value) form.elements.company.value = preview.name;
+    if (preview.cases) form.elements.cases.value = preview.cases;
+    if (preview.date) form.elements.needed_by.value = preview.date;
     card.hidden = false;
     document.getElementById("preview-remove").addEventListener("click", function () {
       preview = null;
@@ -110,6 +112,8 @@
       body.append("preview_site", preview.site || "");
       body.append("preview_line", preview.line || "");
       body.append("preview_message", preview.message || "");
+      body.append("preview_wine", preview.wine || "");
+      body.append("preview_style", preview.style || "");
       if (preview.back) body.append("preview_back", dataUrlToBlob(preview.back), "back-label-preview.jpg");
       if (preview.logo && !file) body.set("logo", dataUrlToBlob(preview.logo), "logo.png");
     }
