@@ -145,7 +145,7 @@ export async function handleBrand(request) {
   const domain = cleanDomain(url.searchParams.get("d"));
   if (!domain) return json(400, { error: "Please enter a website, like yourbusiness.com.au" });
 
-  const cacheKey = new Request(`https://oniv.com.au/api/brand?d=${domain}&v=1`);
+  const cacheKey = new Request(`https://oniv.com.au/api/brand?d=${domain}&v=2`);
   const cache = caches.default;
   const hit = await cache.match(cacheKey);
   if (hit) return hit;
@@ -161,7 +161,40 @@ export async function handleBrand(request) {
   const pageUrl = page.res.url || `https://${domain}/`;
   const hints = siteHints(html, domain);
 
-  for (const cand of findLogos(html, pageUrl).slice(0, 6)) {
+  // A tiny graphic (a 40-pixel icon picked up by mistake) is only used if nothing better turns up.
+  let spare = null;
+  const tiny = (bytes, type) => {
+    if (type === "image/svg+xml") {
+      const head = new TextDecoder().decode(bytes.subarray(0, 2000));
+      const vb = (head.match(/viewBox\s*=\s*["']([^"']+)["']/i) || [])[1];
+      const dims = vb ? vb.trim().split(/[\s,]+/).slice(2).map(Number) : [];
+      return dims.length === 2 && Math.max(dims[0], dims[1]) <= 48;
+    }
+    if (type === "image/png" && bytes.length > 24) {
+      const w = (bytes[16] << 24) | (bytes[17] << 16) | (bytes[18] << 8) | bytes[19];
+      return w > 0 && w < 64;
+    }
+    return false;
+  };
+  const respond = async (bytes, type, kind) => {
+    const response = new Response(bytes, {
+      headers: {
+        "Content-Type": type,
+        "Cache-Control": "public, max-age=86400",
+        // An SVG from another site is only ever drawn as an image: never let it run as a page here.
+        "Content-Security-Policy": "default-src 'none'; style-src 'unsafe-inline'; img-src data:; sandbox",
+        "X-Content-Type-Options": "nosniff",
+        "Cross-Origin-Resource-Policy": "same-origin",
+        "X-Logo-Kind": kind,
+        "X-Brand-Name": encodeURIComponent(hints.name),
+        "X-Brand-Color": hints.color,
+      },
+    });
+    await cache.put(cacheKey, response.clone());
+    return response;
+  };
+
+  for (const cand of findLogos(html, pageUrl).slice(0, 7)) {
     let bytes, type;
     if (cand.url.startsWith("data:image/svg+xml")) {
       bytes = new TextEncoder().encode(decodeURIComponent(cand.url.slice(cand.url.indexOf(",") + 1)));
@@ -174,21 +207,9 @@ export async function handleBrand(request) {
       type = imageType(bytes, got.res.headers.get("Content-Type"));
     }
     if (!type || bytes.length < 200) continue;
-    const response = new Response(bytes, {
-      headers: {
-        "Content-Type": type,
-        "Cache-Control": "public, max-age=86400",
-        // An SVG from another site is only ever drawn as an image: never let it run as a page here.
-        "Content-Security-Policy": "default-src 'none'; style-src 'unsafe-inline'; img-src data:; sandbox",
-        "X-Content-Type-Options": "nosniff",
-        "Cross-Origin-Resource-Policy": "same-origin",
-        "X-Logo-Kind": cand.kind,
-        "X-Brand-Name": encodeURIComponent(hints.name),
-        "X-Brand-Color": hints.color,
-      },
-    });
-    await cache.put(cacheKey, response.clone());
-    return response;
+    if (tiny(bytes, type)) { spare = spare || { bytes, type, kind: cand.kind }; continue; }
+    return respond(bytes, type, cand.kind);
   }
+  if (spare) return respond(spare.bytes, spare.type, spare.kind);
   return json(404, { error: "We couldn't find a logo on that website. Upload your logo instead." });
 }

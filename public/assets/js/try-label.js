@@ -156,12 +156,13 @@
     };
 
     // The logo's own pixels: their bounds (to trim empty margins), brightness and strongest colour.
-    var minX = w, minY = h, maxX = -1, maxY = -1, count = 0, lum = 0, buckets = {};
+    var minX = w, minY = h, maxX = -1, maxY = -1, count = 0, lum = 0, white = 0, buckets = {};
     for (var y = 0; y < h; y++) for (var x = 0; x < w; x++) {
       var p = px(x, y);
       if (isBg(p)) continue;
       if (x < minX) minX = x; if (x > maxX) maxX = x; if (y < minY) minY = y; if (y > maxY) maxY = y;
       count++; lum += luminance(p);
+      if (Math.min(p[0], p[1], p[2]) > 225) white++;
       if (saturation(p) > 0.3 && Math.max(p[0], p[1], p[2]) > 50) {
         var k = (p[0] >> 5) + "," + (p[1] >> 5) + "," + (p[2] >> 5);
         var b = buckets[k] || (buckets[k] = { n: 0, r: 0, g: 0, b: 0 });
@@ -175,7 +176,9 @@
       x: Math.max(0, (minX - 1) / s), y: Math.max(0, (minY - 1) / s),
       w: Math.min(img.width, (maxX - minX + 3) / s), h: Math.min(img.height, (maxY - minY + 3) / s),
     };
-    return { bg: bg, brand: brand, light: count ? lum / count > 0.72 : false, crop: crop };
+    // A "light" logo is mostly white (made for dark backgrounds), so it needs a dark label.
+    var light = !bg && count > 0 && (lum / count > 0.72 || white / count > 0.35);
+    return { bg: bg, brand: brand, light: light, crop: crop };
   }
 
   // ---- Drawing the label ---------------------------------------------------------------------
@@ -204,8 +207,9 @@
     if (a.bg) {
       bg = a.bg;                                         // the logo's own background colour fills the label
     } else if (a.light) {
-      var dark = [a.brand, hint, NAVY].filter(function (c) { return c && luminance(c) < 0.25; })[0];
-      bg = dark;                                         // a white logo goes on its brand colour (or deep navy)
+      // A white logo goes on a deep shade of its brand colour (or the site's own dark colour, or navy).
+      var deep = a.brand ? a.brand.map(function (v) { return v * 0.32; }) : null;
+      bg = [deep, hint].filter(function (c) { return c && luminance(c) < 0.06; })[0] || NAVY;
     } else {
       bg = CREAM;
     }
