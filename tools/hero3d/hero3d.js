@@ -27,21 +27,22 @@ function bottleProfile() {
   for (let i = 1; i <= steps; i++) {
     const t = i / steps;
     const ease = t * t * (3 - 2 * t);
-    pts.push(new Vector2(BODY_R - (BODY_R - 1.23) * ease, 18.8 + 4.4 * t));
+    pts.push(new Vector2(BODY_R - (BODY_R - 1.44) * ease, 18.8 + 4.4 * t));
   }
-  pts.push(new Vector2(1.21, 26.5), new Vector2(1.2, 28.9), new Vector2(1.27, 29.05), new Vector2(1.27, HEIGHT - 0.15), new Vector2(1.22, HEIGHT), new Vector2(0, HEIGHT));
+  // The neck below the cap is as before; the glass under the cap is narrower so the cap can sit flush with the neck.
+  pts.push(new Vector2(1.429, 25.0), new Vector2(1.36, 25.3), new Vector2(1.36, HEIGHT - 0.15), new Vector2(1.3, HEIGHT), new Vector2(0, HEIGHT));
   return pts;
 }
 
 // Screwcap, modelled on a gloss-black wine screwcap: smooth top section with a crisp rounded edge,
 // a knurled tamper band set between two grooves, then a smooth skirt down to a rolled hem.
-const CAP = { R: 1.3, top: HEIGHT + 0.1, base: HEIGHT - 5.0, bandTop: HEIGHT + 0.1 - 2.05, bandH: 0.48 };
+const CAP = { R: 1.44, top: HEIGHT + 0.1, base: HEIGHT - 5.0, bandTop: HEIGHT + 0.1 - 2.05, bandH: 0.48 };
 
 function capProfile() {
   const { R, top, base, bandTop, bandH } = CAP;
   const bandBottom = bandTop - bandH;
   const pts = [
-    new Vector2(R - 0.12, base), new Vector2(R - 0.04, base - 0.01), new Vector2(R + 0.015, base + 0.05), // rolled hem
+    new Vector2(R - 0.05, base), new Vector2(R - 0.035, base - 0.01), new Vector2(R + 0.015, base + 0.05), // rolled hem
     new Vector2(R + 0.02, base + 0.13), new Vector2(R, base + 0.22),
     new Vector2(R, bandBottom - 0.16), new Vector2(R - 0.06, bandBottom - 0.1), new Vector2(R - 0.07, bandBottom), // lower groove
     new Vector2(R - 0.07, bandTop), new Vector2(R - 0.06, bandTop + 0.1), new Vector2(R, bandTop + 0.16), // upper groove
