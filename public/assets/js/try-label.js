@@ -454,11 +454,27 @@
   // ---- A picture of the bottle, to email -------------------------------------------------------
   // The front and back as they look on the 3D bottle (not the flat artwork), side by side. Where 3D isn't
   // running, small flat labels marked "Preview" instead.
-  function bottlePicture() {
+  function bottlePicture(frontOnly) {
     return new Promise(function (resolve) {
       var pics = null;
       if (stage.classList.contains("is-live")) {
         stage.dispatchEvent(new CustomEvent("hero3d:snapshot", { detail: { callback: function (p) { pics = p; } } }));
+      }
+      if (frontOnly && pics) {
+        // Just the front, large: reads well on a phone.
+        var f = document.createElement("canvas"); f.width = 760; f.height = 1010;
+        var fg = f.getContext("2d");
+        fg.fillStyle = "#F4F1EA"; fg.fillRect(0, 0, f.width, f.height);
+        var im = new Image();
+        im.onload = function () {
+          var s = Math.min(720 / im.width, 920 / im.height), w = im.width * s, h = im.height * s;
+          fg.drawImage(im, (760 - w) / 2, 20 + (920 - h) / 2, w, h);
+          fg.fillStyle = "#4A4542"; fg.font = "600 20px 'DM Sans', Arial, sans-serif"; fg.textAlign = "center";
+          spaced(fg, "YOUR LABEL PREVIEW  ·  ONIV.COM.AU", 380, 982, 4);
+          resolve(f.toDataURL("image/jpeg", 0.88));
+        };
+        im.src = pics.front;
+        return;
       }
       var c = document.createElement("canvas"); c.width = 1140; c.height = 790;
       var g = c.getContext("2d");
@@ -550,23 +566,28 @@
 
   // ---- Prospect mode (?prospect): for outreach, download the bottle picture instead of emailing it -----
   if (/[?&]prospect\b/.test(location.search)) {
-    var dl = document.createElement("button");
-    dl.type = "button";
-    dl.className = "btn btn--light try-download";
-    dl.textContent = "Download picture";
-    next.insertBefore(dl, next.firstChild);
-    dl.addEventListener("click", function () {
-      if (!state.label) return;
-      dl.disabled = true;
-      bottlePicture().then(function (url) {
-        var who = ((nameInput.value || "").trim() || state.site || "preview").replace(/[^\w .&-]+/g, "").slice(0, 60);
-        var a = document.createElement("a");
-        a.href = url;
-        a.download = "ONIV label preview - " + who + ".jpg";
-        document.body.appendChild(a); a.click(); a.remove();
-        dl.disabled = false;
+    var row = document.createElement("div");
+    row.className = "try-downloads";
+    [["Picture for a text", true, " (front)"], ["Front and back", false, ""]].forEach(function (b) {
+      var dl = document.createElement("button");
+      dl.type = "button";
+      dl.className = "btn btn--light try-download";
+      dl.textContent = b[0];
+      row.appendChild(dl);
+      dl.addEventListener("click", function () {
+        if (!state.label) return;
+        dl.disabled = true;
+        bottlePicture(b[1]).then(function (url) {
+          var who = ((nameInput.value || "").trim() || state.site || "preview").replace(/[^\w .&-]+/g, "").slice(0, 60);
+          var a = document.createElement("a");
+          a.href = url;
+          a.download = "ONIV label preview - " + who + b[2] + ".jpg";
+          document.body.appendChild(a); a.click(); a.remove();
+          dl.disabled = false;
+        });
       });
     });
+    next.insertBefore(row, next.firstChild);
   }
 
   // ---- Sending it with the enquiry -----------------------------------------------------------

@@ -607,6 +607,7 @@ a.label-card:hover h3 { text-decoration: underline; text-underline-offset: 4px; 
 .try-next { margin-top: 20px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; }
 .try-next[hidden] { display: none; }
 .try-download { border: 1px solid var(--ink); }
+.try-downloads { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
 .try-email { width: 100%; margin-top: 12px; padding-top: 18px; border-top: 1px solid var(--stone); display: flex; flex-direction: column; gap: 10px; text-align: left; }
 .try-email b { font-weight: 600; }
 .try-email .btn--light { border: 1px solid var(--ink); }

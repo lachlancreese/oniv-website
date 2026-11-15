@@ -122,8 +122,8 @@ Every enquiry also gets an automatic reply from "Alex at ONIV" (replies go to Al
 made one (`autoReply()` in `src/enquiry.js`; shared email layout in `src/mail.js`). Both forms are limited per visitor
 to stop them being used to send floods of email.
 
-Prospect mode, for outreach: open `/corporate?prospect#try` and a "Download picture" button saves the bottle
-picture (front and back) to attach to a text or email, without emailing it anywhere.
+Prospect mode, for outreach: open `/corporate?prospect#try` and two buttons save the bottle picture without emailing
+it anywhere: "Picture for a text" (the front, large, for a phone) and "Front and back" (for email or print).
 
 Website lookups go to `/api/brand?d=example.com.au` (`src/brand.js`), which reads the business's own homepage for its
 logo (the logo declared for search engines, a logo image or SVG in the header, or failing that the site's app icon).
