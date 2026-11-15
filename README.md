@@ -92,8 +92,8 @@ To preview locally: `npx wrangler dev`, then open http://localhost:8787.
 
 The heroes on the homepage, Corporate, Occasions, 21st and Art gallery pages are 3D bottles (`public/assets/js/hero3d.js`, built from
 `tools/hero3d/hero3d.js` with three.js). They spin slowly, turn further as the page scrolls, and can be dragged sideways.
-They hold still for visitors who have reduced motion turned on, and show a still image (`hero-bottle-4-*`,
-`hero-corporate-1-*`, `hero-occasions-2-*`, `hero-21st-2-*`, `hero-art-1-*`) on devices without graphics hardware.
+They hold still for visitors who have reduced motion turned on, and show a still image (`hero-bottle-5-*`,
+`hero-corporate-2-*`, `hero-occasions-3-*`, `hero-21st-2-*`, `hero-art-2-*`) on devices without graphics hardware.
 
 Each hero is a `<div class="hero-stage" data-hero3d ...>` in the page file with:
 - `data-front` / `data-back`: label images, about 1024 px wide at roughly 9 × 10 cm proportions
