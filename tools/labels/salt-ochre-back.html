@@ -1,0 +1,20 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="base.css"><style>
+.label { background: #F4EFE6; color: #1C1917; }
+.strip { position: absolute; left: 0; right: 0; top: 0; height: 150px; overflow: hidden; }
+.strip canvas { position: absolute; left: 0; top: -555px; width: 1063px; height: 790px; }
+.name { position: absolute; top: 215px; width: 100%; text-align: center; font-size: 84px; }
+.msg { position: absolute; top: 360px; left: 150px; right: 150px; text-align: center; font-size: 39px; line-height: 1.5; color: #2c2724; }
+.sig { position: absolute; top: 790px; width: 100%; text-align: center; font-size: 28px; color: #8C5A3C; }
+</style></head><body><div class="label">
+<div class="strip"><canvas id="art" width="1063" height="790"></canvas></div>
+<div class="name serif">Salt &amp; Ochre</div>
+<div class="msg">Thank you for joining us for opening night. Raise a glass to the artist, and take a closer look at the works.</div>
+<div class="sig caps">Fernhollow Gallery</div>
+<div class="panel">
+  <div class="vol">750mL<img src="../../public/assets/img/oniv-logo-dark.svg" alt=""></div>
+  <div class="info">Contains approximately 8.0 standard drinks. Contains sulphites &middot; 13.5% alc/vol &middot; Product of Australia &middot; Supplied by ONIV Pty Ltd, 1317 North Road, Huntingdale VIC 3166</div>
+  <img class="warn" src="pregnancy-warning.png" alt="">
+</div>
+</div>
+<script src="salt-ochre-art.js"></script><script>paintSaltOchre(document.getElementById("art"));</script>
+</body></html>

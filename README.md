@@ -90,10 +90,10 @@ To preview locally: `npx wrangler dev`, then open http://localhost:8787.
 
 ## Spinning bottles (page heroes)
 
-The heroes on the homepage, Corporate, Occasions and 21st pages are 3D bottles (`public/assets/js/hero3d.js`, built from
+The heroes on the homepage, Corporate, Occasions, 21st and Art gallery pages are 3D bottles (`public/assets/js/hero3d.js`, built from
 `tools/hero3d/hero3d.js` with three.js). They spin slowly, turn further as the page scrolls, and can be dragged sideways.
 They hold still for visitors who have reduced motion turned on, and show a still image (`hero-bottle-4-*`,
-`hero-corporate-1-*`, `hero-occasions-2-*`, `hero-21st-2-*`) on devices without graphics hardware.
+`hero-corporate-1-*`, `hero-occasions-2-*`, `hero-21st-2-*`, `hero-art-1-*`) on devices without graphics hardware.
 
 Each hero is a `<div class="hero-stage" data-hero3d ...>` in the page file with:
 - `data-front` / `data-back`: label images, about 1024 px wide at roughly 9 × 10 cm proportions
@@ -101,7 +101,7 @@ Each hero is a `<div class="hero-stage" data-hero3d ...>` in the page file with:
   rises as the page scrolls and pops with a spray of bubbles)
 - `data-cap`: for still bottles, `black` (the default) or `gold`
 
-The example labels (fictional names, captioned "Example label design") are HTML in `tools/labels/`; render them with
+The example labels (fictional names, captioned "Example label design") are HTML in `tools/labels/` (the gallery label's painting is drawn by `salt-ochre-art.js`); render them with
 `python3 tools/labels/render.py`. After changing a bottle or label, re-render its still image with
 `python3 tools/hero3d/poster.py /page-path new-name` (run `npx wrangler dev --port 8787` first), giving it a new name
 so browsers fetch the new one, and update the page.
