@@ -46,6 +46,14 @@
   casesInput.addEventListener("input", updatePrice);
   updatePrice();
 
+  // A soon date gets a reassuring note, never a warning: we check enquiries quickly and call to plan it.
+  var dateNote = root.querySelector(".try-date-note");
+  dateInput.addEventListener("change", function () {
+    var d = dateInput.value ? new Date(dateInput.value + "T00:00:00") : null;
+    var days = d ? (d - new Date()) / 86400000 : Infinity;
+    dateNote.hidden = !(days < 21);
+  });
+
   // ---- Wine and bottle ---------------------------------------------------------------------------------
   function sparkling() { return wineSel.value === "Brut NV"; }
   function varietyText() { return sparkling() ? "BRUT NV" : wineSel.value.toUpperCase() + "  ·  2025"; }
@@ -443,27 +451,116 @@
     document.fonts.load("600 26px 'DM Sans'");
   }
 
+  // ---- A picture of the bottle, to email -------------------------------------------------------
+  // The front and back as they look on the 3D bottle (not the flat artwork), side by side. Where 3D isn't
+  // running, small flat labels marked "Preview" instead.
+  function bottlePicture() {
+    return new Promise(function (resolve) {
+      var pics = null;
+      if (stage.classList.contains("is-live")) {
+        stage.dispatchEvent(new CustomEvent("hero3d:snapshot", { detail: { callback: function (p) { pics = p; } } }));
+      }
+      var c = document.createElement("canvas"); c.width = 1140; c.height = 790;
+      var g = c.getContext("2d");
+      g.fillStyle = "#F4F1EA"; g.fillRect(0, 0, c.width, c.height);
+      var footer = function () {
+        g.fillStyle = "#4A4542"; g.font = "600 20px 'DM Sans', Arial, sans-serif"; g.textAlign = "center";
+        spaced(g, "YOUR LABEL PREVIEW  ·  ONIV.COM.AU", c.width / 2, 760, 4);
+        resolve(c.toDataURL("image/jpeg", 0.86));
+      };
+      if (pics) {
+        var a = new Image(), b = new Image(), n = 0;
+        var done = function () {
+          if (++n < 2) return;
+          [a, b].forEach(function (img, i) {
+            var s = Math.min(540 / img.width, 700 / img.height), w = img.width * s, h = img.height * s;
+            g.drawImage(img, 20 + i * 560 + (540 - w) / 2, 20 + (700 - h) / 2, w, h);
+          });
+          footer();
+        };
+        a.onload = b.onload = done; a.onerror = b.onerror = done;
+        a.src = pics.front; b.src = pics.back;
+      } else {
+        [state.label, state.back].forEach(function (lab, i) {
+          if (!lab) return;
+          g.save(); g.shadowColor = "rgba(28,25,23,0.25)"; g.shadowBlur = 24; g.shadowOffsetY = 10;
+          g.drawImage(lab, 95 + i * 560, 90, 390, 434); g.restore();
+        });
+        g.save(); g.translate(c.width / 2, 330); g.rotate(-0.35);
+        g.fillStyle = "rgba(28,25,23,0.12)"; g.font = "700 150px 'DM Sans', Arial, sans-serif"; g.textAlign = "center";
+        g.fillText("PREVIEW", 0, 50); g.restore();
+        footer();
+      }
+    });
+  }
+  function toBlob(dataUrl) {
+    var parts = dataUrl.split(","), bin = atob(parts[1]), bytes = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return new Blob([bytes], { type: (parts[0].match(/data:([^;]+)/) || [])[1] || "image/jpeg" });
+  }
+  function details() {
+    return {
+      site: state.site,
+      line: (lineInput.value || "").trim().slice(0, 40),
+      name: (nameInput.value || "").trim().slice(0, 50) || state.name,
+      message: (msgInput.value || "").trim().slice(0, 220),
+      wine: wineSel.value,
+      style: state.style,
+      cases: cases(),
+      date: dateInput.value || "",
+    };
+  }
+
+  // "Email it to me": the bottle picture to them, and everything (artwork, logo, choices) to the team.
+  var emailForm = root.querySelector(".try-email");
+  var emailStatus = root.querySelector(".try-email-status");
+  emailForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var email = root.querySelector("#try-email").value.trim();
+    var sayEmail = function (t, err) { emailStatus.textContent = t; emailStatus.classList.toggle("is-error", !!err); };
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { sayEmail("Please enter your email address.", true); return; }
+    if (!state.label) return;
+    var button = emailForm.querySelector("button");
+    button.disabled = true;
+    sayEmail("Sending…");
+    Promise.all([bottlePicture(), toPng(state.logo, 1200)]).then(function (r) {
+      var body = new FormData();
+      var d = details();
+      Object.keys(d).forEach(function (k) { body.append(k, d[k]); });
+      body.append("email", email);
+      body.append("consent", root.querySelector("#try-consent").checked ? "yes" : "no");
+      body.append("website", root.querySelector("#try-website").value);
+      body.append("bottle", toBlob(r[0]), "bottle.jpg");
+      body.append("front", toBlob(state.label.toDataURL("image/jpeg", 0.88)), "front.jpg");
+      if (state.back) body.append("back", toBlob(state.back.toDataURL("image/jpeg", 0.85)), "back.jpg");
+      body.append("logo", toBlob(r[1]), "logo.png");
+      return fetch("/api/preview", { method: "POST", body: body }).then(function (res) {
+        return res.json().catch(function () { return {}; }).then(function (j) {
+          if (!res.ok || !j.ok) throw new Error(j.error || "send");
+        });
+      });
+    }).then(function () {
+      sayEmail("Sent to " + email + ". If it's not in your inbox in a few minutes, check your junk folder.");
+      setTimeout(function () { button.disabled = false; }, 20000);
+    }).catch(function (err) {
+      sayEmail(err && err.message && err.message.length > 8 ? err.message : "We couldn't send it just now. Please try again, or call 0475 799 070.", true);
+      button.disabled = false;
+    });
+  });
+
   // ---- Sending it with the enquiry -----------------------------------------------------------
   root.querySelector("[data-try-send]").addEventListener("click", function (e) {
     if (!state.label) return;
     e.preventDefault();
     var link = this;
-    toPng(state.logo, 1600).then(function (logoUrl) {
-      var data = {
-        site: state.site,
-        line: (lineInput.value || "").trim().slice(0, 40),
-        name: (nameInput.value || "").trim().slice(0, 50) || state.name,
-        message: (msgInput.value || "").trim().slice(0, 220),
-        wine: wineSel.value,
-        style: state.style,
-        cases: cases(),
-        date: dateInput.value || "",
-        label: state.label.toDataURL("image/jpeg", 0.88),
-        back: state.back ? state.back.toDataURL("image/jpeg", 0.85) : "",
-        logo: logoUrl,
-      };
+    Promise.all([toPng(state.logo, 1600), bottlePicture()]).then(function (r) {
+      var data = details();
+      data.label = state.label.toDataURL("image/jpeg", 0.88);
+      data.back = state.back ? state.back.toDataURL("image/jpeg", 0.85) : "";
+      data.logo = r[0];
+      data.bottle = r[1];
       try { sessionStorage.setItem("onivPreview", JSON.stringify(data)); } catch (err) {
-        try { delete data.logo; sessionStorage.setItem("onivPreview", JSON.stringify(data)); } catch (err2) { /* storage full or blocked */ }
+        try { delete data.logo; delete data.bottle; sessionStorage.setItem("onivPreview", JSON.stringify(data)); } catch (err2) { /* storage full or blocked */ }
       }
       location.href = link.getAttribute("href");
     });

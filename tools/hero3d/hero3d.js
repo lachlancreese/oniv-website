@@ -8,7 +8,8 @@
 // Every [data-hero3d] stage on the page gets its own bottle. Once a bottle is live the stage fires "hero3d:ready";
 // dispatch a "hero3d:label" CustomEvent on the stage with detail { front, back: <canvas>, face: "front" | "back" }
 // to swap the labels, and the bottle turns to show that face; "hero3d:bottle" with { type: "still" | "sparkling" }
-// changes the bottle. data-pop="off" stops a sparkling bottle's cork popping on scroll.
+// changes the bottle. data-pop="off" stops a sparkling bottle's cork popping on scroll. "hero3d:snapshot" with
+// { callback } calls back with { front, back } JPEG pictures of the bottle.
 // Falls back to the still image (the poster) if WebGL is unavailable; holds still for reduced motion.
 import {
   WebGLRenderer, Scene, PerspectiveCamera, Group, Mesh, Vector2, LatheGeometry, CylinderGeometry,
@@ -534,6 +535,19 @@ async function start(stage) {
     turn = { from: angle, to: target, t0: performance.now() };
     holdUntil = performance.now() + 3200;
     run();
+  });
+
+  // Pictures of the bottle from the front and the back (for emailing a preview), as JPEG data URLs.
+  // Rendered and read in one go, so the canvas doesn't need to keep its drawing buffer.
+  stage.addEventListener("hero3d:snapshot", (e) => {
+    const cb = e.detail && e.detail.callback;
+    if (typeof cb !== "function") return;
+    const keep = bottle.rotation.y;
+    const shot = (r) => { bottle.rotation.y = r; renderer.render(scene, camera); return canvas.toDataURL("image/jpeg", 0.9); };
+    const pics = { front: shot(0), back: shot(Math.PI) };
+    bottle.rotation.y = keep;
+    renderer.render(scene, camera);
+    cb(pics);
   });
 
   stage.appendChild(canvas);

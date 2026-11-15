@@ -1,10 +1,12 @@
-// POST /api/enquiry: emails each enquiry (called from src/worker.js)
-// Emails each enquiry (with the logo attached) using Resend (https://resend.com).
+// POST /api/enquiry: emails each enquiry to the team (with the logo and any label preview attached), then sends
+// the customer an automatic reply (called from src/worker.js). Uses Resend (https://resend.com).
 //
 // Set these in Cloudflare > Workers & Pages > oniv-website > Settings > Variables and secrets:
 //   RESEND_API_KEY  your Resend API key (keep it secret)
 //   TO_EMAIL        where enquiries go, comma-separated (e.g. alex@oniv.com.au)
 //   FROM_EMAIL      a sender on your verified Resend domain (e.g. ONIV website <enquiries@oniv.com.au>)
+
+import { customerEmail, customerSender, detailsTable, esc, fileAttachment, overLimit, sendEmail, teamAddresses, toBase64 } from "./mail.js";
 
 const MAX_BYTES = 10 * 1024 * 1024;
 
@@ -93,42 +95,57 @@ export async function handleEnquiry(request, env) {
     if (data.preview_style) rows.push(["Label style", data.preview_style[0].toUpperCase() + data.preview_style.slice(1)]);
     if (data.preview_message) rows.push(["Back label message", data.preview_message]);
   }
-  const html =
-    `<h2 style="font-family:Georgia,serif">New mockup enquiry</h2><table cellpadding="6" style="border-collapse:collapse;font-family:Arial,sans-serif;font-size:14px">` +
-    rows.map(([k, v]) => `<tr><td style="color:#4A4542;vertical-align:top"><b>${esc(k)}</b></td><td>${esc(v || "-").replace(/\n/g, "<br>")}</td></tr>`).join("") +
-    `</table>`;
-  const text = rows.map(([k, v]) => `${k}: ${v || "-"}`).join("\n");
+  const { html, text } = detailsTable("New mockup enquiry", rows);
 
   if (!env.RESEND_API_KEY || !env.TO_EMAIL || !env.FROM_EMAIL) {
     return reply(false, 500, "Email is not configured");
   }
+  const ip = request.headers.get("CF-Connecting-IP") || "unknown";
+  if (await overLimit("enquiry-ip", ip, 10, 3600)) {
+    return reply(false, 429, "Too many enquiries from here just now. Please call 0475 799 070.");
+  }
 
-  const res = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, "Content-Type": "application/json" },
-    body: JSON.stringify({
-      from: env.FROM_EMAIL,
-      to: env.TO_EMAIL.split(",").map((s) => s.trim()).filter(Boolean),
-      reply_to: data.email,
-      subject: `Mockup enquiry: ${data.name}${data.company ? " (" + data.company + ")" : ""}, ${data.cases || "?"} case(s)`,
-      html,
-      text,
-      attachments,
-    }),
+  const sent = await sendEmail(env, {
+    from: env.FROM_EMAIL,
+    to: teamAddresses(env),
+    reply_to: data.email,
+    subject: `Mockup enquiry: ${data.name}${data.company ? " (" + data.company + ")" : ""}, ${data.cases || "?"} case(s)`,
+    html,
+    text,
+    attachments,
   });
-  if (!res.ok) return reply(false, 502, "Could not send");
+  if (!sent) return reply(false, 502, "Could not send");
+
+  // The automatic reply, so they know it arrived and what happens next. If it fails, the enquiry still went through.
+  try {
+    await sendEmail(env, autoReply(env, data, await fileAttachment(form, "preview_bottle", "your-oniv-label-preview.jpg", 4 * 1024 * 1024, "bottle")));
+  } catch (err) {
+    console.error("auto-reply", err);
+  }
   return reply(true, 200);
 }
 
-function esc(s) {
-  return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
-}
-
-function toBase64(buffer) {
-  const bytes = new Uint8Array(buffer);
-  let binary = "";
-  for (let i = 0; i < bytes.length; i += 0x8000) {
-    binary += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
-  }
-  return btoa(binary);
+export function autoReply(env, data, bottle) {
+  const first = data.name.split(/\s+/)[0];
+  const cases = parseInt(data.cases, 10);
+  const when = data.needed_by ? new Date(data.needed_by + "T00:00:00").toLocaleDateString("en-AU", { day: "numeric", month: "long", year: "numeric" }) : "";
+  const summary = [data.occasion, cases ? `${cases} ${cases === 1 ? "case" : "cases"}` : "", when && when !== "Invalid Date" ? `needed by ${when}` : ""].filter(Boolean).join(", ");
+  const mail = customerEmail({
+    heading: `Thanks, ${first}. We've got your enquiry.`,
+    paragraphs: [
+      "Thanks for getting in touch. I have your enquiry and will be in touch shortly to talk it through. Your free label mockup will be with you within 1–2 business days.",
+      ...(summary ? [`Your enquiry: ${summary}.`] : []),
+      ...(bottle ? ["Here's the preview you made on our website:"] : []),
+    ],
+    picture: !!bottle,
+    after: ["If anything changes, just reply to this email or call me on 0475 799 070."],
+  });
+  return {
+    ...customerSender(env),
+    to: [data.email],
+    subject: "We've got your enquiry",
+    html: mail.html,
+    text: mail.text,
+    ...(bottle ? { attachments: [bottle] } : {}),
+  };
 }

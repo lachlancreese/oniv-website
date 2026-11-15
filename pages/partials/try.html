@@ -64,9 +64,14 @@
               <input class="input" id="try-date" type="date">
             </div>
           </div>
+          <p class="try-date-note small" aria-live="polite" hidden>That's soon, and that's fine. We check enquiries quickly and will call you to plan it.</p>
           <p class="try-price" aria-live="polite"></p>
           <p class="try-status" role="status" aria-live="polite"></p>
         </form>
+        <figure class="try-review">
+          <blockquote>“Thanks ONIV team. Purchased wines with my company logo for end of year events and gifting and couldn’t be happier.”</blockquote>
+          <figcaption><b>Brenda K.</b> · company logo, end-of-year events and gifts</figcaption>
+        </figure>
       </div>
       <div class="try-media">
         <div class="hero-stage" data-hero3d data-view="label" data-pop="off" data-front="/assets/img/labels/try-front.webp" data-back="/assets/img/labels/try-back.webp" role="img" aria-label="A wine bottle showing a preview of your label">
@@ -76,6 +81,17 @@
         <div class="try-next" hidden>
           <a class="btn" href="/contact" data-try-send>Send this for my free mockup</a>
           <p class="small muted">Your logo and this preview go with your enquiry, so we can start on your mockup.</p>
+          <form class="try-email" novalidate>
+            <p class="small"><b>Not ready yet?</b> We'll email you a picture of your bottle to keep or share.</p>
+            <div class="try-row">
+              <label class="hp" for="try-email">Your email</label>
+              <input class="input" id="try-email" type="email" autocomplete="email" placeholder="Your email" aria-label="Your email">
+              <button class="btn btn--light" type="submit">Email it to me</button>
+            </div>
+            <label class="try-consent small"><input type="checkbox" id="try-consent"> Alex can contact me about my mockup</label>
+            <div class="hp" aria-hidden="true"><label for="try-website">Leave this empty</label><input id="try-website" type="text" tabindex="-1" autocomplete="off"></div>
+            <p class="try-email-status small" role="status" aria-live="polite"></p>
+          </form>
         </div>
       </div>
     </div>

@@ -114,6 +114,14 @@ in the browser (colours are read from the logo) and puts it on the 3D bottle, or
 "Send this for my free mockup" carries the logo and the preview to the enquiry form, and both arrive attached to the
 enquiry email.
 
+"Email it to me" (under the preview) sends the visitor a picture of their bottle, front and back, rendered on
+the bottle rather than the flat artwork (`/api/preview`, `src/preview.js`), and emails the team the artwork, logo and
+their choices, noting whether they ticked the box to be contacted.
+
+Every enquiry also gets an automatic reply from "Alex at ONIV" (replies go to Alex), with their bottle preview if they
+made one (`autoReply()` in `src/enquiry.js`; shared email layout in `src/mail.js`). Both forms are limited per visitor
+to stop them being used to send floods of email.
+
 Website lookups go to `/api/brand?d=example.com.au` (`src/brand.js`), which reads the business's own homepage for its
 logo (the logo declared for search engines, a logo image or SVG in the header, or failing that the site's app icon).
 Results are cached for a day; nothing is stored. Some sites block automated visits, so the form always offers upload.

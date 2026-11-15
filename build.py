@@ -229,7 +229,8 @@ def footer(show_bar):
     bar = f"""
 <div class="action-bar" role="region" aria-label="Quick actions">
   <a class="action-call" href="tel:{PHONE_TEL}"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>Call</a>
-  <a class="action-mockup btn" href="/contact">Get your free mockup</a>
+  <a class="action-call" href="sms:{PHONE_TEL}?&amp;body=Hi%20Alex%2C%20I%27m%20interested%20in%20custom-label%20wine."><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.8 7L4 20.5l1.5-4.9A8 8 0 1 1 21 12z"/></svg>Text</a>
+  <a class="action-mockup btn" href="/contact">Free mockup</a>
 </div>""" if show_bar else ""
     return f"""
 <footer class="site-footer">

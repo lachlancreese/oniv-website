@@ -2,6 +2,7 @@
 // Pages and /api/* run through here first (see run_worker_first in wrangler.jsonc); /assets/* is served directly.
 import { handleEnquiry } from "./enquiry.js";
 import { handleBrand } from "./brand.js";
+import { handlePreview } from "./preview.js";
 
 const HOST = "oniv.com.au";
 
@@ -67,6 +68,13 @@ export default {
         return new Response("Method not allowed", { status: 405, headers: { Allow: "POST" } });
       }
       return handleEnquiry(request, env);
+    }
+
+    if (url.pathname === "/api/preview") {
+      if (request.method !== "POST") {
+        return new Response("Method not allowed", { status: 405, headers: { Allow: "POST" } });
+      }
+      return handlePreview(request, env);
     }
 
     if (url.pathname === "/api/brand") {

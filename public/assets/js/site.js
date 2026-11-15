@@ -115,6 +115,7 @@
       body.append("preview_wine", preview.wine || "");
       body.append("preview_style", preview.style || "");
       if (preview.back) body.append("preview_back", dataUrlToBlob(preview.back), "back-label-preview.jpg");
+      if (preview.bottle) body.append("preview_bottle", dataUrlToBlob(preview.bottle), "bottle-preview.jpg");
       if (preview.logo && !file) body.set("logo", dataUrlToBlob(preview.logo), "logo.png");
     }
 
