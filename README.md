@@ -90,15 +90,16 @@ To preview locally: `npx wrangler dev`, then open http://localhost:8787.
 
 ## Spinning bottles (page heroes)
 
-The heroes on the homepage, Corporate and 21st pages are 3D bottles (`public/assets/js/hero3d.js`, built from
+The heroes on the homepage, Corporate, Occasions and 21st pages are 3D bottles (`public/assets/js/hero3d.js`, built from
 `tools/hero3d/hero3d.js` with three.js). They spin slowly, turn further as the page scrolls, and can be dragged sideways.
 They hold still for visitors who have reduced motion turned on, and show a still image (`hero-bottle-4-*`,
-`hero-corporate-1-*`, `hero-21st-2-*`) on devices without graphics hardware.
+`hero-corporate-1-*`, `hero-occasions-1-*`, `hero-21st-2-*`) on devices without graphics hardware.
 
 Each hero is a `<div class="hero-stage" data-hero3d ...>` in the page file with:
 - `data-front` / `data-back`: label images, about 1024 px wide at roughly 9 × 10 cm proportions
 - `data-bottle`: `still` (Bordeaux bottle with a screwcap, the default) or `sparkling` (Champagne bottle; the cork
   rises as the page scrolls and pops with a spray of bubbles)
+- `data-cap`: for still bottles, `black` (the default) or `gold`
 
 The example labels (fictional names, captioned "Example label design") are HTML in `tools/labels/`; render them with
 `python3 tools/labels/render.py`. After changing a bottle or label, re-render its still image with
