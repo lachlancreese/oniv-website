@@ -33,6 +33,33 @@
   var button = form.querySelector('button[type="submit"]');
   var MAX_BYTES = 10 * 1024 * 1024;
 
+  // A label preview made with "Try it with your logo" (see try-label.js) travels with the enquiry.
+  var preview = null;
+  try { preview = JSON.parse(sessionStorage.getItem("onivPreview") || "null"); } catch (e) { preview = null; }
+  var card = document.getElementById("preview-card");
+  if (preview && preview.label && card) {
+    var thumb = document.createElement("img");
+    thumb.src = preview.label;
+    thumb.alt = "Your label preview";
+    thumb.width = 96;
+    thumb.height = 107;
+    card.insertBefore(thumb, card.firstChild);
+    if (preview.site) document.getElementById("preview-text").textContent = "Made from " + preview.site + ". We'll send it with your logo, so we can start on your mockup.";
+    if (preview.name && !form.elements.company.value) form.elements.company.value = preview.name;
+    card.hidden = false;
+    document.getElementById("preview-remove").addEventListener("click", function () {
+      preview = null;
+      card.hidden = true;
+      try { sessionStorage.removeItem("onivPreview"); } catch (e) { /* ignore */ }
+    });
+  }
+  function dataUrlToBlob(url) {
+    var parts = url.split(","), type = (parts[0].match(/data:([^;]+)/) || [])[1] || "application/octet-stream";
+    var bin = atob(parts[1]), bytes = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return new Blob([bytes], { type: type });
+  }
+
   function showError(message) {
     statusEl.textContent = message;
     statusEl.className = "form-status is-error";
@@ -77,13 +104,22 @@
     button.disabled = true;
     button.textContent = "Sending…";
 
-    fetch(form.action, { method: "POST", body: new FormData(form), headers: { Accept: "application/json" } })
+    var body = new FormData(form);
+    if (preview && preview.label) {
+      body.append("preview", dataUrlToBlob(preview.label), "label-preview.jpg");
+      body.append("preview_site", preview.site || "");
+      body.append("preview_line", preview.line || "");
+      if (preview.logo && !file) body.set("logo", dataUrlToBlob(preview.logo), "logo.png");
+    }
+
+    fetch(form.action, { method: "POST", body: body, headers: { Accept: "application/json" } })
       .then(function (response) {
         return response.json().catch(function () { return {}; }).then(function (data) {
           if (!response.ok || !data.ok) throw new Error(data.error || "send failed");
         });
       })
       .then(function () {
+        try { sessionStorage.removeItem("onivPreview"); } catch (e) { /* ignore */ }
         form.hidden = true;
         done.hidden = false;
         done.focus();

@@ -24,7 +24,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" href="/assets/fonts/dm-serif-display-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/dm-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/css/site.css?v=facc329b96">
+<link rel="stylesheet" href="/assets/css/site.css?v=a3e79ca93f">
 <script type="application/ld+json">
 {
  "@context": "https://schema.org",
@@ -134,11 +134,18 @@
           <label for="f-company">Business name <span>(optional)</span></label>
           <input class="input" id="f-company" name="company" type="text" autocomplete="organization">
         </div>
+        <div class="preview-card full" id="preview-card" hidden>
+          <div class="stack gap-8">
+            <b>Your label preview is attached</b>
+            <p class="small muted" id="preview-text">We'll send it with your logo, so we can start on your mockup.</p>
+            <button type="button" class="preview-remove" id="preview-remove">Remove</button>
+          </div>
+        </div>
         <div class="field full">
           <label for="f-logo">Your logo <span>(optional)</span></label>
           <div class="drop">
             <input id="f-logo" name="logo" type="file" accept=".png,.jpg,.jpeg,.pdf,.svg,.ai,.eps">
-            <p class="small muted">PNG, JPG, PDF, SVG or AI, up to 10 MB. No logo? We can set your name or words in type.</p>
+            <p class="small muted">PNG, JPG, PDF, SVG or AI, up to 10 MB. No logo? We can set your name or words in type. By sending a logo, you confirm you're allowed to use it on your labels.</p>
           </div>
         </div>
         <div class="field full">
@@ -214,6 +221,6 @@
   </div>
 </footer>
 
-<script src="/assets/js/site.js?v=d1f1faf1e4" defer></script>
+<script src="/assets/js/site.js?v=deaf5045c6" defer></script>
 </body>
 </html>

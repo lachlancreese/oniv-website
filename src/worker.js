@@ -1,6 +1,7 @@
 // oniv.com.au on Cloudflare Workers.
 // Pages and /api/* run through here first (see run_worker_first in wrangler.jsonc); /assets/* is served directly.
 import { handleEnquiry } from "./enquiry.js";
+import { handleBrand } from "./brand.js";
 
 const HOST = "oniv.com.au";
 
@@ -66,6 +67,13 @@ export default {
         return new Response("Method not allowed", { status: 405, headers: { Allow: "POST" } });
       }
       return handleEnquiry(request, env);
+    }
+
+    if (url.pathname === "/api/brand") {
+      if (request.method !== "GET") {
+        return new Response("Method not allowed", { status: 405, headers: { Allow: "GET" } });
+      }
+      return handleBrand(request);
     }
 
     if (request.method === "GET" || request.method === "HEAD") {

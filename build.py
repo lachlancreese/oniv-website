@@ -284,6 +284,8 @@ def parse(text):
         k, _, v = line.partition(":")
         meta[k.strip()] = v.strip()
     body = text[m.end():]
+    # Shared sections: <!--include:try--> is replaced with pages/partials/try.html.
+    body = re.sub(r"<!--include:([\w-]+)-->", lambda im: (PAGES / "partials" / f"{im.group(1)}.html").read_text().strip(), body)
     extra = ""
     hm = re.search(r"<!--head-->(.*?)<!--/head-->", body, re.S)
     if hm:

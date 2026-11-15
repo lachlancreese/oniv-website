@@ -106,6 +106,18 @@ The example labels (fictional names, captioned "Example label design") are HTML 
 `python3 tools/hero3d/poster.py /page-path new-name` (run `npx wrangler dev --port 8787` first), giving it a new name
 so browsers fetch the new one, and update the page.
 
+## "Try it with your logo" preview (Home and Corporate)
+
+A shared section (`pages/partials/try.html`, added to a page with `<!--include:try-->`) lets a visitor type their
+website or upload a logo and see it on a bottle straight away. `public/assets/js/try-label.js` builds the front label
+in the browser (colours are read from the logo) and puts it on the 3D bottle, or shows it flat where 3D isn't running.
+"Send this for my free mockup" carries the logo and the preview to the enquiry form, and both arrive attached to the
+enquiry email.
+
+Website lookups go to `/api/brand?d=example.com.au` (`src/brand.js`), which reads the business's own homepage for its
+logo (the logo declared for search engines, a logo image or SVG in the header, or failing that the site's app icon).
+Results are cached for a day; nothing is stored. Some sites block automated visits, so the form always offers upload.
+
 ## Wine regions map (/wine)
 
 The interactive map on The wine page is generated from `tools/winemap/regions.json` (region names, map position,
