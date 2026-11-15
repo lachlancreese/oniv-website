@@ -3,6 +3,7 @@
 // The page sets the bottle with data attributes on [data-hero3d]:
 //   data-front / data-back   label images
 //   data-bottle              "still" (Bordeaux, screwcap; default) or "sparkling" (cork and cage that pop on scroll)
+//   data-cap                 still bottles only: "black" (gloss black; default) or "gold" (brushed gold)
 // Falls back to the still image (the poster) if WebGL is unavailable; holds still for reduced motion.
 import {
   WebGLRenderer, Scene, PerspectiveCamera, Group, Mesh, Vector2, LatheGeometry, CylinderGeometry,
@@ -265,14 +266,14 @@ async function start(stage) {
   let cork = null;
 
   if (type === "still") {
-    // Dark "antique" glass, so the label is the hero, and a gloss-black screwcap.
+    // Dark "antique" glass, so the label is the hero, and a screwcap (gloss black, or gold).
     const glass = new MeshPhysicalMaterial({
       color: new Color("#0f1913"), roughness: 0.1, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.05, envMapIntensity: 1.5,
     });
     bottle.add(new Mesh(new LatheGeometry(bottleProfile(), 96), glass));
-    const cap = new MeshPhysicalMaterial({
-      color: new Color("#0a0a0a"), metalness: 0.15, roughness: 0.14, clearcoat: 1, clearcoatRoughness: 0.04, envMapIntensity: 1.3,
-    });
+    const cap = stage.dataset.cap === "gold"
+      ? new MeshPhysicalMaterial({ color: new Color("#c09a5c"), metalness: 1, roughness: 0.26, clearcoat: 0.6, clearcoatRoughness: 0.1, envMapIntensity: 1.2 })
+      : new MeshPhysicalMaterial({ color: new Color("#0a0a0a"), metalness: 0.15, roughness: 0.14, clearcoat: 1, clearcoatRoughness: 0.04, envMapIntensity: 1.3 });
     bottle.add(new Mesh(new LatheGeometry(capProfile(), 160), cap));
     bottle.add(new Mesh(knurlGeometry(), cap));
     addLabels(BODY_R, LABEL);
