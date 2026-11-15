@@ -47,6 +47,7 @@ export async function handleEnquiry(request, env) {
     message: field("message", 4000),
     preview_site: field("preview_site", 200),
     preview_line: field("preview_line", 60),
+    preview_message: field("preview_message", 300),
   };
   if (!data.name || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
     return reply(false, 422, "Name and a valid email are required");
@@ -66,6 +67,10 @@ export async function handleEnquiry(request, env) {
   if (preview && typeof preview === "object" && preview.size > 0 && preview.size <= MAX_BYTES) {
     attachments.push({ filename: "label-preview.jpg", content: toBase64(await preview.arrayBuffer()) });
   }
+  const previewBack = form.get("preview_back");
+  if (previewBack && typeof previewBack === "object" && previewBack.size > 0 && previewBack.size <= MAX_BYTES) {
+    attachments.push({ filename: "back-label-preview.jpg", content: toBase64(await previewBack.arrayBuffer()) });
+  }
   const logoNote = logo && typeof logo === "object" && logo.size > 0 ? (logo.name || "logo") + " (attached)" : "None";
 
   const rows = [
@@ -81,7 +86,8 @@ export async function handleEnquiry(request, env) {
   ];
   if (preview && typeof preview === "object" && preview.size > 0) {
     rows.push(["Label preview", "Made on the website" + (data.preview_site ? " from " + data.preview_site : " from an uploaded logo") +
-      (data.preview_line ? `, with "${data.preview_line}"` : "") + " (label-preview.jpg attached)"]);
+      (data.preview_line ? `, with "${data.preview_line}"` : "") + " (front and back previews attached)"]);
+    if (data.preview_message) rows.push(["Back label message", data.preview_message]);
   }
   const html =
     `<h2 style="font-family:Georgia,serif">New mockup enquiry</h2><table cellpadding="6" style="border-collapse:collapse;font-family:Arial,sans-serif;font-size:14px">` +

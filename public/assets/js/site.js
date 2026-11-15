@@ -109,6 +109,8 @@
       body.append("preview", dataUrlToBlob(preview.label), "label-preview.jpg");
       body.append("preview_site", preview.site || "");
       body.append("preview_line", preview.line || "");
+      body.append("preview_message", preview.message || "");
+      if (preview.back) body.append("preview_back", dataUrlToBlob(preview.back), "back-label-preview.jpg");
       if (preview.logo && !file) body.set("logo", dataUrlToBlob(preview.logo), "logo.png");
     }
 

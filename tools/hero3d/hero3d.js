@@ -6,8 +6,8 @@
 //   data-cap                 still bottles only: "black" (gloss black; default) or "gold" (brushed gold)
 //   data-view                "label" frames the label close up (still bottles); otherwise the whole bottle
 // Every [data-hero3d] stage on the page gets its own bottle. Once a bottle is live the stage fires "hero3d:ready";
-// dispatch a "hero3d:label" CustomEvent on the stage with detail { front: <canvas> } to swap the front label,
-// and the bottle turns to face the viewer.
+// dispatch a "hero3d:label" CustomEvent on the stage with detail { front, back: <canvas>, face: "front" | "back" }
+// to swap the labels, and the bottle turns to show that face.
 // Falls back to the still image (the poster) if WebGL is unavailable; holds still for reduced motion.
 import {
   WebGLRenderer, Scene, PerspectiveCamera, Group, Mesh, Vector2, LatheGeometry, CylinderGeometry,
@@ -264,13 +264,13 @@ async function start(stage) {
   const type = stage.dataset.bottle === "sparkling" ? "sparkling" : "still";
   const bottle = new Group();
   const paper = (map) => new MeshStandardMaterial({ map, color: new Color(0.56, 0.56, 0.56), roughness: 0.82, metalness: 0, side: DoubleSide, toneMapped: false });
-  let frontLabel = null;
+  let frontLabel = null, backLabel = null;
   function addLabels(radius, label) {
     // Front and back labels, wrapped around the body. The colour multiplier keeps printed colours true to the artwork.
     const r = radius + 0.015;
     const theta = label.w / r;
     frontLabel = new Mesh(new CylinderGeometry(r, r, label.h, 64, 1, true, -theta / 2, theta), paper(front));
-    const backLabel = new Mesh(new CylinderGeometry(r, r, label.h, 64, 1, true, Math.PI - theta / 2, theta), paper(back));
+    backLabel = new Mesh(new CylinderGeometry(r, r, label.h, 64, 1, true, Math.PI - theta / 2, theta), paper(back));
     frontLabel.position.y = backLabel.position.y = label.bottom + label.h / 2;
     bottle.add(frontLabel, backLabel);
   }
@@ -482,19 +482,25 @@ async function start(stage) {
   window.addEventListener("resize", size);
 
   // A new front label (from the "see your logo on a bottle" preview): swap it in and turn the bottle to face the viewer.
-  stage.addEventListener("hero3d:label", (e) => {
-    const src = e.detail && e.detail.front;
-    if (!src || !frontLabel) return;
+  const swap = (mesh, src, original) => {
+    if (!mesh || !src) return;
     const tex = new CanvasTexture(src);
     tex.colorSpace = SRGBColorSpace;
     tex.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
-    const old = frontLabel.material.map;
-    frontLabel.material.map = tex;
-    frontLabel.material.needsUpdate = true;
-    if (old && old !== front) old.dispose();
+    const old = mesh.material.map;
+    mesh.material.map = tex;
+    mesh.material.needsUpdate = true;
+    if (old && old !== original) old.dispose();
+  };
+  stage.addEventListener("hero3d:label", (e) => {
+    const d = e.detail || {};
+    if (!frontLabel) return;
+    swap(frontLabel, d.front, front);
+    swap(backLabel, d.back, back);
     const scrolled = reduce.matches ? 0 : window.scrollY * SCROLL;
     const total = angle + scrolled + dragAngle;
-    const facing = Math.round(total / (Math.PI * 2)) * Math.PI * 2;   // nearest full turn = front facing
+    const offset = d.face === "back" ? Math.PI : 0;                     // the back label faces the viewer half a turn round
+    const facing = Math.round((total - offset) / (Math.PI * 2)) * Math.PI * 2 + offset;
     const target = angle + (facing - total);
     if (reduce.matches) { angle = target; bottle.rotation.y = angle + dragAngle; renderer.render(scene, camera); return; }
     turn = { from: angle, to: target, t0: performance.now() };

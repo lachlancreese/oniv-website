@@ -12,6 +12,15 @@
   var siteInput = root.querySelector("#try-site");
   var fileInput = root.querySelector("#try-file");
   var lineInput = root.querySelector("#try-line");
+  var nameInput = root.querySelector("#try-name");
+  var msgInput = root.querySelector("#try-msg");
+  // A back-label message to suit each set of front words; the visitor can change it.
+  var MESSAGES = {
+    "season's greetings": "Thank you for your support this year. Wishing you a joyful festive season and a wonderful year ahead.",
+    "with our thanks": "Thank you for your partnership. We hope this bottle finds its way to a good table.",
+    "client reserve": "A wine chosen for the people we're glad to work with. Here's to what we build next.",
+  };
+  var msgEdited = false, nameEdited = false;
   var tabs = root.querySelectorAll("[data-tab]");
   var panels = root.querySelectorAll("[data-panel]");
 
@@ -31,11 +40,24 @@
       say("");
     });
   });
+  function matchMessage() {
+    // Picking other front words brings the matching back message, unless the visitor has written their own.
+    var stock = MESSAGES[(lineInput.value || "").trim().toLowerCase()];
+    if (stock && !msgEdited) msgInput.value = stock;
+  }
   root.querySelectorAll("[data-line]").forEach(function (b) {
-    b.addEventListener("click", function () { lineInput.value = b.getAttribute("data-line"); if (state.logo) draw(); });
+    b.addEventListener("click", function () { lineInput.value = b.getAttribute("data-line"); matchMessage(); if (state.logo) draw(); });
   });
-  var lineTimer;
-  lineInput.addEventListener("input", function () { clearTimeout(lineTimer); if (state.logo) lineTimer = setTimeout(draw, 250); });
+  var lineTimer, backTimer;
+  lineInput.addEventListener("input", function () { matchMessage(); clearTimeout(lineTimer); if (state.logo) lineTimer = setTimeout(draw, 250); });
+  msgInput.addEventListener("input", function () {
+    msgEdited = msgInput.value.trim() !== "";
+    clearTimeout(backTimer); if (state.logo) backTimer = setTimeout(function () { drawBack(); show("back"); }, 300);
+  });
+  nameInput.addEventListener("input", function () {
+    nameEdited = nameInput.value.trim() !== "";
+    clearTimeout(backTimer); if (state.logo) backTimer = setTimeout(function () { drawBack(); show("back"); }, 300);
+  });
 
   // ---- Getting the logo --------------------------------------------------------------------
   function loadImage(blob) {
@@ -72,6 +94,7 @@
       state.name = info.name || "";
       state.color = info.color || "";
       state.site = info.site || "";
+      if (state.name && !nameEdited) nameInput.value = state.name;
       draw();
       // On a phone the bottle sits below the form, so bring it into view.
       if (window.innerWidth < 960) stage.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -215,6 +238,7 @@
     }
     text = contrast(bg, INK) >= 4.5 ? INK : [250, 248, 244];
     accent = [a.brand, hint].filter(function (c) { return c && contrast(c, bg) >= 2.2; })[0] || text;
+    state.colors = { bg: bg, text: text, accent: accent };
 
     var c = document.createElement("canvas"); c.width = W; c.height = H;
     var g = c.getContext("2d");
@@ -256,10 +280,66 @@
     g.globalAlpha = 1;
 
     state.label = c;
-    show();
+    drawBack();
+    show("front");
     next.hidden = false;
     return c;
   }
+
+  // The back label: the message, the sign-off, and the standard drinks / pregnancy warning panel.
+  var panel = new Image();
+  panel.src = stage.getAttribute("data-back");   // the default back label; its bottom strip is the panel
+  function wrap(g, text, maxW) {
+    var words = text.split(/\s+/), lines = [], line = "";
+    words.forEach(function (w) {
+      var t = line ? line + " " + w : w;
+      if (g.measureText(t).width > maxW && line) { lines.push(line); line = w; } else { line = t; }
+    });
+    if (line) lines.push(line);
+    return lines;
+  }
+  function drawBack() {
+    if (!state.colors) return;
+    var col = state.colors;
+    var c = document.createElement("canvas"); c.width = W; c.height = H;
+    var g = c.getContext("2d");
+    var PANEL = 168;                                      // height of the compliance panel at the bottom
+    g.fillStyle = hex(col.bg); g.fillRect(0, 0, W, H);
+    g.strokeStyle = hex(col.accent); g.lineWidth = 2.5; g.strokeRect(34, 34, W - 68, H - 68 - PANEL);
+    g.textAlign = "center"; g.textBaseline = "alphabetic";
+
+    var name = (nameInput.value || "").trim().slice(0, 50);
+    var msg = (msgInput.value || "").trim().slice(0, 220);
+    var y = 150;
+    g.fillStyle = hex(col.accent);
+    g.fillRect(W / 2 - 40, y - 10, 80, 3);
+    y += 70;
+    g.fillStyle = hex(col.text);
+    // The message, as large as fits, centred between the rule and the sign-off.
+    var area = H - PANEL - 160 - y, size = 64, lines;
+    do { g.font = "400 " + size + "px 'DM Serif Display', Georgia, serif"; lines = wrap(g, msg, 740); size -= 2; }
+    while (lines.length * size * 1.36 > area && size > 26);
+    size += 2;
+    var blockH = lines.length * size * 1.36;
+    var top = y + Math.max(0, (area - blockH) / 2);
+    lines.forEach(function (l, i) { g.fillText(l, W / 2, top + size + i * size * 1.36); });
+
+    g.globalAlpha = 0.85;
+    var sign = name ? "FROM EVERYONE AT " + name.toUpperCase() : "FROM ALL OF US";
+    var fs = 24;
+    do { g.font = "600 " + fs + "px 'DM Sans', Arial, sans-serif"; fs -= 2; }
+    while (g.measureText(sign).width + sign.length * 6 > 820 && fs >= 14);
+    spaced(g, sign, W / 2, H - PANEL - 90, 6);
+    g.globalAlpha = 1;
+
+    // The panel always prints dark on light, so it sits on its own light band.
+    if (panel.complete && panel.naturalWidth) {
+      var ph = panel.naturalHeight * PANEL / H;
+      g.drawImage(panel, 0, panel.naturalHeight - ph, panel.naturalWidth, ph, 0, H - PANEL, W, PANEL);
+    }
+    state.back = c;
+  }
+  panel.onload = function () { if (state.colors) { drawBack(); } };
 
   function roundRect(g, x, y, w, h, r) {
     g.beginPath();
@@ -268,11 +348,12 @@
   }
 
   // On the 3D bottle when it's running; otherwise as a flat label over the still image.
-  function show() {
+  function show(face) {
     if (!state.label) return;
+    face = face === "back" ? "back" : "front";
     if (stage.classList.contains("is-live")) {
       if (flat) flat.hidden = true;
-      stage.dispatchEvent(new CustomEvent("hero3d:label", { detail: { front: state.label } }));
+      stage.dispatchEvent(new CustomEvent("hero3d:label", { detail: { front: state.label, back: state.back, face: face } }));
     } else {
       if (!flat) {
         flat = document.createElement("img");
@@ -280,11 +361,11 @@
         flat.alt = "Your label preview";
         stage.appendChild(flat);
       }
-      flat.src = state.label.toDataURL("image/jpeg", 0.9);
+      flat.src = (face === "back" && state.back ? state.back : state.label).toDataURL("image/jpeg", 0.9);
       flat.hidden = false;
     }
   }
-  stage.addEventListener("hero3d:ready", show);
+  stage.addEventListener("hero3d:ready", function () { show("front"); });
 
   // Fonts first, so the label's type is right the first time.
   if (document.fonts && document.fonts.load) {
@@ -301,8 +382,10 @@
       var data = {
         site: state.site,
         line: (lineInput.value || "").trim().slice(0, 40),
-        name: state.name,
+        name: (nameInput.value || "").trim().slice(0, 50) || state.name,
+        message: (msgInput.value || "").trim().slice(0, 220),
         label: state.label.toDataURL("image/jpeg", 0.88),
+        back: state.back ? state.back.toDataURL("image/jpeg", 0.85) : "",
         logo: logoUrl,
       };
       try { sessionStorage.setItem("onivPreview", JSON.stringify(data)); } catch (err) {
