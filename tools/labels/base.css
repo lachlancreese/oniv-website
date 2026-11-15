@@ -1,0 +1,15 @@
+@font-face { font-family: "DM Sans"; src: url("../../public/assets/fonts/dm-sans-latin-400-normal.woff2"); font-weight: 400; }
+@font-face { font-family: "DM Sans"; src: url("../../public/assets/fonts/dm-sans-latin-600-normal.woff2"); font-weight: 600; }
+@font-face { font-family: "DM Serif Display"; src: url("../../public/assets/fonts/dm-serif-display-latin-400-normal.woff2"); }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { width: 1063px; height: 1181px; overflow: hidden; }
+.label { width: 1063px; height: 1181px; position: relative; overflow: hidden; font-family: "DM Sans", sans-serif; }
+.serif { font-family: "DM Serif Display", serif; font-weight: 400; }
+.caps { text-transform: uppercase; letter-spacing: 0.32em; font-weight: 600; }
+/* Back-label compliance panel, shared by every example label */
+.panel { position: absolute; left: 0; right: 0; bottom: 0; height: 170px; padding: 0 22px 30px; display: grid; grid-template-columns: auto 1fr auto; align-items: end; gap: 22px; }
+.panel .vol { font-family: "DM Sans"; font-size: 74px; line-height: 0.9; letter-spacing: -0.02em; }
+.panel .vol small { display: block; margin-top: 10px; }
+.panel .vol img { height: 30px; display: block; margin-top: 10px; }
+.panel .info { font-size: 21px; line-height: 1.32; text-align: justify; }
+.panel .warn { width: 376px; display: block; }

@@ -88,15 +88,22 @@ To preview locally: `npx wrangler dev`, then open http://localhost:8787.
 - `sitemap.xml` is rebuilt with each page's last-changed date every time you run `build.py`.
 - Old addresses that should redirect to a new page go in `MOVED` at the top of `src/worker.js`.
 
-## Homepage spinning bottle
+## Spinning bottles (page heroes)
 
-The hero on the homepage is a 3D bottle (`public/assets/js/hero3d.js`, built from `tools/hero3d/hero3d.js` with three.js).
-It spins slowly, turns further as the page scrolls, and can be dragged sideways. It holds still for visitors who have
-reduced motion turned on, and shows the still image `hero-bottle-4-*.webp` (give it a new name whenever the bottle changes, so browsers fetch the new one) on devices without graphics hardware.
+The heroes on the homepage, Corporate and 21st pages are 3D bottles (`public/assets/js/hero3d.js`, built from
+`tools/hero3d/hero3d.js` with three.js). They spin slowly, turn further as the page scrolls, and can be dragged sideways.
+They hold still for visitors who have reduced motion turned on, and show a still image (`hero-bottle-4-*`,
+`hero-corporate-1-*`, `hero-21st-2-*`) on devices without graphics hardware.
 
-To change the labels, replace `public/assets/img/labels/oniv-shiraz-front.webp` and `-back.webp` (or point the
-`data-front` / `data-back` attributes in `pages/index.html` at new files). Label images should be about 1024 px wide at
-roughly 9 × 10 cm proportions. Re-render the still image afterwards so it matches.
+Each hero is a `<div class="hero-stage" data-hero3d ...>` in the page file with:
+- `data-front` / `data-back`: label images, about 1024 px wide at roughly 9 × 10 cm proportions
+- `data-bottle`: `still` (Bordeaux bottle with a screwcap, the default) or `sparkling` (Champagne bottle; the cork
+  rises as the page scrolls and pops with a spray of bubbles)
+
+The example labels (fictional names, captioned "Example label design") are HTML in `tools/labels/`; render them with
+`python3 tools/labels/render.py`. After changing a bottle or label, re-render its still image with
+`python3 tools/hero3d/poster.py /page-path new-name` (run `npx wrangler dev --port 8787` first), giving it a new name
+so browsers fetch the new one, and update the page.
 
 ## Wine regions map (/wine)
 

@@ -1,10 +1,14 @@
-// ONIV homepage hero: a wine bottle that turns to show its front and back labels.
+// ONIV page heroes: a wine bottle that turns to show its front and back labels.
 // It spins slowly on its own, turns further as the page scrolls, and can be dragged sideways.
+// The page sets the bottle with data attributes on [data-hero3d]:
+//   data-front / data-back   label images
+//   data-bottle              "still" (Bordeaux, screwcap; default) or "sparkling" (cork and cage that pop on scroll)
 // Falls back to the still image (the poster) if WebGL is unavailable; holds still for reduced motion.
 import {
   WebGLRenderer, Scene, PerspectiveCamera, Group, Mesh, Vector2, LatheGeometry, CylinderGeometry,
   PlaneGeometry, MeshPhysicalMaterial, MeshStandardMaterial, MeshBasicMaterial, TextureLoader,
   CanvasTexture, SRGBColorSpace, ACESFilmicToneMapping, PMREMGenerator, DirectionalLight, Color, DoubleSide,
+  TorusGeometry, BufferGeometry, BufferAttribute, Points, PointsMaterial, Vector3,
 } from "three";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 
@@ -68,6 +72,101 @@ function knurlGeometry() {
   geo.computeVertexNormals();
   geo.translate(0, bandTop - bandH / 2, 0);
   return geo;
+}
+
+// ---- Sparkling bottle (Champagne shape) -------------------------------------------------------
+const SPK = { R: 4.35, H: 29.45, label: { w: 9, h: 10, bottom: 4.2 } };
+
+function sparklingProfile() {
+  const pts = [new Vector2(0, 0.3), new Vector2(4.1, 0), new Vector2(4.3, 0.15), new Vector2(SPK.R, 0.6), new Vector2(SPK.R, 15.5)];
+  const steps = 24;
+  for (let i = 1; i <= steps; i++) { // long, gentle shoulder
+    const t = i / steps;
+    const ease = t * t * (3 - 2 * t);
+    pts.push(new Vector2(SPK.R - (SPK.R - 1.52) * ease, 15.5 + 8.5 * t));
+  }
+  pts.push(new Vector2(1.5, 28.55), new Vector2(1.76, 28.68), new Vector2(1.79, 29.15), new Vector2(1.62, 29.38), new Vector2(1.46, SPK.H), new Vector2(0, SPK.H));
+  return pts;
+}
+
+// Foil collar hugging the neck, from the shoulder to the lip.
+function foilProfile() {
+  return sparklingProfile()
+    .filter((v) => v.y >= 22.6 && v.y <= SPK.H && v.x > 0)
+    .map((v) => new Vector2(v.x + 0.035, v.y))
+    .concat([new Vector2(1.3, SPK.H + 0.03)]);
+}
+
+function corkProfile() {
+  // Mushroom-shaped cork sitting on the lip, as it does after the foil hood is removed.
+  const base = SPK.H - 0.05;
+  const pts = [new Vector2(1.38, base), new Vector2(1.42, base + 0.35), new Vector2(1.6, base + 0.75), new Vector2(1.7, base + 1.05)];
+  for (let i = 1; i <= 10; i++) {
+    const a = (i / 10) * (Math.PI / 2);
+    pts.push(new Vector2(1.7 * Math.cos(a), base + 1.05 + 0.75 * Math.sin(a)));
+  }
+  return pts;
+}
+
+function dropletTexture() {
+  // A soft champagne droplet: bright centre, pale gold rim, transparent edge.
+  const c = document.createElement("canvas");
+  c.width = c.height = 64;
+  const g = c.getContext("2d");
+  const r = g.createRadialGradient(28, 28, 2, 32, 32, 30);
+  r.addColorStop(0, "rgba(255,252,236,1)");
+  r.addColorStop(0.45, "rgba(236,214,150,0.95)");
+  r.addColorStop(0.8, "rgba(186,150,74,0.75)");
+  r.addColorStop(1, "rgba(186,150,74,0)");
+  g.fillStyle = r;
+  g.beginPath(); g.arc(32, 32, 30, 0, Math.PI * 2); g.fill();
+  const t = new CanvasTexture(c);
+  t.colorSpace = SRGBColorSpace;
+  return t;
+}
+
+function corkTexture() {
+  const c = document.createElement("canvas");
+  c.width = 256; c.height = 128;
+  const g = c.getContext("2d");
+  g.fillStyle = "#c9a774";
+  g.fillRect(0, 0, 256, 128);
+  for (let i = 0; i < 1400; i++) { // speckled grain
+    const s = Math.random();
+    g.fillStyle = s < 0.5 ? "rgba(120,86,48,0.35)" : "rgba(240,220,180,0.25)";
+    g.fillRect(Math.random() * 256, Math.random() * 128, 1 + Math.random() * 2, 1 + Math.random() * 1.5);
+  }
+  const tex = new CanvasTexture(c);
+  tex.colorSpace = SRGBColorSpace;
+  return tex;
+}
+
+// Wire cage (muselet): a cap plaque on top, four legs and a ring around the lip.
+function cage(wire, plaqueMat) {
+  const g = new Group();
+  const top = SPK.H + 1.8;
+  const plaque = new Mesh(new CylinderGeometry(0.95, 0.98, 0.1, 48), plaqueMat);
+  plaque.position.y = top + 0.03;
+  g.add(plaque);
+  const ring = new Mesh(new TorusGeometry(1.84, 0.045, 10, 64), wire);
+  ring.rotation.x = Math.PI / 2;
+  ring.position.y = SPK.H - 0.32;
+  g.add(ring);
+  for (let i = 0; i < 4; i++) {
+    const a = (i / 4) * Math.PI * 2 + Math.PI / 4;
+    const p1 = new Vector3(Math.sin(a) * 0.92, top, Math.cos(a) * 0.92);
+    const p2 = new Vector3(Math.sin(a) * 1.84, SPK.H - 0.32, Math.cos(a) * 1.84);
+    const mid = new Vector3(Math.sin(a) * 1.78, SPK.H + 1.0, Math.cos(a) * 1.78); // bows out over the cork
+    for (const [a1, b1] of [[p1, mid], [mid, p2]]) {
+      const len = a1.distanceTo(b1);
+      const leg = new Mesh(new CylinderGeometry(0.04, 0.04, len, 8), wire);
+      leg.position.copy(a1).add(b1).multiplyScalar(0.5);
+      leg.lookAt(b1);
+      leg.rotateX(Math.PI / 2);
+      g.add(leg);
+    }
+  }
+  return g;
 }
 
 function shadowTexture() {
@@ -151,32 +250,49 @@ async function start(stage) {
     loadTexture(loader, stage.dataset.back, renderer),
   ]);
 
+  const type = stage.dataset.bottle === "sparkling" ? "sparkling" : "still";
   const bottle = new Group();
-
-  // Dark "antique" glass, so the label is the hero.
-  const glass = new MeshPhysicalMaterial({
-    color: new Color("#0f1913"), roughness: 0.1, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.05,
-    envMapIntensity: 1.5,
-  });
-  bottle.add(new Mesh(new LatheGeometry(bottleProfile(), 96), glass));
-
-  // Gloss-black screwcap.
-  const cap = new MeshPhysicalMaterial({
-    color: new Color("#0a0a0a"), metalness: 0.15, roughness: 0.14, clearcoat: 1, clearcoatRoughness: 0.04,
-    envMapIntensity: 1.3,
-  });
-  bottle.add(new Mesh(new LatheGeometry(capProfile(), 160), cap));
-  bottle.add(new Mesh(knurlGeometry(), cap));
-
-  // Front and back labels, wrapped around the body.
-  const r = BODY_R + 0.015;
-  const theta = LABEL.w / r;
-  // The colour multiplier keeps printed colours true to the artwork under the studio lighting.
   const paper = (map) => new MeshStandardMaterial({ map, color: new Color(0.56, 0.56, 0.56), roughness: 0.82, metalness: 0, side: DoubleSide, toneMapped: false });
-  const frontLabel = new Mesh(new CylinderGeometry(r, r, LABEL.h, 64, 1, true, -theta / 2, theta), paper(front));
-  const backLabel = new Mesh(new CylinderGeometry(r, r, LABEL.h, 64, 1, true, Math.PI - theta / 2, theta), paper(back));
-  frontLabel.position.y = backLabel.position.y = LABEL.bottom + LABEL.h / 2;
-  bottle.add(frontLabel, backLabel);
+  function addLabels(radius, label) {
+    // Front and back labels, wrapped around the body. The colour multiplier keeps printed colours true to the artwork.
+    const r = radius + 0.015;
+    const theta = label.w / r;
+    const frontLabel = new Mesh(new CylinderGeometry(r, r, label.h, 64, 1, true, -theta / 2, theta), paper(front));
+    const backLabel = new Mesh(new CylinderGeometry(r, r, label.h, 64, 1, true, Math.PI - theta / 2, theta), paper(back));
+    frontLabel.position.y = backLabel.position.y = label.bottom + label.h / 2;
+    bottle.add(frontLabel, backLabel);
+  }
+  let cork = null;
+
+  if (type === "still") {
+    // Dark "antique" glass, so the label is the hero, and a gloss-black screwcap.
+    const glass = new MeshPhysicalMaterial({
+      color: new Color("#0f1913"), roughness: 0.1, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.05, envMapIntensity: 1.5,
+    });
+    bottle.add(new Mesh(new LatheGeometry(bottleProfile(), 96), glass));
+    const cap = new MeshPhysicalMaterial({
+      color: new Color("#0a0a0a"), metalness: 0.15, roughness: 0.14, clearcoat: 1, clearcoatRoughness: 0.04, envMapIntensity: 1.3,
+    });
+    bottle.add(new Mesh(new LatheGeometry(capProfile(), 160), cap));
+    bottle.add(new Mesh(knurlGeometry(), cap));
+    addLabels(BODY_R, LABEL);
+  } else {
+    // Deep green Champagne-style glass, gold foil collar, natural cork under a wire cage.
+    const glass = new MeshPhysicalMaterial({
+      color: new Color("#10231a"), roughness: 0.08, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.04, envMapIntensity: 1.6,
+    });
+    bottle.add(new Mesh(new LatheGeometry(sparklingProfile(), 110), glass));
+    const gold = new MeshStandardMaterial({ color: new Color("#b8955a"), metalness: 1, roughness: 0.32, envMapIntensity: 1.2 });
+    bottle.add(new Mesh(new LatheGeometry(foilProfile(), 110), gold));
+    const wire = new MeshStandardMaterial({ color: new Color("#d8d8d4"), metalness: 1, roughness: 0.28 });
+    cork = new Group();
+    cork.add(new Mesh(new LatheGeometry(corkProfile(), 64), new MeshStandardMaterial({ map: corkTexture(), roughness: 0.9, metalness: 0 })));
+    cork.add(cage(wire, gold));
+    bottle.add(cork);
+    addLabels(SPK.R, SPK.label);
+    camera.position.set(0, 18, 92);
+    camera.lookAt(0, 17.2, 0);
+  }
 
   scene.add(bottle);
 
@@ -184,6 +300,105 @@ async function start(stage) {
   shadow.rotation.x = -Math.PI / 2;
   shadow.position.y = 0.01;
   scene.add(shadow);
+
+  // Champagne for the cork pop: a fast spray of droplets and slower foam welling over the lip.
+  // Each droplet is a soft gold-rimmed dot so it shows against the cream backdrop.
+  const dropTex = dropletTexture();
+  function burst(count, size) {
+    const pos = new Float32Array(count * 3);
+    const vel = new Float32Array(count * 3);
+    const geo = new BufferGeometry();
+    geo.setAttribute("position", new BufferAttribute(pos, 3));
+    const mat = new PointsMaterial({ map: dropTex, size, transparent: true, opacity: 0, depthWrite: false, toneMapped: false });
+    const points = new Points(geo, mat);
+    points.visible = false;
+    points.frustumCulled = false;
+    scene.add(points);
+    return { count, pos, vel, geo, mat, points };
+  }
+  const droplets = burst(200, 0.8);
+  const foam = burst(110, 0.55);
+
+  function launch(b, speedUp, speedOut) {
+    for (let i = 0; i < b.count; i++) {
+      const a = Math.random() * Math.PI * 2, s = speedOut[0] + Math.random() * speedOut[1];
+      b.pos[i * 3] = Math.sin(a) * 0.5; b.pos[i * 3 + 1] = SPK.H + 0.3; b.pos[i * 3 + 2] = Math.cos(a) * 0.5;
+      b.vel[i * 3] = Math.sin(a) * s; b.vel[i * 3 + 1] = speedUp[0] + Math.random() * speedUp[1]; b.vel[i * 3 + 2] = Math.cos(a) * s + 2;
+    }
+    b.geo.attributes.position.needsUpdate = true;
+    b.points.visible = true;
+  }
+  function fly(b, dt, gravity, opacity) {
+    if (!b.points.visible) return;
+    for (let i = 0; i < b.count; i++) {
+      b.vel[i * 3 + 1] -= gravity * dt;
+      b.pos[i * 3] += b.vel[i * 3] * dt;
+      b.pos[i * 3 + 1] += b.vel[i * 3 + 1] * dt;
+      b.pos[i * 3 + 2] += b.vel[i * 3 + 2] * dt;
+    }
+    b.geo.attributes.position.needsUpdate = true;
+    b.mat.opacity = opacity;
+    if (opacity <= 0) b.points.visible = false;
+  }
+
+  let popped = false;
+  let popTime = 0;
+  const corkFlight = { x: 0, y: 0, z: 0, vx: 0, vy: 0, vz: 0 };
+
+  function pop(now) {
+    popped = true;
+    popTime = now;
+    // The cork leaves the (spinning) bottle and flies out towards the viewer, tumbling, then drops away to one side.
+    scene.attach(cork);
+    const dir = Math.random() < 0.5 ? -1 : 1;
+    Object.assign(corkFlight, { x: cork.position.x, y: cork.position.y, z: cork.position.z, vx: dir * (8 + Math.random() * 3), vy: 16, vz: 34 });
+    launch(droplets, [8, 22], [1.5, 6]);
+    launch(foam, [2, 6], [0.4, 1.6]);
+  }
+
+  function resetCork() {
+    popped = false;
+    bottle.attach(cork);
+    cork.position.set(0, 0, 0);
+    cork.rotation.set(0, 0, 0);
+    cork.visible = true;
+  }
+
+  function updateCork(now, dt) {
+    if (!cork) return;
+    // Progress is based on where the cork is on screen, so it always pops in view, below the sticky header.
+    const rect = stage.getBoundingClientRect();
+    const corkY = rect.top + rect.height * 0.14;
+    const header = document.querySelector(".site-header");
+    const headerH = header ? header.offsetHeight : 0;
+    const startY = Math.min(corkY + window.scrollY, window.innerHeight * 0.7);
+    const popY = Math.max(headerH + 60, Math.min(window.innerHeight * 0.38, startY - 80));
+    const p = Math.max(0, Math.min(1, (startY - corkY) / Math.max(1, startY - popY)));
+    if (!popped) {
+      // The cork eases up out of the neck as the page scrolls, trembling just before it goes.
+      const lift = p * p * 1.1;
+      cork.position.set(0, lift, 0);
+      cork.rotation.set(0, 0, p > 0.4 ? Math.sin(now / 26) * 0.035 * p : 0);
+      if (p >= 1) pop(now);
+      return;
+    }
+    const t = (now - popTime) / 1000;
+    if (t < 1.8) {
+      corkFlight.vy -= 30 * dt;
+      corkFlight.x += corkFlight.vx * dt;
+      corkFlight.y += corkFlight.vy * dt;
+      corkFlight.z += corkFlight.vz * dt;
+      cork.position.set(corkFlight.x, corkFlight.y, corkFlight.z);
+      cork.rotation.x += 7 * dt;
+      cork.rotation.z -= Math.sign(corkFlight.vx) * 5 * dt;
+    } else {
+      cork.visible = false;
+    }
+    fly(droplets, dt, 34, Math.max(0, 1 - Math.max(0, t - 0.5) * 1.4));
+    fly(foam, dt, 9, Math.max(0, 1 - Math.max(0, t - 0.9) * 0.9));
+    // Scroll back up and the cork is back in place, ready to pop again.
+    if (t > 1.8 && p < 0.15) resetCork();
+  }
 
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
   const SPIN = 0.42;        // radians per second when idle
@@ -209,6 +424,7 @@ async function start(stage) {
     if (!reduce.matches) angle += SPIN * dt;
     const scrolled = reduce.matches ? 0 : window.scrollY * SCROLL;
     bottle.rotation.y = angle + scrolled + dragAngle;
+    if (!reduce.matches) updateCork(now, dt);
     renderer.render(scene, camera);
     if (visible && !document.hidden) {
       requestAnimationFrame(frame);

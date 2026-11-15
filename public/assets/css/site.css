@@ -572,3 +572,4 @@ a.label-card:hover h3 { text-decoration: underline; text-underline-offset: 4px; 
   .wm-table tr { display: flex; flex-direction: column; gap: 2px; padding: 10px 0; border-bottom: 1px solid var(--hairline); }
   .wm-table th, .wm-table td { border: 0; padding: 0; }
 }
+.hero-caption { margin-top: 10px; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink); opacity: 0.6; text-align: center; }
