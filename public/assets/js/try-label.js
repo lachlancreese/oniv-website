@@ -548,6 +548,27 @@
     });
   });
 
+  // ---- Prospect mode (?prospect): for outreach, download the bottle picture instead of emailing it -----
+  if (/[?&]prospect\b/.test(location.search)) {
+    var dl = document.createElement("button");
+    dl.type = "button";
+    dl.className = "btn btn--light try-download";
+    dl.textContent = "Download picture";
+    next.insertBefore(dl, next.firstChild);
+    dl.addEventListener("click", function () {
+      if (!state.label) return;
+      dl.disabled = true;
+      bottlePicture().then(function (url) {
+        var who = ((nameInput.value || "").trim() || state.site || "preview").replace(/[^\w .&-]+/g, "").slice(0, 60);
+        var a = document.createElement("a");
+        a.href = url;
+        a.download = "ONIV label preview - " + who + ".jpg";
+        document.body.appendChild(a); a.click(); a.remove();
+        dl.disabled = false;
+      });
+    });
+  }
+
   // ---- Sending it with the enquiry -----------------------------------------------------------
   root.querySelector("[data-try-send]").addEventListener("click", function (e) {
     if (!state.label) return;
