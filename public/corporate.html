@@ -24,7 +24,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" href="/assets/fonts/dm-serif-display-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/dm-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/css/site.css?v=6a2036ea5b">
+<link rel="stylesheet" href="/assets/css/site.css?v=111c85dfec">
 <script type="application/ld+json">
 {
  "@context": "https://schema.org",
@@ -156,7 +156,8 @@
           </div>
           <div class="field">
             <label for="try-msg">Message on the back <span>(change it to anything you like)</span></label>
-            <textarea class="input" id="try-msg" rows="3" maxlength="220">Thank you for your support this year. Wishing you a joyful festive season and a wonderful year ahead.</textarea>
+            <textarea class="input" id="try-msg" rows="3" maxlength="160" aria-describedby="try-msg-count">Thank you for your support this year. Wishing you a joyful festive season and a wonderful year ahead.</textarea>
+            <p class="try-count small muted" id="try-msg-count"></p>
             <div class="try-suggest" hidden>
               <span class="try-label" id="try-ideas-label">Need the words? Pick an occasion</span>
               <div class="try-lines" role="group" aria-labelledby="try-ideas-label" data-occasions></div>
@@ -206,7 +207,7 @@
     </div>
   </div>
 </section>
-<script src="/assets/js/try-label.js?v=b4acd93a45" defer></script>
+<script src="/assets/js/try-label.js?v=bda013096f" defer></script>
 
 <section class="section" aria-labelledby="uses-title">
   <div class="wrap">

@@ -121,11 +121,19 @@
   function matchMessage() {
     // Picking other front words brings the matching back message, unless the visitor has written their own.
     var stock = MESSAGES[(lineInput.value || "").trim().toLowerCase()];
-    if (stock && !msgEdited) msgInput.value = stock;
+    if (stock && !msgEdited) { msgInput.value = stock; countMsg(); }
   }
   root.querySelectorAll("[data-line]").forEach(function (b) {
     b.addEventListener("click", function () { lineInput.value = b.getAttribute("data-line"); matchMessage(); if (state.logo) draw(); });
   });
+  // Character count for the back message: keeps it short enough to print at a readable size.
+  var msgCount = root.querySelector("#try-msg-count");
+  function countMsg() {
+    if (!msgCount) return;
+    var n = msgInput.value.length, max = Number(msgInput.getAttribute("maxlength")) || 160;
+    msgCount.textContent = n + " / " + max + (n >= max ? " (that's the most that fits)" : "");
+  }
+  countMsg();
   // Occasion ideas for the back message.
   var suggest = root.querySelector(".try-suggest");
   if (suggest) {
@@ -145,6 +153,7 @@
         b.addEventListener("click", function () {
           msgInput.value = text;
           msgEdited = true;
+          countMsg();
           ideaBox.querySelectorAll(".try-idea").forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
           if (state.logo) { drawBack(); show("back"); }
         });
@@ -166,6 +175,7 @@
   lineInput.addEventListener("input", function () { matchMessage(); clearTimeout(lineTimer); if (state.logo) lineTimer = setTimeout(draw, 250); });
   msgInput.addEventListener("input", function () {
     msgEdited = msgInput.value.trim() !== "";
+    countMsg();
     root.querySelectorAll(".try-idea").forEach(function (x) { x.setAttribute("aria-pressed", String(x.firstChild.textContent === msgInput.value.trim())); });
     clearTimeout(backTimer); if (state.logo) backTimer = setTimeout(function () { drawBack(); show("back"); }, 300);
   });
@@ -459,7 +469,7 @@
     g.textAlign = "center"; g.textBaseline = "alphabetic";
 
     var name = (nameInput.value || "").trim().slice(0, 50);
-    var msg = (msgInput.value || "").trim().slice(0, 220);
+    var msg = (msgInput.value || "").trim().slice(0, 160);
     var y = 150;
     g.fillStyle = hex(col.accent);
     g.fillRect(W / 2 - 40, y - 10, 80, 3);
@@ -591,7 +601,7 @@
       site: state.site,
       line: (lineInput.value || "").trim().slice(0, 40),
       name: (nameInput.value || "").trim().slice(0, 50) || state.name,
-      message: (msgInput.value || "").trim().slice(0, 220),
+      message: (msgInput.value || "").trim().slice(0, 160),
       wine: wineSel.value,
       style: state.style,
       cases: cases(),

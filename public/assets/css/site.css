@@ -598,6 +598,7 @@ a.label-card:hover h3 { text-decoration: underline; text-underline-offset: 4px; 
 .try-chip:hover { border-color: var(--ink); }
 .try-chip[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
 .try-label { font-size: 14px; font-weight: 600; }
+.try-count { text-align: right; margin-top: -2px; }
 .try-suggest { display: grid; gap: 10px; margin-top: 6px; }
 .try-ideas { display: grid; gap: 8px; }
 .try-idea { font: inherit; font-size: 14px; line-height: 1.45; color: var(--ink); text-align: left; background: var(--paper); border: 1px solid var(--stone); border-radius: 10px; padding: 10px 12px; cursor: pointer; display: flex; gap: 12px; align-items: flex-start; justify-content: space-between; }
