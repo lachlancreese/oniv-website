@@ -1,0 +1,78 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="ready.css"><style>
+.label { background: #24382E; color: #F2EADB; }
+.frame { position: absolute; inset: 38px; border: 1.5px solid rgba(206,176,114,0.75); }
+.words { top: 590px; font-size: 168px; line-height: 1; letter-spacing: -0.01em; }
+.rule { position: absolute; top: 815px; left: 50%; width: 110px; margin-left: -55px; border-top: 2px solid #CEB072; }
+.from { top: 852px; font-size: 24px; color: #E9DFCB; }
+.style { top: 1060px; font-size: 22px; color: #CEB072; }
+</style></head><body><div class="label">
+<canvas class="art" id="art" width="1063" height="1181"></canvas>
+<div class="frame"></div>
+<div class="t words garamond italic">With thanks</div>
+<div class="rule"></div>
+<div class="t from caps">Harbourline Real Estate</div>
+<div class="t style caps">Chardonnay &middot; 2025</div>
+</div>
+<script src="paint.js"></script><script>
+// A hanging eucalyptus branch in fine gold line, with gumnuts, on deep bush green.
+(function () {
+  const p = painter(document.getElementById("art"), 20260414);
+  const { g, rr, rnd, hsl } = p;
+  p.paper("#24382E", 0.035, 0.03);
+  const GOLD = "rgba(214,184,120,0.95)", GOLD_SOFT = "rgba(214,184,120,0.55)";
+  // The branch: hanging into the label from the top, sweeping down to the left.
+  const branch = [];
+  for (let i = 0; i <= 30; i++) {
+    const t = i / 30;
+    branch.push([1010 - t * 830 - Math.sin(t * Math.PI) * 30, -40 + t * 470 - Math.sin(t * Math.PI) * 90]);
+  }
+  p.stem(branch, 3.4, GOLD);
+  const dirAt = (i) => { const a = branch[Math.max(0, i - 1)], b = branch[Math.min(30, i + 1)]; return Math.atan2(b[1] - a[1], b[0] - a[0]); };
+  // Leaves: alternate sides, drooping a little, longer near the base of the branch.
+  function hang(x, y, ang, scale) {
+    const len = rr(120, 190) * scale, wid = rr(15, 23) * Math.sqrt(scale), bend = rr(-0.22, 0.22);
+    const fill = rnd() < 0.25 ? "rgba(206,176,114,0.2)" : hsl(rr(140, 165), rr(14, 24), rr(24, 34), 0.95);
+    p.leaf(x, y, ang, len, wid, bend, fill, GOLD, { edgeWidth: 1.7, vein: GOLD_SOFT, veinWidth: 1.1 });
+  }
+  const twigs = [];
+  [5, 10, 15, 20, 25].forEach((i, k) => {
+    const b = branch[i], side = k % 2 ? 1 : -1;
+    const ang = dirAt(i) + side * 0.7 + 0.25;
+    const len = rr(120, 170);
+    const end = [b[0] + Math.cos(ang) * len, b[1] + Math.sin(ang) * len];
+    p.stem([b, [(b[0] + end[0]) / 2 + rr(-10, 10), (b[1] + end[1]) / 2 + rr(-10, 10)], end], 2.2, GOLD);
+    twigs.push({ b, end, ang });
+  });
+  for (let i = 2; i <= 30; i += 1) {
+    const b = branch[i], d = dirAt(i), side = i % 2 ? 1 : -1;
+    const droop = d + side * rr(0.6, 1.25);
+    hang(b[0], b[1], droop * 0.8 + (Math.PI / 2) * 0.2, 1.05 - i / 70);
+  }
+  twigs.forEach((t) => {
+    for (let k = 1; k <= 3; k++) {
+      const f = k / 3.2;
+      const x = t.b[0] + (t.end[0] - t.b[0]) * f, y = t.b[1] + (t.end[1] - t.b[1]) * f;
+      hang(x, y, t.ang + (k % 2 ? 0.6 : -0.6) * 0.8 + 0.15, 0.85);
+    }
+    hang(t.end[0], t.end[1], t.ang, 0.8);
+  });
+  // Gumnut clusters: little cups with a cap line.
+  function gumnut(x, y, r, ang) {
+    g.save(); g.translate(x, y); g.rotate(ang);
+    g.beginPath(); g.moveTo(-r, 0); g.quadraticCurveTo(-r * 0.9, r * 1.5, 0, r * 1.6); g.quadraticCurveTo(r * 0.9, r * 1.5, r, 0); g.closePath();
+    g.fillStyle = "rgba(206,176,114,0.18)"; g.fill(); g.strokeStyle = GOLD; g.lineWidth = 1.6; g.stroke();
+    g.beginPath(); g.ellipse(0, 0, r, r * 0.32, 0, 0, Math.PI * 2); g.stroke();
+    g.restore();
+  }
+  [[0.3, 1], [0.6, -1]].forEach(([t, side]) => {
+    const b = branch[Math.round(t * 30)];
+    for (let k = 0; k < 3; k++) {
+      const a = Math.PI / 2 + side * 0.4 + (k - 1) * 0.45;
+      const ex = b[0] + Math.cos(a) * 46, ey = b[1] + Math.sin(a) * 46;
+      p.stem([b, [ex, ey]], 1.4, GOLD);
+      gumnut(ex, ey, 10, a - Math.PI / 2);
+    }
+  });
+  p.grainOver(0.03);
+})();
+</script></body></html>

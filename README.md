@@ -106,6 +106,13 @@ The example labels (fictional names, captioned "Example label design") are HTML 
 `python3 tools/hero3d/poster.py /page-path new-name` (run `npx wrangler dev --port 8787` first), giving it a new name
 so browsers fetch the new one, and update the page.
 
+## Ready-made designs (draft, not live yet)
+
+Six ready-made label designs for buyers without a logo (Christmas wreath, gold gum leaf thank you, terrace
+"Welcome Home", Fizz celebration, garden roses wedding, 21st cut-outs) are in `tools/labels/ready/`. Each is an
+HTML page with its artwork painted in code (`paint.js` holds the shared helpers; fonts and their OFL licences are
+in `fonts/`). Render them for review with `python3 tools/labels/ready/render.py` (PNGs and WebPs go to /tmp/ready).
+
 ## "Try it with your logo" preview (Home and Corporate)
 
 A shared section (`pages/partials/try.html`, added to a page with `<!--include:try-->`) lets a visitor type their

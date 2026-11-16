@@ -1,0 +1,68 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="ready.css"><style>
+.label { background: #1C2430; color: #F3ECDF; }
+.gold { background: linear-gradient(172deg, #A07A3A 0%, #F2DCA4 34%, #B98F48 56%, #F6E4B4 74%, #9E7838 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.kicker { top: 404px; font-size: 24px; }
+.words { top: 440px; font-size: 236px; line-height: 1; padding-bottom: 30px; }
+.for { top: 720px; font-size: 40px; color: #EDE4D3; }
+.style { top: 1070px; font-size: 22px; }
+</style></head><body><div class="label">
+<canvas class="art" id="art" width="1063" height="1181"></canvas>
+<div class="t kicker caps gold">Let's celebrate</div>
+<div class="t words garamond italic gold">Cheers</div>
+<div class="t for garamond italic">to twenty-five years of Calder &amp; Co.</div>
+<div class="t style caps gold">Brut NV &middot; Sparkling</div>
+</div>
+<script src="paint.js"></script><script>
+// Rising gold bubbles, sparkles and a little confetti on deep midnight, with a clear space for the words.
+(function () {
+  const p = painter(document.getElementById("art"), 20270101);
+  const { g, W, H, rr, rnd, hsl } = p;
+  p.paper("#1C2430", 0.03, 0.05);
+  // A soft glow behind the words.
+  const glow = g.createRadialGradient(531, 560, 40, 531, 560, 520);
+  glow.addColorStop(0, "rgba(210,170,100,0.16)"); glow.addColorStop(1, "rgba(0,0,0,0)");
+  g.fillStyle = glow; g.fillRect(0, 0, W, H);
+  const clear = (x, y) => { const dx = (x - 531) / 390, dy = (y - 590) / 240; return dx * dx + dy * dy < 1 || (y > 1035 && y < 1115 && x > 260 && x < 800); };
+  function bubble(x, y, r) {
+    const a = clear(x, y) ? 0.25 : 1;
+    const gr = g.createRadialGradient(x - r * 0.35, y - r * 0.35, r * 0.1, x, y, r);
+    gr.addColorStop(0, `rgba(246,226,172,${0.18 * a})`); gr.addColorStop(0.75, `rgba(214,176,104,${0.06 * a})`); gr.addColorStop(1, `rgba(236,206,140,${0.32 * a})`);
+    g.beginPath(); g.arc(x, y, r, 0, Math.PI * 2); g.fillStyle = gr; g.fill();
+    g.lineWidth = Math.max(1, r / 14); g.strokeStyle = `rgba(232,200,130,${0.75 * a})`; g.stroke();
+    g.beginPath(); g.arc(x, y, r * 0.68, Math.PI * 1.1, Math.PI * 1.45); g.lineWidth = Math.max(1, r / 9); g.strokeStyle = `rgba(255,244,214,${0.8 * a})`; g.stroke();
+  }
+  // Streams of bubbles rising from the bottom, smaller as they climb.
+  for (let st = 0; st < 11; st++) {
+    let x = 40 + (st + rr(0.1, 0.9)) * (980 / 11), y = H + 20;
+    const stop = rr(30, 520);
+    const drift = rr(-0.25, 0.25);
+    while (y > stop) {
+      const r = Math.max(3, (y / H) * rr(10, 30) * (rnd() < 0.12 ? 1.8 : 1));
+      bubble(x, y, r);
+      y -= r * rr(3.2, 6.5); x += Math.sin(y / 60 + st) * 6 + drift * r;
+    }
+  }
+  // Loose bubbles.
+  for (let i = 0; i < 34; i++) bubble(rr(30, 1030), rr(30, 1150), rr(3, 10));
+  // Sparkles: four-point stars with a glow.
+  function sparkle(x, y, r) {
+    if (clear(x, y)) return;
+    const gl = g.createRadialGradient(x, y, 0, x, y, r * 2.2); gl.addColorStop(0, "rgba(255,236,190,0.45)"); gl.addColorStop(1, "rgba(255,236,190,0)");
+    g.fillStyle = gl; g.fillRect(x - r * 2.2, y - r * 2.2, r * 4.4, r * 4.4);
+    g.beginPath();
+    for (let k = 0; k < 8; k++) { const a = (k / 8) * Math.PI * 2, rad = k % 2 ? r * 0.18 : r; g.lineTo(x + Math.cos(a) * rad, y + Math.sin(a) * rad); }
+    g.closePath(); g.fillStyle = "rgba(255,240,205,0.95)"; g.fill();
+  }
+  for (let i = 0; i < 14; i++) sparkle(rr(40, 1020), rr(40, 1140), rr(6, 16));
+  // Confetti: gold slivers and a few sage and cream flecks.
+  for (let i = 0; i < 60; i++) {
+    const x = rr(20, 1040), y = rr(20, 1160);
+    if (clear(x, y) || (y > 1040 && y < 1110 && x > 300 && x < 760)) continue;
+    g.save(); g.translate(x, y); g.rotate(rr(0, Math.PI));
+    const c = rnd() < 0.7 ? hsl(rr(38, 46), rr(55, 70), rr(58, 74), 0.9) : rnd() < 0.5 ? hsl(140, 14, 62, 0.85) : "rgba(244,236,222,0.85)";
+    g.fillStyle = c; g.fillRect(-rr(3, 9), -2, rr(6, 18), rr(3, 5));
+    g.restore();
+  }
+  p.grainOver(0.025);
+})();
+</script></body></html>

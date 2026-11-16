@@ -1,0 +1,159 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="ready.css"><style>
+.label { background: #F4EFE6; color: #22211F; }
+.words { top: 842px; font-size: 104px; line-height: 1; }
+.addr { top: 978px; font-size: 24px; color: #5B5650; }
+.style { top: 1078px; font-size: 22px; color: #8A847B; }
+</style></head><body><div class="label">
+<canvas class="art" id="art" width="1063" height="1181"></canvas>
+<div class="t words serif">Welcome Home</div>
+<div class="t addr caps">12 Ashby Street &middot; Northcote</div>
+<div class="t style caps">Pinot Noir &middot; 2025</div>
+</div>
+<script src="paint.js"></script><script>
+// A Melbourne Victorian terrace, in ink line and watercolour wash: parapet and finials, bullnose verandah,
+// iron lace, a sage front door with a fanlight, picket fence and garden.
+(function () {
+  const p = painter(document.getElementById("art"), 18910312);
+  const { g, rr, rnd, hsl } = p;
+  p.paper("#F4EFE6", 0.045);
+  const INK = "rgba(44,42,39,0.88)";
+  const jit = (v, a = 0.9) => v + rr(-a, a);
+  function line(pts, w = 2, col = INK) {
+    g.beginPath();
+    pts.forEach((q, i) => {
+      if (i === 0) { g.moveTo(jit(q[0]), jit(q[1])); return; }
+      const a = pts[i - 1], steps = Math.max(1, Math.round(Math.hypot(q[0] - a[0], q[1] - a[1]) / 40));
+      for (let k = 1; k <= steps; k++) { const t = k / steps; g.lineTo(jit(a[0] + (q[0] - a[0]) * t, 0.7), jit(a[1] + (q[1] - a[1]) * t, 0.7)); }
+    });
+    g.strokeStyle = col; g.lineWidth = w; g.lineJoin = "round"; g.lineCap = "round"; g.stroke();
+  }
+  const rect = (x, y, w, h, lw = 2, col = INK) => line([[x, y], [x + w, y], [x + w, y + h], [x, y + h], [x, y]], lw, col);
+  function fill(x, y, w, h, h_, s, l, a = 0.85, grad = 0) {
+    for (let i = 0; i < 3; i++) {
+      g.beginPath(); g.rect(x + rr(-2, 2), y + rr(-2, 2), w + rr(-2, 2), h + rr(-2, 2));
+      if (grad) { const gr = g.createLinearGradient(0, y, 0, y + h); gr.addColorStop(0, hsl(h_, s, l - grad, a / 2.2)); gr.addColorStop(1, hsl(h_, s, l + grad / 2, a / 2.2)); g.fillStyle = gr; }
+      else g.fillStyle = hsl(h_ + rr(-3, 3), s, l + rr(-2, 2), a / 2.2);
+      g.fill();
+    }
+  }
+  // Sky and garden washes behind everything.
+  p.wash(531, 300, 430, 205, 24, 86, 0.32, 6, 1.05, 0.8);
+  p.wash(531, 790, 380, 95, 20, 70, 0.22, 4, 1.25, 0.18);
+
+  // A tree at the left, behind the house.
+  line([[150, 790], [156, 620], [146, 470], [166, 300]], 7, "rgba(110,96,82,0.7)");
+  line([[156, 520], [205, 430]], 3, "rgba(110,96,82,0.6)"); line([[150, 430], [110, 360]], 3, "rgba(110,96,82,0.6)");
+  for (let i = 0; i < 30; i++) p.wash(rr(60, 270), rr(80, 460), rr(30, 62), rr(85, 115), rr(12, 20), rr(52, 66), 0.36, 3);
+
+  // ---- The house ----
+  const X0 = 251, X1 = 812, CX = 531.5;
+  const STONE = [38, 30, 84];
+  // A solid base so nothing behind shows through the walls.
+  g.fillStyle = "#EFE7D9"; g.fillRect(236, 112, 591, 600);
+  g.beginPath(); g.moveTo(431, 113); g.quadraticCurveTo(CX, 30, 632, 113); g.closePath(); g.fill();
+  // Parapet, pediment and finials.
+  fill(236, 112, 591, 62, ...STONE, 0.9);
+  fill(X0, 186, X1 - X0, 116, ...STONE, 0.85, 4);
+  // Pediment: a rounded arch over the parapet.
+  g.beginPath(); g.moveTo(431, 113); g.quadraticCurveTo(CX, 30, 632, 113); g.closePath(); g.fillStyle = hsl(38, 30, 82, 0.9); g.fill();
+  g.beginPath(); g.moveTo(jit(431), 113); g.quadraticCurveTo(CX, 30, jit(632), 113); g.strokeStyle = INK; g.lineWidth = 2; g.stroke();
+  g.beginPath(); g.moveTo(452, 112); g.quadraticCurveTo(CX, 50, 611, 112); g.lineWidth = 1.2; g.stroke();
+  g.fillStyle = INK; g.font = "500 22px 'Cormorant Garamond'"; g.textAlign = "center"; g.fillText("1891", CX, 103);
+  [[246, 1], [817, 1]].forEach(([x]) => {
+    rect(x - 14, 90, 28, 22, 1.6);
+    g.beginPath(); g.arc(x, 76, 13, 0, Math.PI * 2); g.fillStyle = hsl(38, 26, 80, 0.95); g.fill(); g.strokeStyle = INK; g.lineWidth = 1.6; g.stroke();
+  });
+  rect(236, 112, 591, 62);
+  line([[226, 174], [837, 174], [837, 188], [226, 188], [226, 174]], 2);
+  // Little corbels under the cornice.
+  for (let x = 262; x < 800; x += 46) { rect(x, 188, 12, 16, 1.3); }
+  // Two moulded panels on the upper wall.
+  rect(300, 214, 190, 64, 1.4); rect(573, 214, 190, 64, 1.4);
+  [[395, 246], [668, 246]].forEach(([x, y]) => { g.beginPath(); g.arc(x, y, 14, 0, Math.PI * 2); g.strokeStyle = INK; g.lineWidth = 1.3; g.stroke(); g.beginPath(); g.arc(x, y, 5, 0, Math.PI * 2); g.stroke(); });
+  // Wing walls.
+  fill(236, 112, 15, 600, ...STONE, 0.9); fill(812, 112, 15, 600, ...STONE, 0.9);
+  rect(236, 188, 15, 524, 1.6); rect(812, 188, 15, 524, 1.6);
+
+  // Ground-floor wall, in the shade of the verandah.
+  fill(X0, 404, X1 - X0, 290, 34, 24, 74, 0.9, 6);
+  // Bullnose verandah roof: stripes, darker where it curves away.
+  for (let x = X0, k = 0; x < X1; x += 15, k++) {
+    g.beginPath(); g.rect(x, 300, 15, 68);
+    const gr = g.createLinearGradient(0, 300, 0, 368);
+    const c = k % 2 ? [150, 14, 58] : [150, 12, 72];
+    gr.addColorStop(0, hsl(c[0], c[1], c[2] - 14, 0.9)); gr.addColorStop(0.55, hsl(c[0], c[1], c[2], 0.9)); gr.addColorStop(1, hsl(c[0], c[1], c[2] + 6, 0.9));
+    g.fillStyle = gr; g.fill();
+  }
+  for (let x = X0; x <= X1; x += 15) line([[x, 301], [x, 367]], 0.8, "rgba(44,42,39,0.35)");
+  line([[X0 - 8, 300], [X1 + 8, 300]], 2.2); line([[X0 - 6, 368], [X1 + 6, 368]], 2);
+  // Iron lace frieze.
+  line([[X0, 372], [X1, 372]], 1.6); line([[X0, 404], [X1, 404]], 1.6);
+  for (let x = X0 + 14; x < X1 - 10; x += 28) {
+    g.beginPath(); g.arc(x, 388, 9, 0, Math.PI * 2); g.strokeStyle = INK; g.lineWidth = 1.3; g.stroke();
+    g.beginPath(); g.arc(x, 388, 3, 0, Math.PI * 2); g.fillStyle = INK; g.fill();
+    g.beginPath(); g.moveTo(x + 9, 388); g.quadraticCurveTo(x + 14, 376, x + 19, 388); g.stroke();
+  }
+  // Posts with lace brackets.
+  [[X0 + 10, 1], [X1 - 10, -1]].forEach(([x, dir]) => {
+    rect(x - 4, 404, 8, 290, 1.6);
+    fill(x - 4, 404, 8, 290, 150, 14, 40, 0.9);
+    for (let k = 0; k < 3; k++) { g.beginPath(); g.arc(x + dir * (14 + k * 14), 404 + 10 + k * 10, 8 - k * 1.5, 0, Math.PI * 2); g.strokeStyle = INK; g.lineWidth = 1.2; g.stroke(); }
+    line([[x, 404 + 52], [x + dir * 56, 404]], 1.3);
+  });
+
+  // Window: tall double-hung, with a sill.
+  fill(296, 450, 196, 212, 38, 26, 86, 0.95);
+  rect(296, 450, 196, 212, 2);
+  const glass = (x, y, w, h) => { const gr = g.createLinearGradient(x, y, x + w, y + h); gr.addColorStop(0, hsl(205, 22, 62, 0.85)); gr.addColorStop(1, hsl(200, 18, 78, 0.85)); g.fillStyle = gr; g.fillRect(x, y, w, h); rect(x, y, w, h, 1.4); line([[x + w * 0.18, y + h * 0.15], [x + w * 0.42, y + h * 0.05]], 2.2, "rgba(255,255,255,0.55)"); };
+  glass(312, 466, 164, 82); glass(312, 556, 164, 88);
+  line([[CX - 235, 548], [CX - 75, 548]], 0); line([[394, 466], [394, 548]], 1.4); line([[394, 556], [394, 644]], 1.4);
+  fill(286, 662, 216, 12, ...STONE, 0.95); rect(286, 662, 216, 12, 1.8);
+  // Front door with fanlight, sidelights and a brass knob.
+  fill(578, 426, 150, 268, 38, 26, 86, 0.95); rect(578, 426, 150, 268, 2);
+  // Fanlight with radiating bars and the house number.
+  g.save(); g.beginPath(); g.rect(592, 438, 122, 40); g.clip();
+  g.fillStyle = hsl(205, 20, 70, 0.85); g.fillRect(592, 438, 122, 40);
+  for (let k = 0; k <= 8; k++) { const a = Math.PI + (k / 8) * Math.PI; line([[653, 478], [653 + Math.cos(a) * 90, 478 + Math.sin(a) * 90]], 1.1); }
+  g.restore(); rect(592, 438, 122, 40, 1.6);
+  g.beginPath(); g.arc(653, 478, 16, Math.PI, 0); g.fillStyle = hsl(40, 45, 70, 0.95); g.fill(); g.strokeStyle = INK; g.lineWidth = 1.2; g.stroke();
+  g.fillStyle = INK; g.font = "600 17px 'DM Sans'"; g.textAlign = "center"; g.fillText("12", 653, 476);
+  // Sidelights.
+  glass(592, 488, 12, 130); glass(702, 488, 12, 130);
+  // The door: deep sage, four panels.
+  fill(610, 486, 86, 208, 152, 18, 38, 0.95, 4); rect(610, 486, 86, 208, 2);
+  [[620, 498], [656, 498], [620, 596], [656, 596]].forEach(([x, y]) => rect(x, y, 30, 84, 1.3, "rgba(230,224,210,0.55)"));
+  g.beginPath(); g.arc(684, 594, 5, 0, Math.PI * 2); g.fillStyle = hsl(42, 60, 58); g.fill();
+  // A potted bay tree by the door.
+  line([[548, 690], [552, 612]], 3, "rgba(92,78,64,0.8)");
+  g.beginPath(); g.moveTo(528, 650); g.lineTo(572, 650); g.lineTo(565, 694); g.lineTo(535, 694); g.closePath(); g.fillStyle = hsl(30, 20, 70, 0.95); g.fill(); g.strokeStyle = INK; g.lineWidth = 1.6; g.stroke();
+  for (let i = 0; i < 9; i++) p.wash(552 + rr(-16, 16), 596 + rr(-16, 14), rr(14, 22), rr(100, 125), 20, rr(36, 50), 0.55, 2);
+  // Tessellated tiles on the verandah floor.
+  for (let x = X0, k = 0; x < X1; x += 11, k++) for (let r = 0; r < 2; r++) { g.fillStyle = (k + r) % 2 ? "rgba(58,54,51,0.8)" : "rgba(233,225,210,0.9)"; g.fillRect(x, 694 + r * 8, 11, 8); }
+  line([[X0, 694], [X1, 694]], 1.8); line([[X0, 710], [X1, 710]], 1.8);
+
+  // ---- The fence and gate ----
+  const FY = 712, FB = 772;
+  fill(214, FB - 6, 635, 14, ...STONE, 0.95); rect(214, FB - 6, 635, 14, 1.6);
+  function picket(x, top) { line([[x, top + 8], [x, FB - 6]], 2.2); g.beginPath(); g.moveTo(x - 4, top + 9); g.lineTo(x, top); g.lineTo(x + 4, top + 9); g.closePath(); g.fillStyle = INK; g.fill(); }
+  for (let x = 222; x < 846; x += 15) { if (x > 596 && x < 712) continue; picket(x, FY); }
+  // Gate: a gentle arch of pickets between two posts.
+  for (let x = 606; x <= 702; x += 12) picket(x, FY + 10 - Math.sin(((x - 600) / 108) * Math.PI) * 16);
+  [[596], [712]].forEach(([x]) => { fill(x - 7, FY - 4, 14, FB - FY - 2, ...STONE, 0.95); rect(x - 7, FY - 4, 14, FB - FY - 2, 1.6); rect(x - 9, FY - 10, 18, 6, 1.4); });
+  line([[214, FY + 18], [590, FY + 18]], 1.6); line([[214, FB - 18], [590, FB - 18]], 1.6);
+  line([[718, FY + 18], [849, FY + 18]], 1.6); line([[718, FB - 18], [849, FB - 18]], 1.6);
+  line([[602, FY + 30], [706, FY + 30]], 1.4); line([[602, FB - 18], [706, FB - 18]], 1.4);
+
+  // ---- Garden in front of the fence: clipped hedges and lavender ----
+  for (let i = 0; i < 22; i++) { const x = rr(200, 580); p.wash(x, rr(770, 800), rr(22, 36), rr(95, 125), rr(14, 22), rr(42, 56), 0.55, 3, 1, 0.75); }
+  for (let i = 0; i < 12; i++) { const x = rr(724, 868); p.wash(x, rr(770, 800), rr(20, 32), rr(95, 125), rr(14, 22), rr(42, 56), 0.55, 3, 1, 0.75); }
+  for (let i = 0; i < 40; i++) {
+    const x = rr(212, 575), y = rr(745, 770);
+    line([[x, y + 30], [x + rr(-4, 4), y]], 1.2, "rgba(96,110,90,0.7)");
+    for (let k = 0; k < 4; k++) { g.beginPath(); g.ellipse(x + rr(-2, 2), y + k * 4, 2.2, 3.2, 0, 0, Math.PI * 2); g.fillStyle = hsl(rr(262, 278), 28, rr(60, 72), 0.85); g.fill(); }
+  }
+  // The path to the gate.
+  g.beginPath(); g.moveTo(604, 772); g.lineTo(704, 772); g.lineTo(724, 806); g.lineTo(584, 806); g.closePath(); g.fillStyle = hsl(34, 18, 80, 0.9); g.fill();
+  line([[604, 772], [584, 806]], 1.4); line([[704, 772], [724, 806]], 1.4);
+  p.grainOver(0.03);
+})();
+</script></body></html>

@@ -1,0 +1,80 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="ready.css"><style>
+.label { background: #F4EEE2; color: #1F2A24; }
+.kicker { top: 388px; font-size: 24px; color: #8C6A3C; }
+.words { top: 426px; font-size: 96px; line-height: 1.02; }
+.from { top: 960px; font-size: 24px; color: #3E4A43; }
+.style { top: 1075px; font-size: 22px; color: #6B675F; }
+</style></head><body><div class="label">
+<canvas class="art" id="art" width="1063" height="1181"></canvas>
+<div class="t kicker caps">Christmas 2026</div>
+<div class="t words serif">Season's<br>Greetings</div>
+<div class="t from caps">With love from Harbourline</div>
+<div class="t style caps">Shiraz &middot; 2025</div>
+</div>
+<script src="paint.js"></script><script>
+// An Australian Christmas wreath: gum leaves, silver-dollar eucalyptus, NSW Christmas bush and wattle.
+(function () {
+  const p = painter(document.getElementById("art"), 20261225);
+  const { g, rr, rnd, hsl } = p;
+  p.paper("#F4EEE2", 0.05);
+  const cx = 531.5, cy = 512, R = 306;
+  const at = (a, r) => [cx + Math.cos(a) * r, cy + Math.sin(a) * r];
+  // A soft green halo under the wreath.
+  for (let i = 0; i < 26; i++) { const a = (i / 26) * Math.PI * 2; const [x, y] = at(a, R + rr(-10, 10)); p.wash(x, y, rr(60, 95), 150, 18, 72, 0.12, 3); }
+  // Twigs.
+  for (let k = 0; k < 3; k++) {
+    const pts = []; const a0 = rr(0, 6.28);
+    for (let i = 0; i <= 40; i++) { const a = a0 + (i / 40) * Math.PI * 2 * rr(0.55, 0.75); pts.push(at(a, R + Math.sin(i * 0.7 + k) * 14)); }
+    p.stem(pts, rr(2, 3.2), "rgba(110,88,70,0.55)");
+  }
+  // Gum leaves, darker underneath and lighter on top.
+  const leaves = [];
+  for (let i = 0; i < 215; i++) {
+    const a = rr(0, Math.PI * 2);
+    const r = R + rr(-48, 48);
+    const dir = a + Math.PI / 2 + rr(-0.75, 0.75) + (rnd() < 0.5 ? 0 : Math.PI) * 0;
+    const sage = rnd() < 0.3;
+    leaves.push({ a, r, dir, len: rr(70, 134), wid: rr(10, 18), bend: rr(-0.24, 0.24), h: sage ? rr(120, 150) : rr(165, 196), s: sage ? rr(12, 22) : rr(14, 30), l: rr(32, 64) });
+  }
+  leaves.sort((x, y) => x.l - y.l);
+  leaves.forEach((L) => {
+    const [x, y] = at(L.a, L.r);
+    p.leaf(x, y, L.dir, L.len, L.wid, L.bend, null, hsl(L.h, L.s, L.l - 14, 0.35), {
+      gradient: [hsl(L.h, L.s, L.l - 6, 0.9), hsl(L.h + 8, L.s - 4, L.l + 8, 0.9)], vein: hsl(L.h, L.s, L.l + 16, 0.45), veinWidth: 1.1,
+    });
+  });
+  // Silver-dollar gum: flat round leaves, pale blue-grey, with a fine vein.
+  for (let i = 0; i < 28; i++) {
+    const a = rr(0, Math.PI * 2);
+    const [x, y] = at(a, R + rr(-40, 44));
+    const r = rr(12, 19);
+    p.blobPath(x, y, r, 0.06, 18, 1, rr(0.8, 1));
+    g.fillStyle = hsl(rr(180, 195), rr(12, 18), rr(70, 80), 0.92); g.fill();
+    g.strokeStyle = hsl(195, 14, 52, 0.45); g.lineWidth = 1.1; g.stroke();
+    g.beginPath(); g.moveTo(x, y); g.lineTo(x + Math.cos(a + 1.2) * r * 0.8, y + Math.sin(a + 1.2) * r * 0.8);
+    g.strokeStyle = hsl(195, 12, 58, 0.5); g.lineWidth = 1; g.stroke();
+  }
+  // NSW Christmas bush: clusters of small star flowers, dusty rose to soft coral.
+  for (let c = 0; c < 15; c++) {
+    const a = (c / 15) * Math.PI * 2 + rr(-0.15, 0.15);
+    const [x0, y0] = at(a, R + rr(-34, 34));
+    const n = Math.round(rr(5, 9));
+    for (let i = 0; i < n; i++) {
+      const x = x0 + rr(-30, 30), y = y0 + rr(-30, 30);
+      p.starFlower(x, y, rr(10, 15), hsl(rr(348, 362) % 360, rr(30, 40), rr(60, 70), 0.92), hsl(345, 30, 40, 0.9), rr(0, 6.28));
+    }
+  }
+  // Wattle sprigs.
+  for (let c = 0; c < 11; c++) {
+    const a = ((c + 0.5) / 11) * Math.PI * 2 + rr(-0.12, 0.12);
+    const [x0, y0] = at(a, R + rr(-30, 30));
+    for (let i = 0; i < Math.round(rr(4, 7)); i++) p.puff(x0 + rr(-22, 22), y0 + rr(-22, 22), rr(5, 8), 44, 62, 60);
+  }
+  // A few gold flecks.
+  for (let i = 0; i < 60; i++) {
+    const [x, y] = at(rr(0, Math.PI * 2), R + rr(-80, 80));
+    g.beginPath(); g.arc(x, y, rr(1.2, 3), 0, Math.PI * 2); g.fillStyle = hsl(40, 55, rr(55, 70), 0.85); g.fill();
+  }
+  p.grainOver(0.035);
+})();
+</script></body></html>

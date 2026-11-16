@@ -1,0 +1,12 @@
+@import url("../base.css");
+@font-face { font-family: "Pinyon Script"; src: url("fonts/pinyon-script-latin-400-normal.woff2"); }
+@font-face { font-family: "Cormorant Garamond"; src: url("fonts/cormorant-garamond-latin-500-normal.woff2"); font-weight: 500; }
+@font-face { font-family: "Cormorant Garamond"; src: url("fonts/cormorant-garamond-latin-500-italic.woff2"); font-weight: 500; font-style: italic; }
+@font-face { font-family: "Cormorant Garamond"; src: url("fonts/cormorant-garamond-latin-600-italic.woff2"); font-weight: 600; font-style: italic; }
+@font-face { font-family: "Italiana"; src: url("fonts/italiana-latin-400-normal.woff2"); }
+canvas.art { position: absolute; left: 0; top: 0; width: 1063px; height: 1181px; display: block; }
+.t { position: absolute; left: 0; width: 100%; text-align: center; }
+.script { font-family: "Pinyon Script", cursive; font-weight: 400; }
+.garamond { font-family: "Cormorant Garamond", serif; font-weight: 500; }
+.italic { font-style: italic; }
+.italiana { font-family: "Italiana", serif; }
