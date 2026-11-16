@@ -19,7 +19,42 @@
     "season's greetings": "Thank you for your support this year. Wishing you a joyful festive season and a wonderful year ahead.",
     "with our thanks": "Thank you for your partnership. We hope this bottle finds its way to a good table.",
     "client reserve": "A wine chosen for the people we're glad to work with. Here's to what we build next.",
+    "welcome home": "Congratulations on your new home. Wishing you many happy years here.",
+    "congratulations": "Congratulations on a wonderful achievement. Here's to everything that comes next.",
+    "here's to ten years": "Here's to the years behind us and the many ahead. Thank you for being part of the journey.",
   };
+  // Back-message ideas, by occasion. Tapping one puts it on the back label.
+  var IDEAS = [
+    ["Christmas", [
+      "Thank you for your support this year. Wishing you a joyful festive season and a wonderful year ahead.",
+      "Thank you for a great year together. Enjoy a well-earned break over the holidays, and here's to the year ahead.",
+      "Wishing you and your family a very happy Christmas and a safe, relaxing break. Thank you for being part of our year.",
+    ]],
+    ["Thank you", [
+      "Thank you for your partnership. We hope this bottle finds its way to a good table.",
+      "A small thank you for your trust and support. It means a great deal to all of us.",
+      "Thank you for choosing to work with us. We're grateful for clients like you.",
+    ]],
+    ["New home", [
+      "Congratulations on your new home. Wishing you many happy years here.",
+      "Welcome home. May this be the first of many celebrations under your new roof.",
+      "Congratulations on getting the keys. Here's to new beginnings and good times ahead.",
+    ]],
+    ["Congratulations", [
+      "Congratulations on a wonderful achievement. Here's to everything that comes next.",
+      "Well done. Your hard work deserves a proper celebration.",
+      "Congratulations from all of us. Enjoy the moment, you've earned it.",
+    ]],
+    ["Milestone", [
+      "Here's to the years behind us and the many ahead. Thank you for being part of the journey.",
+      "Celebrating a milestone with the people who made it possible. Thank you.",
+      "Happy anniversary. Here's to many more years together.",
+    ]],
+    ["Welcome", [
+      "Welcome to the team. We're so glad you're here.",
+      "Welcome aboard. Here's to a great start and everything we'll achieve together.",
+    ]],
+  ];
   var msgEdited = false, nameEdited = false;
   var wineSel = root.querySelector("#try-wine");
   var casesInput = root.querySelector("#try-cases");
@@ -91,10 +126,47 @@
   root.querySelectorAll("[data-line]").forEach(function (b) {
     b.addEventListener("click", function () { lineInput.value = b.getAttribute("data-line"); matchMessage(); if (state.logo) draw(); });
   });
+  // Occasion ideas for the back message.
+  var suggest = root.querySelector(".try-suggest");
+  if (suggest) {
+    var occBox = suggest.querySelector("[data-occasions]");
+    var ideaBox = suggest.querySelector("[data-ideas]");
+    var showIdeas = function (i) {
+      occBox.querySelectorAll("button").forEach(function (b, j) { b.setAttribute("aria-pressed", String(j === i)); });
+      ideaBox.textContent = "";
+      IDEAS[i][1].forEach(function (text) {
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "try-idea";
+        b.setAttribute("aria-pressed", String(msgInput.value.trim() === text));
+        var t = document.createElement("span"); t.textContent = text;
+        var u = document.createElement("span"); u.className = "try-idea-use"; u.textContent = "Use";
+        b.appendChild(t); b.appendChild(u);
+        b.addEventListener("click", function () {
+          msgInput.value = text;
+          msgEdited = true;
+          ideaBox.querySelectorAll(".try-idea").forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+          if (state.logo) { drawBack(); show("back"); }
+        });
+        ideaBox.appendChild(b);
+      });
+    };
+    IDEAS.forEach(function (o, i) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "try-chip";
+      b.textContent = o[0];
+      b.addEventListener("click", function () { showIdeas(i); });
+      occBox.appendChild(b);
+    });
+    showIdeas(0);
+    suggest.hidden = false;
+  }
   var lineTimer, backTimer;
   lineInput.addEventListener("input", function () { matchMessage(); clearTimeout(lineTimer); if (state.logo) lineTimer = setTimeout(draw, 250); });
   msgInput.addEventListener("input", function () {
     msgEdited = msgInput.value.trim() !== "";
+    root.querySelectorAll(".try-idea").forEach(function (x) { x.setAttribute("aria-pressed", String(x.firstChild.textContent === msgInput.value.trim())); });
     clearTimeout(backTimer); if (state.logo) backTimer = setTimeout(function () { drawBack(); show("back"); }, 300);
   });
   nameInput.addEventListener("input", function () {

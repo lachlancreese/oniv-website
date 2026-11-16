@@ -598,6 +598,13 @@ a.label-card:hover h3 { text-decoration: underline; text-underline-offset: 4px; 
 .try-chip:hover { border-color: var(--ink); }
 .try-chip[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
 .try-label { font-size: 14px; font-weight: 600; }
+.try-suggest { display: grid; gap: 10px; margin-top: 6px; }
+.try-ideas { display: grid; gap: 8px; }
+.try-idea { font: inherit; font-size: 14px; line-height: 1.45; color: var(--ink); text-align: left; background: var(--paper); border: 1px solid var(--stone); border-radius: 10px; padding: 10px 12px; cursor: pointer; display: flex; gap: 12px; align-items: flex-start; justify-content: space-between; }
+.try-idea:hover { border-color: var(--ink); }
+.try-idea-use { flex: none; font-size: 13px; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+.try-idea[aria-pressed="true"] { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+.try-idea[aria-pressed="true"] .try-idea-use { text-decoration: none; }
 .try-pair { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
 .try-price { font-size: 15px; background: var(--paper); border-radius: var(--radius); padding: 14px 16px; }
 .try-price b { font-weight: 600; }

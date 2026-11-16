@@ -24,7 +24,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" href="/assets/fonts/dm-serif-display-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/dm-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/css/site.css?v=e3b61be32e">
+<link rel="stylesheet" href="/assets/css/site.css?v=6a2036ea5b">
 <script type="application/ld+json">
 {
  "@context": "https://schema.org",
@@ -232,6 +232,9 @@
               <button type="button" class="try-chip" data-line="Season's Greetings">Season's Greetings</button>
               <button type="button" class="try-chip" data-line="With our thanks">With our thanks</button>
               <button type="button" class="try-chip" data-line="Client Reserve">Client Reserve</button>
+              <button type="button" class="try-chip" data-line="Welcome home">Welcome home</button>
+              <button type="button" class="try-chip" data-line="Congratulations">Congratulations</button>
+              <button type="button" class="try-chip" data-line="Here's to ten years">Here's to ten years</button>
             </div>
           </div>
           <div class="field">
@@ -249,6 +252,11 @@
           <div class="field">
             <label for="try-msg">Message on the back <span>(change it to anything you like)</span></label>
             <textarea class="input" id="try-msg" rows="3" maxlength="220">Thank you for your support this year. Wishing you a joyful festive season and a wonderful year ahead.</textarea>
+            <div class="try-suggest" hidden>
+              <span class="try-label" id="try-ideas-label">Need the words? Pick an occasion</span>
+              <div class="try-lines" role="group" aria-labelledby="try-ideas-label" data-occasions></div>
+              <div class="try-ideas" data-ideas></div>
+            </div>
           </div>
           <div class="try-pair">
             <div class="field">
@@ -293,7 +301,7 @@
     </div>
   </div>
 </section>
-<script src="/assets/js/try-label.js?v=020bc63a88" defer></script>
+<script src="/assets/js/try-label.js?v=b4acd93a45" defer></script>
 
 <section class="band on-dark" aria-labelledby="band-title">
   <div class="wrap">
