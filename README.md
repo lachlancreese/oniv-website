@@ -118,10 +118,20 @@ Six ready-made label designs for buyers without a logo (Christmas wreath, gold g
 HTML page with its artwork painted in code (`paint.js` holds the shared helpers; fonts and their OFL licences are
 in `fonts/`). Render them for review with `python3 tools/labels/ready/render.py` (PNGs and WebPs go to /tmp/ready).
 
-## "Try it with your logo" preview (Home and Corporate)
+## "Try it with your logo" preview (Home, Corporate, Occasions and Events)
 
 A shared section (`pages/partials/try.html`, added to a page with `<!--include:try-->`) lets a visitor type their
-website or upload a logo and see it on a bottle straight away. `public/assets/js/try-label.js` builds the front label
+website, upload a logo or upload a photo and see it on a bottle straight away.
+
+Each page picks a mode: `<!--include:try mode=photo-->` (Occasions) or `<!--include:try mode=event-->` (Events);
+plain `<!--include:try-->` is the business mode (Home, Corporate). In the partial, `<!--mode:photo,event-->…<!--/mode-->`
+blocks hold the wording that differs (heading, which tab starts selected, front-word chips, default words and message,
+the back-label name field and the placeholder bottle), and `try-label.js` holds each mode's back-message ideas and
+sign-off ("From everyone at…", "With love,…", "With thanks from…"). Photo labels come in the same three styles: Classic
+(the photo in a square with an offset frame in a colour taken from the photo, like the TeeGeorge label), Bold (the
+photo over the whole label) and Minimal (an arched photo on white). The optional second line (a date or names) prints
+under the words in every mode. The placeholder labels are `tools/labels/try-photo-*.html` and `try-event-*.html`,
+with posters `try-bottle-photo-1` and `try-bottle-event-1`. `public/assets/js/try-label.js` builds the front label
 in the browser (colours are read from the logo) and puts it on the 3D bottle, or shows it flat where 3D isn't running.
 "Send this for my free mockup" carries the logo and the preview to the enquiry form, and both arrive attached to the
 enquiry email.

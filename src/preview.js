@@ -25,7 +25,8 @@ export async function handlePreview(request, env) {
   if (!env.RESEND_API_KEY || !env.TO_EMAIL || !env.FROM_EMAIL) return reply(false, 500, "Email is not configured");
 
   const d = {
-    site: field("site"), name: field("name", 60), line: field("line", 60), message: field("message", 300),
+    site: field("site"), kind: field("kind", 10) === "photo" ? "photo" : "logo", sub: field("sub", 60),
+    name: field("name", 60), line: field("line", 60), message: field("message", 300),
     wine: field("wine", 40), style: field("style", 20), cases: field("cases", 6), date: field("date", 20),
     consent: field("consent", 5) === "yes",
   };
@@ -59,14 +60,15 @@ export async function handlePreview(request, env) {
   const extra = (await Promise.all([
     fileAttachment(form, "front", "front-label-artwork.jpg", 4 * MB),
     fileAttachment(form, "back", "back-label-artwork.jpg", 4 * MB),
-    fileAttachment(form, "logo", "logo.png", 8 * MB),
+    fileAttachment(form, "logo", d.kind === "photo" ? "photo.jpg" : "logo.png", 8 * MB),
   ])).filter(Boolean);
   const team = detailsTable("Label preview emailed", [
     ["Email", email],
     ["OK to contact", d.consent ? "Yes, ticked the box to hear from Alex" : "No, only asked for the preview"],
-    ["Business", d.name],
-    ["Website", d.site || "Uploaded a logo"],
+    [d.kind === "photo" ? "Names" : "Business", d.name],
+    ["Website", d.site || `Uploaded a ${d.kind}`],
     ["Front words", d.line],
+    ["Second line", d.sub],
     ["Back message", d.message],
     ["Wine", d.wine],
     ["Label style", d.style],

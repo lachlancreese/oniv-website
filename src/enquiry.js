@@ -48,6 +48,8 @@ export async function handleEnquiry(request, env) {
     company: field("company", 160),
     message: field("message", 4000),
     preview_site: field("preview_site", 200),
+    preview_kind: field("preview_kind", 10),
+    preview_sub: field("preview_sub", 60),
     preview_line: field("preview_line", 60),
     preview_message: field("preview_message", 300),
     preview_wine: field("preview_wine", 40),
@@ -76,6 +78,7 @@ export async function handleEnquiry(request, env) {
     attachments.push({ filename: "back-label-preview.jpg", content: toBase64(await previewBack.arrayBuffer()) });
   }
   const logoNote = logo && typeof logo === "object" && logo.size > 0 ? (logo.name || "logo") + " (attached)" : "None";
+  const art = data.preview_kind === "photo" ? "photo" : "logo";
 
   const rows = [
     ["What it's for", data.occasion],
@@ -86,11 +89,12 @@ export async function handleEnquiry(request, env) {
     ["Phone", data.phone],
     ["Business", data.company],
     ["Message", data.message],
-    ["Logo", logoNote],
+    [art === "photo" ? "Photo" : "Logo", logoNote],
   ];
   if (preview && typeof preview === "object" && preview.size > 0) {
-    rows.push(["Label preview", "Made on the website" + (data.preview_site ? " from " + data.preview_site : " from an uploaded logo") +
-      (data.preview_line ? `, with "${data.preview_line}"` : "") + " (front and back previews attached)"]);
+    rows.push(["Label preview", "Made on the website" + (data.preview_site ? " from " + data.preview_site : ` from an uploaded ${art}`) +
+      (data.preview_line ? `, with "${data.preview_line}"` : "") + (data.preview_sub ? ` and "${data.preview_sub}"` : "") +
+      " (front and back previews attached)"]);
     if (data.preview_wine) rows.push(["Wine chosen in preview", data.preview_wine]);
     if (data.preview_style) rows.push(["Label style", data.preview_style[0].toUpperCase() + data.preview_style.slice(1)]);
     if (data.preview_message) rows.push(["Back label message", data.preview_message]);

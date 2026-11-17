@@ -14,47 +14,137 @@
   var lineInput = root.querySelector("#try-line");
   var nameInput = root.querySelector("#try-name");
   var msgInput = root.querySelector("#try-msg");
-  // A back-label message to suit each set of front words; the visitor can change it.
-  var MESSAGES = {
-    "season's greetings": "Thank you for your support this year. Wishing you a joyful festive season and a wonderful year ahead.",
-    "with our thanks": "Thank you for your partnership. We hope this bottle finds its way to a good table.",
-    "client reserve": "A wine chosen for the people we're glad to work with. Here's to what we build next.",
-    "welcome home": "Congratulations on your new home. Wishing you many happy years here.",
-    "congratulations": "Congratulations on a wonderful achievement. Here's to everything that comes next.",
-    "here's to ten years": "Here's to the years behind us and the many ahead. Thank you for being part of the journey.",
+  var subInput = root.querySelector("#try-sub");
+  var photoInput = root.querySelector("#try-photo");
+  // Each page sets a mode on [data-try]: "logo" (business pages), "photo" (personal occasions) or "event".
+  // The mode decides the front-word suggestions (in the HTML), the back messages and ideas, and the sign-off.
+  var mode = root.getAttribute("data-try-mode") || "logo";
+  var CONFIG = {
+    logo: {
+      // A back-label message to suit each set of front words; the visitor can change it.
+      messages: {
+        "season's greetings": "Thank you for your support this year. Wishing you a joyful festive season and a wonderful year ahead.",
+        "with our thanks": "Thank you for your partnership. We hope this bottle finds its way to a good table.",
+        "client reserve": "A wine chosen for the people we're glad to work with. Here's to what we build next.",
+        "welcome home": "Congratulations on your new home. Wishing you many happy years here.",
+        "congratulations": "Congratulations on a wonderful achievement. Here's to everything that comes next.",
+        "here's to ten years": "Here's to the years behind us and the many ahead. Thank you for being part of the journey.",
+      },
+      // Back-message ideas, by occasion. Tapping one puts it on the back label.
+      ideas: [
+        ["Christmas", [
+          "Thank you for your support this year. Wishing you a joyful festive season and a wonderful year ahead.",
+          "Thank you for a great year together. Enjoy a well-earned break over the holidays, and here's to the year ahead.",
+          "Wishing you and your family a very happy Christmas and a safe, relaxing break. Thank you for being part of our year.",
+        ]],
+        ["Thank you", [
+          "Thank you for your partnership. We hope this bottle finds its way to a good table.",
+          "A small thank you for your trust and support. It means a great deal to all of us.",
+          "Thank you for choosing to work with us. We're grateful for clients like you.",
+        ]],
+        ["New home", [
+          "Congratulations on your new home. Wishing you many happy years here.",
+          "Welcome home. May this be the first of many celebrations under your new roof.",
+          "Congratulations on getting the keys. Here's to new beginnings and good times ahead.",
+        ]],
+        ["Congratulations", [
+          "Congratulations on a wonderful achievement. Here's to everything that comes next.",
+          "Well done. Your hard work deserves a proper celebration.",
+          "Congratulations from all of us. Enjoy the moment, you've earned it.",
+        ]],
+        ["Milestone", [
+          "Here's to the years behind us and the many ahead. Thank you for being part of the journey.",
+          "Celebrating a milestone with the people who made it possible. Thank you.",
+          "Happy anniversary. Here's to many more years together.",
+        ]],
+        ["Welcome", [
+          "Welcome to the team. We're so glad you're here.",
+          "Welcome aboard. Here's to a great start and everything we'll achieve together.",
+        ]],
+      ],
+      sign: function (n) { return n ? "FROM EVERYONE AT " + n : "FROM ALL OF US"; },
+    },
+    photo: {
+      messages: {
+        "just married": "Thank you for sharing our day. We're so glad you were here to celebrate with us.",
+        "happy 21st": "Thanks for helping celebrate a very special 21st. Here's to the years ahead.",
+        "happy anniversary": "Thank you for celebrating with us. Here's to many more years together.",
+        "cheers to 50 years": "Fifty years of good company. Thank you for being part of the celebration.",
+        "merry christmas": "Wishing you a very merry Christmas and a happy new year. Enjoy this one with the people you love.",
+        "welcome home": "Congratulations on your new home. Wishing you many happy years here.",
+      },
+      ideas: [
+        ["Wedding", [
+          "Thank you for sharing our day. We're so glad you were here to celebrate with us.",
+          "Thank you for celebrating with us. Here's to love, laughter and happily ever after.",
+          "Our day wouldn't have been the same without you. Thank you for being part of it.",
+        ]],
+        ["Birthday", [
+          "Thanks for helping celebrate a very special 21st. Here's to the years ahead.",
+          "Thank you for being part of my birthday. Here's to many more celebrations together.",
+          "Twenty-one years in the making. Thank you for celebrating with us.",
+        ]],
+        ["Anniversary", [
+          "Thank you for celebrating with us. Here's to many more years together.",
+          "Fifty years of good company. Thank you for being part of the celebration.",
+          "Here's to the years behind us and the many ahead.",
+        ]],
+        ["Christmas", [
+          "Wishing you a very merry Christmas and a happy new year. Enjoy this one with the people you love.",
+          "Merry Christmas from our family to yours. Here's to a wonderful year ahead.",
+        ]],
+        ["New home", [
+          "Congratulations on your new home. Wishing you many happy years here.",
+          "Welcome home. May this be the first of many celebrations under your new roof.",
+        ]],
+        ["Thank you", [
+          "A small thank you for everything you do. It means more than you know.",
+          "Thank you for being there. We're so lucky to have you.",
+        ]],
+      ],
+      sign: function (n) { return n ? "WITH LOVE, " + n : "WITH LOVE"; },
+    },
+    event: {
+      messages: {
+        "gala night": "Thank you for joining us tonight and for supporting the cause. We hope you enjoy the evening.",
+        "launch night": "Thank you for celebrating our launch with us. We're so glad you could be here.",
+        "opening night": "Thank you for joining us for opening night. Here's to many more.",
+        "awards night": "Congratulations to every finalist, and thank you for celebrating with us.",
+        "celebrating 10 years": "Ten years, and we couldn't have done it without you. Thank you for celebrating with us.",
+        "thank you for coming": "Thank you for being part of tonight. We hope this bottle brings back good memories.",
+      },
+      ideas: [
+        ["Thank you for coming", [
+          "Thank you for being part of tonight. We hope this bottle brings back good memories.",
+          "Thank you for joining us. It wouldn't have been the same without you.",
+        ]],
+        ["Fundraiser", [
+          "Thank you for joining us tonight and for supporting the cause. We hope you enjoy the evening.",
+          "Thank you for your generosity. Together we're making a real difference.",
+        ]],
+        ["Launch", [
+          "Thank you for celebrating our launch with us. We're so glad you could be here.",
+          "Here's to new beginnings. Thank you for being part of our story from the start.",
+        ]],
+        ["Milestone", [
+          "Ten years, and we couldn't have done it without you. Thank you for celebrating with us.",
+          "Thank you for helping us reach this milestone. Here's to the next one.",
+        ]],
+        ["Conference", [
+          "Thank you for joining us. We hope you leave with new ideas, new connections and this bottle.",
+          "Thank you for being part of this year's conference. We hope to see you next year.",
+        ]],
+        ["Awards", [
+          "Congratulations to every finalist, and thank you for celebrating with us.",
+          "Here's to the people who made this year one to remember. Congratulations.",
+        ]],
+      ],
+      sign: function (n) { return n ? "WITH THANKS FROM " + n : "WITH THANKS"; },
+    },
   };
-  // Back-message ideas, by occasion. Tapping one puts it on the back label.
-  var IDEAS = [
-    ["Christmas", [
-      "Thank you for your support this year. Wishing you a joyful festive season and a wonderful year ahead.",
-      "Thank you for a great year together. Enjoy a well-earned break over the holidays, and here's to the year ahead.",
-      "Wishing you and your family a very happy Christmas and a safe, relaxing break. Thank you for being part of our year.",
-    ]],
-    ["Thank you", [
-      "Thank you for your partnership. We hope this bottle finds its way to a good table.",
-      "A small thank you for your trust and support. It means a great deal to all of us.",
-      "Thank you for choosing to work with us. We're grateful for clients like you.",
-    ]],
-    ["New home", [
-      "Congratulations on your new home. Wishing you many happy years here.",
-      "Welcome home. May this be the first of many celebrations under your new roof.",
-      "Congratulations on getting the keys. Here's to new beginnings and good times ahead.",
-    ]],
-    ["Congratulations", [
-      "Congratulations on a wonderful achievement. Here's to everything that comes next.",
-      "Well done. Your hard work deserves a proper celebration.",
-      "Congratulations from all of us. Enjoy the moment, you've earned it.",
-    ]],
-    ["Milestone", [
-      "Here's to the years behind us and the many ahead. Thank you for being part of the journey.",
-      "Celebrating a milestone with the people who made it possible. Thank you.",
-      "Happy anniversary. Here's to many more years together.",
-    ]],
-    ["Welcome", [
-      "Welcome to the team. We're so glad you're here.",
-      "Welcome aboard. Here's to a great start and everything we'll achieve together.",
-    ]],
-  ];
+  var MODE = CONFIG[mode] || CONFIG.logo;
+  var MESSAGES = MODE.messages;
+  var IDEAS = MODE.ideas;
   var msgEdited = false, nameEdited = false;
   var wineSel = root.querySelector("#try-wine");
   var casesInput = root.querySelector("#try-cases");
@@ -110,7 +200,7 @@
     status.classList.toggle("is-error", !!isError);
   }
 
-  // Tabs: website or upload.
+  // Tabs: website, logo upload or photo upload. The page's mode decides which one starts selected.
   tabs.forEach(function (tab) {
     tab.addEventListener("click", function () {
       tabs.forEach(function (t) { t.setAttribute("aria-selected", String(t === tab)); });
@@ -179,6 +269,8 @@
     root.querySelectorAll(".try-idea").forEach(function (x) { x.setAttribute("aria-pressed", String(x.firstChild.textContent === msgInput.value.trim())); });
     clearTimeout(backTimer); if (state.logo) backTimer = setTimeout(function () { drawBack(); show("back"); }, 300);
   });
+  var subTimer;
+  subInput.addEventListener("input", function () { clearTimeout(subTimer); if (state.logo) subTimer = setTimeout(draw, 250); });
   nameInput.addEventListener("input", function () {
     nameEdited = nameInput.value.trim() !== "";
     clearTimeout(backTimer); if (state.logo) backTimer = setTimeout(function () { drawBack(); show("back"); }, 300);
@@ -213,6 +305,7 @@
 
   function useLogo(blob, info) {
     return loadImage(blob).then(function (img) {
+      if (info.kind === "photo") img = shrink(img, 2000);
       state.logo = img;
       state.logoBlob = blob;
       state.kind = info.kind || "logo";
@@ -220,6 +313,8 @@
       state.color = info.color || "";
       state.site = info.site || "";
       if (state.name && !nameEdited) nameInput.value = state.name;
+      var kindText = root.querySelector("[data-try-kind]");
+      if (kindText) kindText.textContent = state.kind === "photo" ? "photo" : "logo";
       draw();
       // On a phone the bottle sits below the form, so bring it into view.
       if (window.innerWidth < 960) stage.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -228,6 +323,7 @@
 
   form.addEventListener("submit", function (e) {
     e.preventDefault();
+    if (root.querySelector('[data-panel="site"]').hidden) { if (state.logo) draw(); return; }
     var raw = siteInput.value.trim();
     if (!raw) { say("Type your website, like yourbusiness.com.au.", true); siteInput.focus(); return; }
     var button = form.querySelector('[type="submit"]');
@@ -264,6 +360,29 @@
     useLogo(file, { kind: "logo", site: "" })
       .then(function () { say("Here's your logo on the bottle."); })
       .catch(function () { say("We couldn't read that file. Please try a PNG, JPG or SVG.", true); });
+  });
+
+  // A photo, scaled to at most max pixels on its longer side, on a canvas (which draws like an image).
+  function shrink(img, max) {
+    var s = Math.min(1, max / Math.max(img.width, img.height));
+    if (s === 1) return img;
+    var c = document.createElement("canvas");
+    c.width = Math.round(img.width * s); c.height = Math.round(img.height * s);
+    c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+    return c;
+  }
+
+  if (photoInput) photoInput.addEventListener("change", function () {
+    var file = photoInput.files && photoInput.files[0];
+    if (!file) return;
+    if (!/^image\/(png|jpeg|webp|gif|heic|heif)$/.test(file.type) && !/\.(jpe?g|png|webp|heic|heif)$/i.test(file.name)) {
+      say("Please choose a photo (a JPG or PNG). You can send other formats with your enquiry.", true); return;
+    }
+    if (file.size > 30 * 1024 * 1024) { say("That photo is over 30 MB. Please choose a smaller one.", true); return; }
+    say("Building your label…");
+    useLogo(file, { kind: "photo", site: "" })
+      .then(function () { say("Here's your photo on the bottle. Try the Bold and Minimal styles too."); })
+      .catch(function () { say("We couldn't read that photo. Please try a JPG or PNG.", true); });
   });
 
   // ---- Reading the logo's colours -----------------------------------------------------------
@@ -348,8 +467,24 @@
     return size;
   }
 
-  var WHITE = [250, 248, 244], PAPER = [251, 250, 247];
+  var WHITE = [250, 248, 244], PAPER = [251, 250, 247], SAGE_DEEP = [77, 96, 79];
+  function sub() { return (subInput.value || "").trim().slice(0, 40); }
+  // Letter-spaced capitals at the largest size (down to min) that fits maxW.
+  function fitSpaced(g, text, weight, size, min, maxW, spacing) {
+    do { g.font = weight + " " + size + "px 'DM Sans', Arial, sans-serif"; size -= 2; }
+    while (g.measureText(text).width + spacing * (text.length - 1) > maxW && size >= min);
+  }
+
   function draw() {
+    var c = state.kind === "photo" ? drawPhoto() : drawLogo();
+    state.label = c;
+    drawBack();
+    show("front");
+    next.hidden = false;
+    return c;
+  }
+
+  function drawLogo() {
     var a = analyse(state.logo);
     var hint = parseHex(state.color);
     var style = state.style;
@@ -421,6 +556,13 @@
         fitText(g, line.toUpperCase(), "600 SIZEpx 'DM Sans', Arial, sans-serif", 38, 22, 700);
         spaced(g, line.toUpperCase(), W / 2, y + 90, 9);
       }
+      if (sub()) {
+        fitSpaced(g, sub().toUpperCase(), 400, 24, 16, 760, 6);
+        g.globalAlpha = 0.8;
+        spaced(g, sub().toUpperCase(), W / 2, y + 138, 6);
+        g.globalAlpha = 1;
+        y += 30;
+      }
       g.font = "400 24px 'DM Sans', Arial, sans-serif";
       g.globalAlpha = 0.7;
       spaced(g, varietyText(), W / 2, Math.max(y + 170, 900), 6);
@@ -433,16 +575,98 @@
         g.fillText(line, W / 2, y + 60 + size * 0.95);
         y += 60 + size;
       }
+      if (sub()) {
+        fitSpaced(g, sub().toUpperCase(), 600, 26, 16, 800, 7);
+        g.globalAlpha = 0.85;
+        spaced(g, sub().toUpperCase(), W / 2, y + 58, 7);
+        g.globalAlpha = 1;
+        y += 58;
+      }
       g.font = "600 26px 'DM Sans', Arial, sans-serif";
       g.globalAlpha = 0.8;
       spaced(g, varietyText(), W / 2, Math.max(y + 110, 930), 7);
       g.globalAlpha = 1;
     }
 
-    state.label = c;
-    drawBack();
-    show("front");
-    next.hidden = false;
+    return c;
+  }
+
+  // ---- A photo label --------------------------------------------------------------------------
+  // The photo fills a box, cropped to fit (portrait photos keep more of the top, where faces usually are).
+  function cover(g, img, x, y, w, h) {
+    var iw = img.width, ih = img.height, s = Math.max(w / iw, h / ih);
+    var sw = w / s, sh = h / s;
+    g.drawImage(img, (iw - sw) / 2, (ih - sh) * (ih > iw ? 0.3 : 0.5), sw, sh, x, y, w, h);
+  }
+  function drawPhoto() {
+    var img = state.logo, style = state.style;
+    var brand = analyse(img).brand;
+    // An accent from the photo's own strongest colour, deepened until it reads on the label.
+    var accent = brand ? brand.slice() : SAGE_DEEP.slice();
+    for (var i = 0; i < 12 && contrast(accent, CREAM) < 3.2; i++) accent = accent.map(function (v) { return v * 0.85; });
+    var line = (lineInput.value || "").trim().slice(0, 40), two = sub().toUpperCase();
+    var c = document.createElement("canvas"); c.width = W; c.height = H;
+    var g = c.getContext("2d");
+    g.textAlign = "center"; g.textBaseline = "alphabetic";
+    var bg, text, y;
+
+    if (style === "bold") {
+      // The photo over the whole label, the words in white over a soft shadow at the bottom.
+      cover(g, img, 0, 0, W, H);
+      var grad = g.createLinearGradient(0, H * 0.42, 0, H);
+      grad.addColorStop(0, "rgba(16,14,12,0)"); grad.addColorStop(1, "rgba(16,14,12,0.78)");
+      g.fillStyle = grad; g.fillRect(0, 0, W, H);
+      g.strokeStyle = hex(WHITE); g.globalAlpha = 0.6; g.lineWidth = 2; g.strokeRect(40, 40, W - 80, H - 80); g.globalAlpha = 1;
+      var yb = H - 96, ys = two ? yb - 70 : yb;
+      g.fillStyle = hex(WHITE);
+      if (line) { fitText(g, line, "400 SIZEpx 'DM Serif Display', Georgia, serif", 92, 44, 840); g.fillText(line, W / 2, ys - (two ? 58 : 84)); }
+      if (two) { fitSpaced(g, two, 600, 26, 16, 820, 7); g.globalAlpha = 0.92; spaced(g, two, W / 2, ys, 7); }
+      g.font = "600 22px 'DM Sans', Arial, sans-serif"; g.globalAlpha = 0.8;
+      spaced(g, varietyText(), W / 2, yb, 6);
+      g.globalAlpha = 1;
+      bg = brand ? brand.map(function (v) { return v * 0.3; }) : INK;
+      if (luminance(bg) > 0.05) bg = INK;
+      state.colors = { bg: bg, text: WHITE, accent: WHITE };
+      return c;
+    }
+
+    if (style === "minimal") {
+      // An arched photo on white, with the words in small spaced capitals.
+      bg = PAPER; text = INK;
+      g.fillStyle = hex(bg); g.fillRect(0, 0, W, H);
+      var aw = 520, ah = 610, ax = (W - aw) / 2, ay = 104;
+      g.save();
+      g.beginPath();
+      g.moveTo(ax, ay + ah); g.lineTo(ax, ay + aw / 2);
+      g.arc(W / 2, ay + aw / 2, aw / 2, Math.PI, 0);
+      g.lineTo(ax + aw, ay + ah); g.closePath(); g.clip();
+      cover(g, img, ax, ay, aw, ah);
+      g.restore();
+      g.fillStyle = hex(text);
+      y = ay + ah + 96;
+      if (line) { fitSpaced(g, line.toUpperCase(), 600, 38, 20, 820, 9); spaced(g, line.toUpperCase(), W / 2, y, 9); y += 52; }
+      if (two) { fitSpaced(g, two, 400, 24, 16, 800, 6); g.globalAlpha = 0.75; spaced(g, two, W / 2, y, 6); g.globalAlpha = 1; y += 40; }
+      g.font = "400 22px 'DM Sans', Arial, sans-serif"; g.globalAlpha = 0.6;
+      spaced(g, varietyText(), W / 2, Math.max(y + 60, 1020), 6);
+      g.globalAlpha = 1;
+      state.colors = { bg: bg, text: text, accent: accent };
+      return c;
+    }
+
+    // Classic: the photo in a square, with an offset frame in a colour from the photo, as on our photo labels.
+    bg = CREAM; text = INK;
+    g.fillStyle = hex(bg); g.fillRect(0, 0, W, H);
+    var S = 620, px = (W - S) / 2 + 13, py = 110;
+    cover(g, img, px, py, S, S);
+    g.strokeStyle = hex(accent); g.lineWidth = 4; g.strokeRect(px - 26, py - 26, S, S);
+    g.fillStyle = hex(text);
+    y = py + S + 36;
+    if (line) { var size = fitText(g, line, "400 SIZEpx 'DM Serif Display', Georgia, serif", 92, 44, 860); g.fillText(line, W / 2, y + size * 0.92); y += size * 1.08; }
+    if (two) { fitSpaced(g, two, 600, 26, 16, 860, 7); g.globalAlpha = 0.85; spaced(g, two, W / 2, y + 44, 7); g.globalAlpha = 1; y += 44; }
+    g.font = "600 22px 'DM Sans', Arial, sans-serif"; g.globalAlpha = 0.7;
+    spaced(g, varietyText(), W / 2, Math.max(y + 76, 1036), 6);
+    g.globalAlpha = 1;
+    state.colors = { bg: bg, text: text, accent: accent };
     return c;
   }
 
@@ -485,7 +709,7 @@
     lines.forEach(function (l, i) { g.fillText(l, W / 2, top + size + i * size * 1.36); });
 
     g.globalAlpha = 0.85;
-    var sign = name ? "FROM EVERYONE AT " + name.toUpperCase() : "FROM ALL OF US";
+    var sign = MODE.sign(name.toUpperCase());
     var fs = 24;
     do { g.font = "600 " + fs + "px 'DM Sans', Arial, sans-serif"; fs -= 2; }
     while (g.measureText(sign).width + sign.length * 6 > 820 && fs >= 14);
@@ -598,8 +822,10 @@
   }
   function details() {
     return {
+      kind: state.kind === "photo" ? "photo" : "logo",
       site: state.site,
       line: (lineInput.value || "").trim().slice(0, 40),
+      sub: sub(),
       name: (nameInput.value || "").trim().slice(0, 50) || state.name,
       message: (msgInput.value || "").trim().slice(0, 160),
       wine: wineSel.value,
@@ -621,7 +847,7 @@
     var button = emailForm.querySelector("button");
     button.disabled = true;
     sayEmail("Sending…");
-    Promise.all([bottlePicture(), toPng(state.logo, 1200)]).then(function (r) {
+    Promise.all([bottlePicture(), artwork(1200)]).then(function (r) {
       var body = new FormData();
       var d = details();
       Object.keys(d).forEach(function (k) { body.append(k, d[k]); });
@@ -631,7 +857,7 @@
       body.append("bottle", toBlob(r[0]), "bottle.jpg");
       body.append("front", toBlob(state.label.toDataURL("image/jpeg", 0.88)), "front.jpg");
       if (state.back) body.append("back", toBlob(state.back.toDataURL("image/jpeg", 0.85)), "back.jpg");
-      body.append("logo", toBlob(r[1]), "logo.png");
+      body.append("logo", toBlob(r[1]), state.kind === "photo" ? "photo.jpg" : "logo.png");
       return fetch("/api/preview", { method: "POST", body: body }).then(function (res) {
         return res.json().catch(function () { return {}; }).then(function (j) {
           if (!res.ok || !j.ok) throw new Error(j.error || "send");
@@ -677,8 +903,9 @@
     if (!state.label) return;
     e.preventDefault();
     var link = this;
-    Promise.all([toPng(state.logo, 1600), bottlePicture()]).then(function (r) {
+    Promise.all([artwork(1600), bottlePicture()]).then(function (r) {
       var data = details();
+      data.occasion = { photo: "A wedding or milestone", event: "An event or launch" }[mode] || "";
       data.label = state.label.toDataURL("image/jpeg", 0.88);
       data.back = state.back ? state.back.toDataURL("image/jpeg", 0.85) : "";
       data.logo = r[0];
@@ -690,11 +917,12 @@
     });
   });
 
-  function toPng(img, max) {
-    var s = Math.min(1, max / Math.max(img.width, img.height));
+  // The uploaded logo (as a PNG, keeping transparency) or photo (as a JPG, much smaller), at most max pixels.
+  function artwork(max) {
+    var img = state.logo, s = Math.min(1, max / Math.max(img.width, img.height));
     var c = document.createElement("canvas");
     c.width = Math.max(1, Math.round(img.width * s)); c.height = Math.max(1, Math.round(img.height * s));
     c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
-    return Promise.resolve(c.toDataURL("image/png"));
+    return Promise.resolve(state.kind === "photo" ? c.toDataURL("image/jpeg", 0.9) : c.toDataURL("image/png"));
   }
 })();

@@ -1,16 +1,24 @@
-<section class="section alt try" id="try" data-try aria-labelledby="try-title">
+<section class="section alt try" id="try" data-try data-try-mode="{{mode}}" aria-labelledby="try-title">
   <div class="wrap">
     <div class="split try-split">
       <div class="stack gap-24">
         <p class="eyebrow">Instant preview</p>
-        <h2 id="try-title" class="h2">try it with your logo.</h2>
-        <p class="muted">Type your website and we'll find your logo, or upload it. This is a quick preview: your real mockup is designed by us, free, in 1–2 business days.</p>
+<!--mode:logo-->        <h2 id="try-title" class="h2">try it with your logo.</h2>
+        <p class="muted">Type your website and we'll find your logo, or upload your logo or a photo. This is a quick preview: your real mockup is designed by us, free, in 1–2 business days.</p><!--/mode-->
+<!--mode:photo-->        <h2 id="try-title" class="h2">try it with your photo.</h2>
+        <p class="muted">Upload a photo and add your words, or use a logo. This is a quick preview: your real mockup is designed by us, free, in 1–2 business days.</p><!--/mode-->
+<!--mode:event-->        <h2 id="try-title" class="h2">try it for your event.</h2>
+        <p class="muted">Type your website, or upload your logo or a photo, then add your event's name and date. This is a quick preview: your real mockup is designed by us, free, in 1–2 business days.</p><!--/mode-->
         <form class="try-form" novalidate>
-          <div class="try-tabs" role="tablist" aria-label="How to add your logo">
-            <button type="button" role="tab" data-tab="site" aria-selected="true">Your website</button>
-            <button type="button" role="tab" data-tab="upload" aria-selected="false">Upload your logo</button>
+          <div class="try-tabs" role="tablist" aria-label="What goes on the label">
+<!--mode:logo,event-->            <button type="button" role="tab" data-tab="site" aria-selected="true">Your website</button>
+            <button type="button" role="tab" data-tab="upload" aria-selected="false">Your logo</button>
+            <button type="button" role="tab" data-tab="photo" aria-selected="false">Your photo</button><!--/mode-->
+<!--mode:photo-->            <button type="button" role="tab" data-tab="photo" aria-selected="true">Your photo</button>
+            <button type="button" role="tab" data-tab="upload" aria-selected="false">Your logo</button>
+            <button type="button" role="tab" data-tab="site" aria-selected="false">Your website</button><!--/mode-->
           </div>
-          <div class="field" data-panel="site">
+          <div class="field" data-panel="site"<!--mode:photo--> hidden<!--/mode-->>
             <label for="try-site">Your website</label>
             <div class="try-row">
               <input class="input" id="try-site" type="text" inputmode="url" autocomplete="url" placeholder="yourbusiness.com.au" spellcheck="false" autocapitalize="off">
@@ -20,6 +28,10 @@
           <div class="field" data-panel="upload" hidden>
             <label for="try-file">Your logo <span>(PNG or SVG works best)</span></label>
             <input class="try-file" id="try-file" type="file" accept="image/png,image/jpeg,image/svg+xml,image/webp">
+          </div>
+          <div class="field" data-panel="photo"<!--mode:logo,event--> hidden<!--/mode-->>
+            <label for="try-photo">Your photo <span>(straight from your phone is fine)</span></label>
+            <input class="try-file" id="try-photo" type="file" accept="image/jpeg,image/png,image/webp">
           </div>
           <div class="field">
             <span class="try-label" id="try-style-label">Label style</span>
@@ -31,7 +43,7 @@
           </div>
           <div class="field">
             <label for="try-line">Words on the label</label>
-            <input class="input" id="try-line" type="text" maxlength="40" value="Season's Greetings">
+<!--mode:logo-->            <input class="input" id="try-line" type="text" maxlength="40" value="Season's Greetings">
             <div class="try-lines">
               <button type="button" class="try-chip" data-line="Season's Greetings">Season's Greetings</button>
               <button type="button" class="try-chip" data-line="With our thanks">With our thanks</button>
@@ -39,7 +51,31 @@
               <button type="button" class="try-chip" data-line="Welcome home">Welcome home</button>
               <button type="button" class="try-chip" data-line="Congratulations">Congratulations</button>
               <button type="button" class="try-chip" data-line="Here's to ten years">Here's to ten years</button>
-            </div>
+            </div><!--/mode-->
+<!--mode:photo-->            <input class="input" id="try-line" type="text" maxlength="40" value="Just married">
+            <div class="try-lines">
+              <button type="button" class="try-chip" data-line="Just married">Just married</button>
+              <button type="button" class="try-chip" data-line="Happy 21st">Happy 21st</button>
+              <button type="button" class="try-chip" data-line="Happy anniversary">Happy anniversary</button>
+              <button type="button" class="try-chip" data-line="Cheers to 50 years">Cheers to 50 years</button>
+              <button type="button" class="try-chip" data-line="Merry Christmas">Merry Christmas</button>
+              <button type="button" class="try-chip" data-line="Welcome home">Welcome home</button>
+            </div><!--/mode-->
+<!--mode:event-->            <input class="input" id="try-line" type="text" maxlength="40" value="Gala Night">
+            <div class="try-lines">
+              <button type="button" class="try-chip" data-line="Gala Night">Gala Night</button>
+              <button type="button" class="try-chip" data-line="Launch Night">Launch Night</button>
+              <button type="button" class="try-chip" data-line="Opening Night">Opening Night</button>
+              <button type="button" class="try-chip" data-line="Awards Night">Awards Night</button>
+              <button type="button" class="try-chip" data-line="Celebrating 10 years">Celebrating 10 years</button>
+              <button type="button" class="try-chip" data-line="Thank you for coming">Thank you for coming</button>
+            </div><!--/mode-->
+          </div>
+          <div class="field">
+            <label for="try-sub">Second line <span>(optional, like a date)</span></label>
+<!--mode:logo-->            <input class="input" id="try-sub" type="text" maxlength="40" placeholder="Christmas 2026"><!--/mode-->
+<!--mode:photo-->            <input class="input" id="try-sub" type="text" maxlength="40" placeholder="Sarah &amp; James · 21 March 2027"><!--/mode-->
+<!--mode:event-->            <input class="input" id="try-sub" type="text" maxlength="40" placeholder="Saturday 14 March 2027"><!--/mode-->
           </div>
           <div class="field">
             <label for="try-wine">Wine</label>
@@ -50,12 +86,18 @@
             </select>
           </div>
           <div class="field">
-            <label for="try-name">Business name <span>(for the back label)</span></label>
-            <input class="input" id="try-name" type="text" maxlength="50" autocomplete="organization">
+<!--mode:logo-->            <label for="try-name">Business name <span>(for the back label)</span></label>
+            <input class="input" id="try-name" type="text" maxlength="50" autocomplete="organization"><!--/mode-->
+<!--mode:photo-->            <label for="try-name">Your names <span>(for the back label)</span></label>
+            <input class="input" id="try-name" type="text" maxlength="50" autocomplete="off" placeholder="Sarah &amp; James"><!--/mode-->
+<!--mode:event-->            <label for="try-name">Hosted by <span>(for the back label)</span></label>
+            <input class="input" id="try-name" type="text" maxlength="50" autocomplete="organization"><!--/mode-->
           </div>
           <div class="field">
             <label for="try-msg">Message on the back <span>(change it to anything you like)</span></label>
-            <textarea class="input" id="try-msg" rows="3" maxlength="160" aria-describedby="try-msg-count">Thank you for your support this year. Wishing you a joyful festive season and a wonderful year ahead.</textarea>
+<!--mode:logo-->            <textarea class="input" id="try-msg" rows="3" maxlength="160" aria-describedby="try-msg-count">Thank you for your support this year. Wishing you a joyful festive season and a wonderful year ahead.</textarea><!--/mode-->
+<!--mode:photo-->            <textarea class="input" id="try-msg" rows="3" maxlength="160" aria-describedby="try-msg-count">Thank you for sharing our day. We're so glad you were here to celebrate with us.</textarea><!--/mode-->
+<!--mode:event-->            <textarea class="input" id="try-msg" rows="3" maxlength="160" aria-describedby="try-msg-count">Thank you for joining us tonight and for supporting the cause. We hope you enjoy the evening.</textarea><!--/mode-->
             <p class="try-count small muted" id="try-msg-count"></p>
             <div class="try-suggest" hidden>
               <span class="try-label" id="try-ideas-label">Need the words? Pick an occasion</span>
@@ -77,19 +119,25 @@
           <p class="try-price" aria-live="polite"></p>
           <p class="try-status" role="status" aria-live="polite"></p>
         </form>
-        <figure class="try-review">
+<!--mode:logo-->        <figure class="try-review">
           <blockquote>“Thanks ONIV team. Purchased wines with my company logo for end of year events and gifting and couldn’t be happier.”</blockquote>
           <figcaption><b>Brenda K.</b> · company logo, end-of-year events and gifts</figcaption>
-        </figure>
+        </figure><!--/mode-->
       </div>
       <div class="try-media">
-        <div class="hero-stage" data-hero3d data-view="label" data-pop="off" data-front="/assets/img/labels/try-front.webp" data-back="/assets/img/labels/try-back.webp" role="img" aria-label="A wine bottle showing a preview of your label">
+<!--mode:logo-->        <div class="hero-stage" data-hero3d data-view="label" data-pop="off" data-front="/assets/img/labels/try-front.webp" data-back="/assets/img/labels/try-back.webp" role="img" aria-label="A wine bottle showing a preview of your label">
           <img class="hero-poster" src="/assets/img/try-bottle-2-1000.webp" srcset="/assets/img/try-bottle-2-600.webp 600w, /assets/img/try-bottle-2-1000.webp 1000w" sizes="(max-width: 959px) 90vw, 40vw" alt="" width="1000" height="1250" loading="lazy" decoding="async">
-        </div>
+        </div><!--/mode-->
+<!--mode:photo-->        <div class="hero-stage" data-hero3d data-view="label" data-pop="off" data-front="/assets/img/labels/try-photo-front.webp" data-back="/assets/img/labels/try-photo-back.webp" role="img" aria-label="A wine bottle showing a preview of your label">
+          <img class="hero-poster" src="/assets/img/try-bottle-photo-1-1000.webp" srcset="/assets/img/try-bottle-photo-1-600.webp 600w, /assets/img/try-bottle-photo-1-1000.webp 1000w" sizes="(max-width: 959px) 90vw, 40vw" alt="" width="1000" height="1250" loading="lazy" decoding="async">
+        </div><!--/mode-->
+<!--mode:event-->        <div class="hero-stage" data-hero3d data-view="label" data-pop="off" data-front="/assets/img/labels/try-event-front.webp" data-back="/assets/img/labels/try-event-back.webp" role="img" aria-label="A wine bottle showing a preview of your label">
+          <img class="hero-poster" src="/assets/img/try-bottle-event-1-1000.webp" srcset="/assets/img/try-bottle-event-1-600.webp 600w, /assets/img/try-bottle-event-1-1000.webp 1000w" sizes="(max-width: 959px) 90vw, 40vw" alt="" width="1000" height="1250" loading="lazy" decoding="async">
+        </div><!--/mode-->
         <p class="hero-caption">Preview only. Your mockup is designed by us.</p>
         <div class="try-next" hidden>
           <a class="btn" href="/contact" data-try-send>Send this for my free mockup</a>
-          <p class="small muted">Your logo and this preview go with your enquiry, so we can start on your mockup.</p>
+          <p class="small muted">Your <span data-try-kind>logo</span> and this preview go with your enquiry, so we can start on your mockup.</p>
           <form class="try-email" novalidate>
             <p class="small"><b>Not ready yet?</b> We'll email you a picture of your bottle to keep or share.</p>
             <div class="try-row">

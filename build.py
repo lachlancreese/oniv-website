@@ -44,6 +44,7 @@ WINE_FOR = [
     ("Christmas gifts", "/christmas-wine-gifts"),
     ("Settlement gifts", "/settlement-gifts"),
     ("Art galleries", "/art-gallery-wine"),
+    ("Events &amp; launches", "/events"),
     ("Charity &amp; fundraising", "/charity-fundraising-wine"),
     ("Weddings", "/wedding-wine"),
     ("21sts &amp; milestones", "/21st-birthday-wine"),
@@ -62,7 +63,7 @@ def asset(path):
 
 
 ORG_ID = SITE + "/#organization"
-CRUMBS = {"/christmas-wine-gifts": "Christmas wine gifts", "/christmas-wine-gift-guide": "Christmas wine gift guide", "/settlement-gifts": "Settlement gifts", "/wedding-wine": "Wedding wine", "/21st-birthday-wine": "21st and milestone birthday wine", "/art-gallery-wine": "Art gallery wine", "/charity-fundraising-wine": "Charity and fundraising wine", "/contact": "Free mockup", "/privacy": "Privacy policy", "/terms": "Terms and conditions"}
+CRUMBS = {"/christmas-wine-gifts": "Christmas wine gifts", "/christmas-wine-gift-guide": "Christmas wine gift guide", "/settlement-gifts": "Settlement gifts", "/wedding-wine": "Wedding wine", "/21st-birthday-wine": "21st and milestone birthday wine", "/art-gallery-wine": "Art gallery wine", "/charity-fundraising-wine": "Charity and fundraising wine", "/events": "Wine for events", "/contact": "Free mockup", "/privacy": "Privacy policy", "/terms": "Terms and conditions"}
 
 
 def ld(data):
@@ -285,8 +286,17 @@ def parse(text):
         k, _, v = line.partition(":")
         meta[k.strip()] = v.strip()
     body = text[m.end():]
-    # Shared sections: <!--include:try--> is replaced with pages/partials/try.html.
-    body = re.sub(r"<!--include:([\w-]+)-->", lambda im: (PAGES / "partials" / f"{im.group(1)}.html").read_text().strip(), body)
+    # Shared sections: <!--include:try--> is replaced with pages/partials/try.html. A mode can be given
+    # (<!--include:try mode=photo-->): the partial's {{mode}} becomes it, and of its <!--mode:a,b-->…<!--/mode-->
+    # blocks only those naming that mode are kept. Without a mode, "logo".
+    def include(im):
+        mode = im.group(2) or "logo"
+        part = (PAGES / "partials" / f"{im.group(1)}.html").read_text().strip()
+        part = re.sub(r"<!--mode:([\w,]+)-->(.*?)<!--/mode-->",
+                      lambda b: b.group(2) if mode in b.group(1).split(",") else "", part, flags=re.S)
+        part = re.sub(r"\n\s*\n", "\n", part)
+        return part.replace("{{mode}}", mode)
+    body = re.sub(r"<!--include:([\w-]+)(?: mode=(\w+))?-->", include, body)
     extra = ""
     hm = re.search(r"<!--head-->(.*?)<!--/head-->", body, re.S)
     if hm:

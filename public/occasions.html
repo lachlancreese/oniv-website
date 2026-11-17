@@ -87,6 +87,7 @@
       <p class="lede">Names, dates and photos on every bottle, for a wedding, a 21st, an anniversary or a new home. Twelve bottles per case, from one case.</p>
       <div class="hero-ctas">
         <a class="btn" href="/contact">Get your free mockup</a>
+        <a class="link-strong" href="#try">Try it with your photo</a>
       </div>
       <p class="hero-note">Free mockup in 1–2 business days. Nothing prints until you approve it.</p>
     </div>
@@ -98,6 +99,121 @@
     </div>
   </div>
 </section>
+
+<section class="section alt try" id="try" data-try data-try-mode="photo" aria-labelledby="try-title">
+  <div class="wrap">
+    <div class="split try-split">
+      <div class="stack gap-24">
+        <p class="eyebrow">Instant preview</p>
+        <h2 id="try-title" class="h2">try it with your photo.</h2>
+        <p class="muted">Upload a photo and add your words, or use a logo. This is a quick preview: your real mockup is designed by us, free, in 1–2 business days.</p>
+        <form class="try-form" novalidate>
+          <div class="try-tabs" role="tablist" aria-label="What goes on the label">
+            <button type="button" role="tab" data-tab="photo" aria-selected="true">Your photo</button>
+            <button type="button" role="tab" data-tab="upload" aria-selected="false">Your logo</button>
+            <button type="button" role="tab" data-tab="site" aria-selected="false">Your website</button>
+          </div>
+          <div class="field" data-panel="site" hidden>
+            <label for="try-site">Your website</label>
+            <div class="try-row">
+              <input class="input" id="try-site" type="text" inputmode="url" autocomplete="url" placeholder="yourbusiness.com.au" spellcheck="false" autocapitalize="off">
+              <button class="btn" type="submit">Show me</button>
+            </div>
+          </div>
+          <div class="field" data-panel="upload" hidden>
+            <label for="try-file">Your logo <span>(PNG or SVG works best)</span></label>
+            <input class="try-file" id="try-file" type="file" accept="image/png,image/jpeg,image/svg+xml,image/webp">
+          </div>
+          <div class="field" data-panel="photo">
+            <label for="try-photo">Your photo <span>(straight from your phone is fine)</span></label>
+            <input class="try-file" id="try-photo" type="file" accept="image/jpeg,image/png,image/webp">
+          </div>
+          <div class="field">
+            <span class="try-label" id="try-style-label">Label style</span>
+            <div class="try-lines" role="group" aria-labelledby="try-style-label">
+              <button type="button" class="try-chip" data-style="classic" aria-pressed="true">Classic</button>
+              <button type="button" class="try-chip" data-style="bold" aria-pressed="false">Bold</button>
+              <button type="button" class="try-chip" data-style="minimal" aria-pressed="false">Minimal</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="try-line">Words on the label</label>
+            <input class="input" id="try-line" type="text" maxlength="40" value="Just married">
+            <div class="try-lines">
+              <button type="button" class="try-chip" data-line="Just married">Just married</button>
+              <button type="button" class="try-chip" data-line="Happy 21st">Happy 21st</button>
+              <button type="button" class="try-chip" data-line="Happy anniversary">Happy anniversary</button>
+              <button type="button" class="try-chip" data-line="Cheers to 50 years">Cheers to 50 years</button>
+              <button type="button" class="try-chip" data-line="Merry Christmas">Merry Christmas</button>
+              <button type="button" class="try-chip" data-line="Welcome home">Welcome home</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="try-sub">Second line <span>(optional, like a date)</span></label>
+            <input class="input" id="try-sub" type="text" maxlength="40" placeholder="Sarah &amp; James · 21 March 2027">
+          </div>
+          <div class="field">
+            <label for="try-wine">Wine</label>
+            <select class="input" id="try-wine">
+              <optgroup label="Red"><option>Shiraz</option><option>Cabernet Sauvignon</option><option>Grenache</option><option>Pinot Noir</option></optgroup>
+              <optgroup label="White"><option>Chardonnay</option><option>Sauvignon Blanc</option><option>Pinot Grigio</option><option>Riesling</option></optgroup>
+              <optgroup label="Sparkling and rosé"><option value="Brut NV">Sparkling (Brut NV)</option><option>Rosé</option></optgroup>
+            </select>
+          </div>
+          <div class="field">
+            <label for="try-name">Your names <span>(for the back label)</span></label>
+            <input class="input" id="try-name" type="text" maxlength="50" autocomplete="off" placeholder="Sarah &amp; James">
+          </div>
+          <div class="field">
+            <label for="try-msg">Message on the back <span>(change it to anything you like)</span></label>
+            <textarea class="input" id="try-msg" rows="3" maxlength="160" aria-describedby="try-msg-count">Thank you for sharing our day. We're so glad you were here to celebrate with us.</textarea>
+            <p class="try-count small muted" id="try-msg-count"></p>
+            <div class="try-suggest" hidden>
+              <span class="try-label" id="try-ideas-label">Need the words? Pick an occasion</span>
+              <div class="try-lines" role="group" aria-labelledby="try-ideas-label" data-occasions></div>
+              <div class="try-ideas" data-ideas></div>
+            </div>
+          </div>
+          <div class="try-pair">
+            <div class="field">
+              <label for="try-cases">Cases <span>(12 bottles each)</span></label>
+              <input class="input" id="try-cases" type="number" min="1" max="500" step="1" value="2" inputmode="numeric">
+            </div>
+            <div class="field">
+              <label for="try-date">Needed by <span>(optional)</span></label>
+              <input class="input" id="try-date" type="date">
+            </div>
+          </div>
+          <p class="try-date-note small" aria-live="polite" hidden>That's soon, and that's fine. We check enquiries quickly and will call you to plan it.</p>
+          <p class="try-price" aria-live="polite"></p>
+          <p class="try-status" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+      <div class="try-media">
+        <div class="hero-stage" data-hero3d data-view="label" data-pop="off" data-front="/assets/img/labels/try-photo-front.webp" data-back="/assets/img/labels/try-photo-back.webp" role="img" aria-label="A wine bottle showing a preview of your label">
+          <img class="hero-poster" src="/assets/img/try-bottle-photo-1-1000.webp" srcset="/assets/img/try-bottle-photo-1-600.webp 600w, /assets/img/try-bottle-photo-1-1000.webp 1000w" sizes="(max-width: 959px) 90vw, 40vw" alt="" width="1000" height="1250" loading="lazy" decoding="async">
+        </div>
+        <p class="hero-caption">Preview only. Your mockup is designed by us.</p>
+        <div class="try-next" hidden>
+          <a class="btn" href="/contact" data-try-send>Send this for my free mockup</a>
+          <p class="small muted">Your <span data-try-kind>logo</span> and this preview go with your enquiry, so we can start on your mockup.</p>
+          <form class="try-email" novalidate>
+            <p class="small"><b>Not ready yet?</b> We'll email you a picture of your bottle to keep or share.</p>
+            <div class="try-row">
+              <label class="hp" for="try-email">Your email</label>
+              <input class="input" id="try-email" type="email" autocomplete="email" placeholder="Your email" aria-label="Your email">
+              <button class="btn btn--light" type="submit">Email it to me</button>
+            </div>
+            <label class="try-consent small"><input type="checkbox" id="try-consent"> Alex can contact me about my mockup</label>
+            <div class="hp" aria-hidden="true"><label for="try-website">Leave this empty</label><input id="try-website" type="text" tabindex="-1" autocomplete="off"></div>
+            <p class="try-email-status small" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<script src="/assets/js/try-label.js?v=aa92d04ccb" defer></script>
 
 <section class="section" aria-labelledby="uses-title">
   <div class="wrap">
@@ -196,6 +312,7 @@
             <li><a href="/christmas-wine-gifts">Christmas gifts</a></li>
             <li><a href="/settlement-gifts">Settlement gifts</a></li>
             <li><a href="/art-gallery-wine">Art galleries</a></li>
+            <li><a href="/events">Events &amp; launches</a></li>
             <li><a href="/charity-fundraising-wine">Charity &amp; fundraising</a></li>
             <li><a href="/wedding-wine">Weddings</a></li>
             <li><a href="/21st-birthday-wine">21sts &amp; milestones</a></li>
@@ -235,6 +352,6 @@
   <a class="action-mockup btn" href="/contact">Free mockup</a>
 </div>
 
-<script src="/assets/js/site.js?v=23db3efade" defer></script>
+<script src="/assets/js/site.js?v=73181886b7" defer></script>
 </body>
 </html>
