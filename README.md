@@ -104,7 +104,7 @@ Each hero is a `<div class="hero-stage" data-hero3d ...>` in the page file with:
 
 The home page's "whose name goes on it?" cards show real client labels (SEIVA, a photo-label Rosé, Chocolate Blonde
 Salon) on turning bottles; their label images are in `public/assets/img/labels/` and their still images are
-`bottle-seiva-1`, `bottle-photo-rose-1` and `bottle-chocolate-blonde-1` (made with `tools/hero3d/poster.py`).
+`bottle-seiva-2`, `bottle-photo-rose-2` and `bottle-chocolate-blonde-2` (made with `tools/hero3d/poster.py`).
 
 The example labels (fictional names, captioned "Example label design") are HTML in `tools/labels/` (the gallery label's painting is drawn by `salt-ochre-art.js`); render them with
 `python3 tools/labels/render.py`. After changing a bottle or label, re-render its still image with

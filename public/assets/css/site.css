@@ -426,6 +426,12 @@ a.label-card, .label-card-link { text-decoration: none; color: inherit; }
 a.label-card:hover h3, .label-card-link:hover h3 { text-decoration: underline; text-underline-offset: 4px; }
 .label-figure { margin: 0; }
 .label-stage { box-shadow: 0 18px 40px rgba(28, 25, 23, 0.18); }
+.label-stage-wrap { position: relative; }
+.label-stage[data-turn="click"], .label-stage[data-turn="click"]:active { cursor: pointer; }
+.flip-btn { display: none; position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); font: inherit; font-size: 13px; font-weight: 600; color: var(--ink); background: rgba(255, 255, 255, 0.9); border: 1px solid rgba(28, 25, 23, 0.18); border-radius: 999px; padding: 8px 16px; cursor: pointer; white-space: nowrap; }
+.flip-btn:hover { background: #fff; border-color: var(--ink); }
+.flip-btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.label-stage.is-live + .flip-btn { display: inline-flex; }
 .drag-hint { display: none; font-size: 14px; color: var(--ink); opacity: 0.75; }
 section:has(.label-stage.is-live) .drag-hint { display: block; }
 .label-card .more { font-weight: 600; font-size: 15px; }

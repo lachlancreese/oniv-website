@@ -140,3 +140,13 @@
       });
   });
 })();
+
+// Home page label bottles: the "See the back" button turns its bottle, and its wording follows the bottle.
+document.querySelectorAll(".flip-btn").forEach(function (btn) {
+  var stage = btn.previousElementSibling;
+  if (!stage) return;
+  btn.addEventListener("click", function () { stage.dispatchEvent(new CustomEvent("hero3d:face")); });
+  stage.addEventListener("hero3d:faced", function (e) {
+    btn.textContent = e.detail && e.detail.face === "back" ? "See the front" : "See the back";
+  });
+});

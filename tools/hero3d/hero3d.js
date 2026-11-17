@@ -7,6 +7,8 @@
 //   data-glass               still bottles only: "flint" for clear glass showing the wine (default: dark glass)
 //   data-wine                with flint glass: "white" (pale straw; default) or "rose"
 //   data-view                "label" frames the label close up (still bottles); otherwise the whole bottle
+//   data-turn                "click": the bottle stands still and a click or tap turns it to the other label
+//                            (the page can also dispatch "hero3d:face"; the stage fires "hero3d:faced" { face })
 // Every [data-hero3d] stage on the page gets its own bottle. Once a bottle is live the stage fires "hero3d:ready";
 // dispatch a "hero3d:label" CustomEvent on the stage with detail { front, back: <canvas>, face: "front" | "back" }
 // to swap the labels, and the bottle turns to show that face; "hero3d:bottle" with { type: "still" | "sparkling" }
@@ -17,7 +19,7 @@ import {
   WebGLRenderer, Scene, PerspectiveCamera, Group, Mesh, Vector2, LatheGeometry, CylinderGeometry,
   PlaneGeometry, MeshPhysicalMaterial, MeshStandardMaterial, MeshBasicMaterial, TextureLoader,
   CanvasTexture, SRGBColorSpace, ACESFilmicToneMapping, PMREMGenerator, DirectionalLight, Color, DoubleSide,
-  TorusGeometry, BufferGeometry, BufferAttribute, Points, PointsMaterial, Vector3,
+  TorusGeometry, BufferGeometry, BufferAttribute, Points, PointsMaterial, Vector3, ShaderChunk, AdditiveBlending,
 } from "three";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 
@@ -44,7 +46,7 @@ function bottleProfile() {
 
 // The wine inside a clear (flint) bottle: the inside of the glass, filled to just into the neck.
 const FILL = 24.3;
-const WINES = { white: { tint: "#dcb848", depth: 17 }, rose: { tint: "#ee7f6c", depth: 10 } };
+const WINES = { white: { tint: "#d0c05a", depth: 11 }, rose: { tint: "#e67e68", depth: 7 } };
 function liquidProfile() {
   const pts = [new Vector2(0, 0.7)];
   bottleProfile().forEach((v) => { if (v.x > 0 && v.y > 0.4 && v.y <= FILL) pts.push(new Vector2(v.x * 0.94, Math.max(0.7, v.y))); });
@@ -290,22 +292,55 @@ async function start(stage, index = 0) {
   }
 
   function buildBottle(kind) {
-    const model = { kind, group: new Group(), front: null, back: null, cork: null };
+    const model = { kind, group: new Group(), front: null, back: null, cork: null, shine: null };
     const g = model.group;
     if (kind === "still") {
       if (stage.dataset.glass === "flint") {
         // Clear glass, so the wine shows: the wine itself, then a thin glossy skin of glass over it.
         // The wine lets light through and tints it, more where it is deeper, like a real bottle.
-        const w = WINES[stage.dataset.wine] || WINES.white;
+        const w = Object.assign({}, WINES[stage.dataset.wine] || WINES.white);
+        if (stage.dataset.wineTint) w.tint = stage.dataset.wineTint;          // overrides, for trying colours
+        if (stage.dataset.wineDepth) w.depth = Number(stage.dataset.wineDepth);
         const wine = new MeshPhysicalMaterial({
-          color: new Color("#ffffff"), metalness: 0, roughness: 0.04, transmission: 1, ior: 1.34, thickness: 7,
-          attenuationColor: new Color(w.tint), attenuationDistance: w.depth, envMapIntensity: 1.1,
+          color: new Color("#ffffff"), metalness: 0, roughness: 0.03, transmission: 1, ior: 1.34, thickness: 7,
+          attenuationColor: new Color(w.tint), attenuationDistance: w.depth, envMapIntensity: 1.2,
+          clearcoat: 1, clearcoatRoughness: 0.03,
         });
+        // As in a photo of a real bottle, the wine looks lighter where you see straight through it and
+        // deeper towards the sides, where the light bends through more glass and wine.
+        wine.onBeforeCompile = (sh) => {
+          sh.fragmentShader = sh.fragmentShader.replace("#include <transmission_fragment>",
+            ShaderChunk.transmission_fragment.replace("material.thickness = thickness;",
+              "material.thickness = thickness * (0.55 + 1.1 * pow(1.0 - abs(dot(normal, normalize(vViewPosition))), 1.5));"));
+        };
+        // Long vertical highlights, as a studio light makes on glass. They stay put while the bottle turns,
+        // and the labels hide them, as they would on a real bottle.
+        if (!model.shine) {
+          model.shine = new Group();
+          const fade = document.createElement("canvas"); fade.width = 4; fade.height = 128;
+          const fg = fade.getContext("2d"), gr = fg.createLinearGradient(0, 0, 0, 128);
+          gr.addColorStop(0, "rgba(255,255,255,0)"); gr.addColorStop(0.18, "rgba(255,255,255,1)");
+          gr.addColorStop(0.85, "rgba(255,255,255,1)"); gr.addColorStop(1, "rgba(255,255,255,0)");
+          fg.fillStyle = gr; fg.fillRect(0, 0, 4, 128);
+          const fadeTex = new CanvasTexture(fade);
+          [[-0.62, 0.11, 0.5], [0.98, 0.07, 0.35], [-1.12, 0.04, 0.3]].forEach(([at, wide, strength]) => {
+            const m = new MeshBasicMaterial({ map: fadeTex, color: new Color(strength, strength, strength), transparent: true, blending: AdditiveBlending, depthWrite: false, toneMapped: false });
+            const strip = new Mesh(new CylinderGeometry(BODY_R + 0.006, BODY_R + 0.006, 17.4, 6, 1, true, at - wide / 2, wide), m);
+            strip.position.y = 0.9 + 8.7;
+            model.shine.add(strip);
+          });
+        }
         g.add(new Mesh(new LatheGeometry(liquidProfile(), 96), wine));
+        // Glass: nearly invisible face-on, denser and greener towards the edges, as thick clear glass looks.
         const glass = new MeshPhysicalMaterial({
-          color: new Color("#ffffff"), roughness: 0.02, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.02,
-          envMapIntensity: 2.4, transparent: true, opacity: 0.1, depthWrite: false,
+          color: new Color(stage.dataset.glassTint || "#aebdb4"), roughness: 0.02, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.02,
+          envMapIntensity: 2.4, transparent: true, opacity: 1, depthWrite: false,
         });
+        glass.onBeforeCompile = (sh) => {
+          sh.fragmentShader = sh.fragmentShader.replace("#include <dithering_fragment>", `#include <dithering_fragment>
+            float facing = abs(dot(normalize(vNormal), normalize(vViewPosition)));
+            gl_FragColor.a *= mix(0.85, 0.05, smoothstep(0.05, 0.55, facing));`);
+        };
         const skin = new Mesh(new LatheGeometry(bottleProfile(), 96), glass);
         skin.renderOrder = 2;
         g.add(skin);
@@ -346,6 +381,7 @@ async function start(stage, index = 0) {
   const models = {};
   let model = models[type] = buildBottle(type);
   bottle.add(model.group);
+  if (model.shine) scene.add(model.shine);
   let frontLabel = model.front, backLabel = model.back, cork = model.cork;
   if (type === "sparkling" && stage.dataset.view !== "label") {
     camera.position.set(0, 18, 92);
@@ -471,6 +507,8 @@ async function start(stage, index = 0) {
   let holdUntil = 0;        // pause the idle spin so a new label can be read
   let visible = true;
   let running = false;
+  const clickTurn = stage.dataset.turn === "click";
+  let face = "front";
 
   function size() {
     const w = stage.clientWidth;
@@ -483,17 +521,18 @@ async function start(stage, index = 0) {
   function frame(now) {
     const dt = Math.min(0.05, (now - last) / 1000);
     last = now;
-    const scrolled = reduce.matches ? 0 : window.scrollY * SCROLL;
+    const scrolled = reduce.matches || clickTurn ? 0 : window.scrollY * SCROLL;
     if (turn) {
       const k = Math.min(1, (now - turn.t0) / 900);
       angle = turn.from + (turn.to - turn.from) * (1 - Math.pow(1 - k, 3));
       if (k >= 1) turn = null;
-    } else if (!reduce.matches && now > holdUntil) {
+    } else if (!reduce.matches && !clickTurn && now > holdUntil) {
       angle += SPIN * dt;
     }
     bottle.rotation.y = angle + scrolled + dragAngle;
     if (!reduce.matches && popOn) updateCork(now, dt);
     renderer.render(scene, camera);
+    if (clickTurn && !turn) { running = false; return; }   // standing still: nothing more to draw until the next tap
     if (visible && !document.hidden) {
       requestAnimationFrame(frame);
     } else {
@@ -509,9 +548,26 @@ async function start(stage, index = 0) {
     requestAnimationFrame(frame);
   }
 
+  // Tap-to-turn bottles: a click turns the bottle half way round, to the other label.
+  function turnTo(next) {
+    if (next === face) return;
+    face = next;
+    if (reduce.matches) {
+      angle += Math.PI; bottle.rotation.y = angle; renderer.render(scene, camera);
+    } else {
+      turn = { from: angle, to: angle + Math.PI, t0: performance.now() };
+      run();
+    }
+    stage.dispatchEvent(new CustomEvent("hero3d:faced", { detail: { face } }));
+  }
+  if (clickTurn) {
+    canvas.addEventListener("click", () => turnTo(face === "front" ? "back" : "front"));
+    stage.addEventListener("hero3d:face", (e) => turnTo((e.detail && e.detail.face) || (face === "front" ? "back" : "front")));
+  }
+
   // Sideways drag turns the bottle; vertical swipes still scroll the page.
   let dragX = null;
-  canvas.addEventListener("pointerdown", (e) => { dragX = e.clientX; canvas.setPointerCapture(e.pointerId); });
+  canvas.addEventListener("pointerdown", (e) => { if (clickTurn) return; dragX = e.clientX; canvas.setPointerCapture(e.pointerId); });
   canvas.addEventListener("pointermove", (e) => {
     if (dragX === null) return;
     dragAngle += (e.clientX - dragX) * DRAG;
@@ -527,7 +583,7 @@ async function start(stage, index = 0) {
     if (visible) run();
   }).observe(stage);
   document.addEventListener("visibilitychange", () => { if (!document.hidden && visible) run(); });
-  window.addEventListener("resize", size);
+  window.addEventListener("resize", () => { size(); renderer.render(scene, camera); });
 
   // A new front label (from the "see your logo on a bottle" preview): swap it in and turn the bottle to face the viewer.
   const custom = { front: null, back: null };   // labels made in the page, kept across bottle changes

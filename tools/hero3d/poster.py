@@ -21,6 +21,7 @@ async def main(path, name, selector=".hero-stage"):
         await stage.scroll_into_view_if_needed()
         await pg.evaluate("window.scrollTo(0, 0)") if selector == ".hero-stage" else None
         await pg.wait_for_function("s => document.querySelector(s).classList.contains('is-live')", arg=selector, timeout=30000)
+        await pg.add_style_tag(content=".flip-btn { display: none !important; }")  # keep buttons out of the picture
         await pg.wait_for_timeout(800)
         png = await (await pg.query_selector(selector + " .hero-canvas")).screenshot()
         await b.close()
