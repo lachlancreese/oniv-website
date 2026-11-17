@@ -46,7 +46,7 @@ function bottleProfile() {
 
 // The wine inside a clear (flint) bottle: the inside of the glass, filled to just into the neck.
 const FILL = 24.3;
-const WINES = { white: { tint: "#d0c05a", depth: 11 }, rose: { tint: "#e67e68", depth: 7 } };
+const WINES = { white: { tint: "#d0c05a", depth: 11 }, rose: { tint: "#eaa078", depth: 3.2 } };
 function liquidProfile() {
   const pts = [new Vector2(0, 0.7)];
   bottleProfile().forEach((v) => { if (v.x > 0 && v.y > 0.4 && v.y <= FILL) pts.push(new Vector2(v.x * 0.94, Math.max(0.7, v.y))); });
@@ -307,23 +307,29 @@ async function start(stage, index = 0) {
           clearcoat: 1, clearcoatRoughness: 0.03,
         });
         // As in a photo of a real bottle, the wine looks lighter where you see straight through it and
-        // deeper towards the sides, where the light bends through more glass and wine.
+        // deeper towards the sides, where the light bends through more glass and wine, and towards the bottom.
         wine.onBeforeCompile = (sh) => {
           sh.fragmentShader = sh.fragmentShader.replace("#include <transmission_fragment>",
             ShaderChunk.transmission_fragment.replace("material.thickness = thickness;",
-              "material.thickness = thickness * (0.55 + 1.1 * pow(1.0 - abs(dot(normal, normalize(vViewPosition))), 1.5));"));
+              "material.thickness = thickness * (0.55 + 0.8 * pow(1.0 - abs(dot(normal, normalize(vViewPosition))), 1.5)) * mix(1.55, 0.5, clamp((vWorldPosition.y - 1.0) / 22.0, 0.0, 1.0));"));
         };
         // Long vertical highlights, as a studio light makes on glass. They stay put while the bottle turns,
         // and the labels hide them, as they would on a real bottle.
         if (!model.shine) {
           model.shine = new Group();
-          const fade = document.createElement("canvas"); fade.width = 4; fade.height = 128;
+          // Soft at the ends and soft at the sides.
+          const fade = document.createElement("canvas"); fade.width = 64; fade.height = 128;
           const fg = fade.getContext("2d"), gr = fg.createLinearGradient(0, 0, 0, 128);
           gr.addColorStop(0, "rgba(255,255,255,0)"); gr.addColorStop(0.18, "rgba(255,255,255,1)");
           gr.addColorStop(0.85, "rgba(255,255,255,1)"); gr.addColorStop(1, "rgba(255,255,255,0)");
-          fg.fillStyle = gr; fg.fillRect(0, 0, 4, 128);
+          fg.fillStyle = gr; fg.fillRect(0, 0, 64, 128);
+          fg.globalCompositeOperation = "destination-in";
+          const across = fg.createLinearGradient(0, 0, 64, 0);
+          across.addColorStop(0, "rgba(0,0,0,0)"); across.addColorStop(0.35, "rgba(0,0,0,1)");
+          across.addColorStop(0.65, "rgba(0,0,0,1)"); across.addColorStop(1, "rgba(0,0,0,0)");
+          fg.fillStyle = across; fg.fillRect(0, 0, 64, 128);
           const fadeTex = new CanvasTexture(fade);
-          [[-0.62, 0.11, 0.5], [0.98, 0.07, 0.35], [-1.12, 0.04, 0.3]].forEach(([at, wide, strength]) => {
+          [[-0.62, 0.14, 0.55], [0.98, 0.09, 0.35], [-1.12, 0.05, 0.3], [-0.4, 0.55, 0.14]].forEach(([at, wide, strength]) => {
             const m = new MeshBasicMaterial({ map: fadeTex, color: new Color(strength, strength, strength), transparent: true, blending: AdditiveBlending, depthWrite: false, toneMapped: false });
             const strip = new Mesh(new CylinderGeometry(BODY_R + 0.006, BODY_R + 0.006, 17.4, 6, 1, true, at - wide / 2, wide), m);
             strip.position.y = 0.9 + 8.7;
