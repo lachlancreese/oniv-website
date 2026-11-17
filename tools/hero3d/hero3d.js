@@ -523,17 +523,23 @@ async function start(stage, index = 0) {
     last = now;
     const scrolled = reduce.matches || clickTurn ? 0 : window.scrollY * SCROLL;
     if (turn) {
-      const k = Math.min(1, (now - turn.t0) / 900);
+      // Timed against the clock rather than the frame's timestamp, which some browsers set slightly before the tap.
+      const k = Math.max(0, Math.min(1, (performance.now() - turn.t0) / 900));
       angle = turn.from + (turn.to - turn.from) * (1 - Math.pow(1 - k, 3));
-      if (k >= 1) turn = null;
+      if (k >= 1) { angle = turn.to; turn = null; }
     } else if (!reduce.matches && !clickTurn && now > holdUntil) {
       angle += SPIN * dt;
     }
     bottle.rotation.y = angle + scrolled + dragAngle;
     if (!reduce.matches && popOn) updateCork(now, dt);
-    renderer.render(scene, camera);
+    try {
+      renderer.render(scene, camera);
+    } catch (err) {
+      running = false;   // never leave the loop marked as running when it has stopped
+      throw err;
+    }
     if (clickTurn && !turn) { running = false; return; }   // standing still: nothing more to draw until the next tap
-    if (visible && !document.hidden) {
+    if (turn || (visible && !document.hidden)) {          // a turn always finishes
       requestAnimationFrame(frame);
     } else {
       running = false;
@@ -548,18 +554,25 @@ async function start(stage, index = 0) {
     requestAnimationFrame(frame);
   }
 
-  // Tap-to-turn bottles: a click turns the bottle half way round, to the other label.
+  // Tap-to-turn bottles: a click turns the bottle round to the other label. It always comes to rest square on a
+  // label, even when tapped again mid-turn (it carries on round to the label asked for).
   function turnTo(next) {
     if (next === face) return;
     face = next;
+    const offset = next === "back" ? Math.PI : 0;
+    let target = offset + Math.ceil((angle - offset) / (Math.PI * 2) - 1e-6) * Math.PI * 2;
+    if (target <= angle + 1e-6) target += Math.PI * 2;
     if (reduce.matches) {
-      angle += Math.PI; bottle.rotation.y = angle; renderer.render(scene, camera);
+      turn = null; angle = target; bottle.rotation.y = angle; renderer.render(scene, camera);
     } else {
-      turn = { from: angle, to: angle + Math.PI, t0: performance.now() };
+      turn = { from: angle, to: target, t0: performance.now() };
       run();
     }
     stage.dispatchEvent(new CustomEvent("hero3d:faced", { detail: { face } }));
   }
+  // If the browser takes the graphics away (too many 3D views at once on some phones), show the still image again.
+  canvas.addEventListener("webglcontextlost", (e) => { e.preventDefault(); running = false; stage.classList.remove("is-live"); });
+  canvas.addEventListener("webglcontextrestored", () => { stage.classList.add("is-live"); renderer.render(scene, camera); });
   if (clickTurn) {
     canvas.addEventListener("click", () => turnTo(face === "front" ? "back" : "front"));
     stage.addEventListener("hero3d:face", (e) => turnTo((e.detail && e.detail.face) || (face === "front" ? "back" : "front")));
