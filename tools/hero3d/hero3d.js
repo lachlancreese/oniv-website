@@ -3,7 +3,9 @@
 // The page sets the bottle with data attributes on [data-hero3d]:
 //   data-front / data-back   label images
 //   data-bottle              "still" (Bordeaux, screwcap; default) or "sparkling" (cork and cage that pop on scroll)
-//   data-cap                 still bottles only: "black" (gloss black; default) or "gold" (brushed gold)
+//   data-cap                 still bottles only: "black" (gloss black; default), "gold" (brushed gold) or "silver"
+//   data-glass               still bottles only: "flint" for clear glass showing the wine (default: dark glass)
+//   data-wine                with flint glass: "white" (pale straw; default) or "rose"
 //   data-view                "label" frames the label close up (still bottles); otherwise the whole bottle
 // Every [data-hero3d] stage on the page gets its own bottle. Once a bottle is live the stage fires "hero3d:ready";
 // dispatch a "hero3d:label" CustomEvent on the stage with detail { front, back: <canvas>, face: "front" | "back" }
@@ -37,6 +39,17 @@ function bottleProfile() {
   }
   // The neck below the cap is as before; the glass under the cap is narrower so the cap can sit flush with the neck.
   pts.push(new Vector2(1.429, 25.0), new Vector2(1.36, 25.3), new Vector2(1.36, HEIGHT - 0.15), new Vector2(1.3, HEIGHT), new Vector2(0, HEIGHT));
+  return pts;
+}
+
+// The wine inside a clear (flint) bottle: the inside of the glass, filled to just into the neck.
+const FILL = 24.3;
+const WINES = { white: { tint: "#dcb848", depth: 17 }, rose: { tint: "#ee7f6c", depth: 10 } };
+function liquidProfile() {
+  const pts = [new Vector2(0, 0.7)];
+  bottleProfile().forEach((v) => { if (v.x > 0 && v.y > 0.4 && v.y <= FILL) pts.push(new Vector2(v.x * 0.94, Math.max(0.7, v.y))); });
+  const top = pts[pts.length - 1];
+  pts.push(new Vector2(top.x, FILL), new Vector2(0, FILL));
   return pts;
 }
 
@@ -215,7 +228,7 @@ function loadTexture(loader, url, renderer) {
   });
 }
 
-async function start(stage) {
+async function start(stage, index = 0) {
   const canvas = document.createElement("canvas");
   canvas.className = "hero-canvas";
   canvas.setAttribute("aria-hidden", "true");
@@ -280,14 +293,35 @@ async function start(stage) {
     const model = { kind, group: new Group(), front: null, back: null, cork: null };
     const g = model.group;
     if (kind === "still") {
-      // Dark "antique" glass, so the label is the hero, and a screwcap (gloss black, or gold).
-      const glass = new MeshPhysicalMaterial({
-        color: new Color("#0f1913"), roughness: 0.1, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.05, envMapIntensity: 1.5,
-      });
-      g.add(new Mesh(new LatheGeometry(bottleProfile(), 96), glass));
+      if (stage.dataset.glass === "flint") {
+        // Clear glass, so the wine shows: the wine itself, then a thin glossy skin of glass over it.
+        // The wine lets light through and tints it, more where it is deeper, like a real bottle.
+        const w = WINES[stage.dataset.wine] || WINES.white;
+        const wine = new MeshPhysicalMaterial({
+          color: new Color("#ffffff"), metalness: 0, roughness: 0.04, transmission: 1, ior: 1.34, thickness: 7,
+          attenuationColor: new Color(w.tint), attenuationDistance: w.depth, envMapIntensity: 1.1,
+        });
+        g.add(new Mesh(new LatheGeometry(liquidProfile(), 96), wine));
+        const glass = new MeshPhysicalMaterial({
+          color: new Color("#ffffff"), roughness: 0.02, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.02,
+          envMapIntensity: 2.4, transparent: true, opacity: 0.1, depthWrite: false,
+        });
+        const skin = new Mesh(new LatheGeometry(bottleProfile(), 96), glass);
+        skin.renderOrder = 2;
+        g.add(skin);
+      } else {
+        // Dark "antique" glass, so the label is the hero.
+        const glass = new MeshPhysicalMaterial({
+          color: new Color("#0f1913"), roughness: 0.1, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.05, envMapIntensity: 1.5,
+        });
+        g.add(new Mesh(new LatheGeometry(bottleProfile(), 96), glass));
+      }
+      // Screwcap: gloss black, brushed gold or brushed silver.
       const cap = stage.dataset.cap === "gold"
         ? new MeshPhysicalMaterial({ color: new Color("#c09a5c"), metalness: 1, roughness: 0.26, clearcoat: 0.6, clearcoatRoughness: 0.1, envMapIntensity: 1.2 })
-        : new MeshPhysicalMaterial({ color: new Color("#0a0a0a"), metalness: 0.15, roughness: 0.14, clearcoat: 1, clearcoatRoughness: 0.04, envMapIntensity: 1.3 });
+        : stage.dataset.cap === "silver"
+          ? new MeshPhysicalMaterial({ color: new Color("#c8ccd0"), metalness: 1, roughness: 0.24, clearcoat: 0.6, clearcoatRoughness: 0.1, envMapIntensity: 1.2 })
+          : new MeshPhysicalMaterial({ color: new Color("#0a0a0a"), metalness: 0.15, roughness: 0.14, clearcoat: 1, clearcoatRoughness: 0.04, envMapIntensity: 1.3 });
       g.add(new Mesh(new LatheGeometry(capProfile(), 160), cap));
       g.add(new Mesh(knurlGeometry(), cap));
       labels(model, BODY_R, LABEL);
@@ -427,7 +461,7 @@ async function start(stage) {
   }
 
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const SPIN = 0.42;        // radians per second when idle
+  const SPIN = 0.42 * [1, 0.84, 1.16, 0.93][index % 4]; // radians per second when idle (varied, so bottles side by side drift apart)
   const SCROLL = 0.0055;    // radians per pixel scrolled
   const DRAG = 0.012;       // radians per pixel dragged
   let angle = 0;
@@ -566,7 +600,7 @@ if (stages.length) {
       entries.forEach((e) => {
         if (!e.isIntersecting) return;
         io.unobserve(e.target);
-        start(e.target).catch(() => {});
+        start(e.target, Array.prototype.indexOf.call(stages, e.target)).catch(() => {});
       });
     }, { rootMargin: "400px 0px" });
     stages.forEach((stage) => io.observe(stage));
