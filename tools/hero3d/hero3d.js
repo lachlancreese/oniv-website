@@ -5,7 +5,7 @@
 //   data-bottle              "still" (Bordeaux, screwcap; default) or "sparkling" (cork and cage that pop on scroll)
 //   data-cap                 still bottles only: "black" (gloss black; default), "gold" (brushed gold) or "silver"
 //   data-foil                sparkling bottles only: "black" for a full black foil hood over the cork and neck, plain,
-//                            with no cork, cage or pop (default: gold collar, cork and cage)
+//                            on a tapered sparkling neck, with no cork, cage or pop (default: gold collar, cork and cage)
 //   data-glass               still bottles only: "flint" for clear glass showing the wine (default: dark glass)
 //   data-wine                with flint glass: "white" (pale straw; default) or "rose"
 //   data-view                "label" frames the label close up (still bottles); otherwise the whole bottle
@@ -122,16 +122,36 @@ function foilProfile() {
     .concat([new Vector2(1.3, SPK.H + 0.03)]);
 }
 
-// Full foil hood: hugs the neck from the shoulder up, then rises over the lip and cork as a closed capsule.
-const HOOD_BASE = 20.4;
+// The hooded bottle has a classic sparkling neck: a rounded shoulder running into one long, gentle cone, rather
+// than a straight neck. Below the shoulder it is the same bottle, so labels sit as on every sparkling bottle.
+function bez(p0, p1, p2, p3, t) {
+  const u = 1 - t;
+  return new Vector2(u * u * u * p0[0] + 3 * u * u * t * p1[0] + 3 * u * t * t * p2[0] + t * t * t * p3[0],
+    u * u * u * p0[1] + 3 * u * u * t * p1[1] + 3 * u * t * t * p2[1] + t * t * t * p3[1]);
+}
+const HOOD_NECK_TOP = 28.4;
+function hoodedNeck() {
+  const pts = [];
+  for (let i = 1; i <= 20; i++) pts.push(bez([SPK.R, 15.5], [SPK.R, 18.4], [2.32, 20.8], [2.12, 23.2], i / 20));
+  for (let i = 1; i <= 8; i++) { const t = i / 8; pts.push(new Vector2(2.12 - 0.44 * t, 23.2 + (HOOD_NECK_TOP - 23.2) * t)); }
+  return pts;
+}
+function hoodedBottleProfile() {
+  return sparklingProfile().filter((v) => v.y <= 15.5).concat(hoodedNeck(),
+    [new Vector2(1.7, 28.7), new Vector2(1.4, 28.8), new Vector2(0, 28.8)]);   // the lip, hidden under the foil
+}
+
+// Full foil hood: one piece from the shoulder up, with a tall capsule over the cork and cage (about a third of
+// the hood), its top corners rounded and its top almost flat, as foil sits over a cage.
+const HOOD_BASE = 20.4, HOOD_RING = 28.55;
 function hoodProfile() {
-  const neck = sparklingProfile()
-    .filter((v) => v.y >= HOOD_BASE - 1.4 && v.y <= 28.5 && v.x > 0)
-    .map((v) => new Vector2(v.x + 0.04, v.y));
-  return neck.concat([
-    new Vector2(1.6, 28.62), new Vector2(1.84, 28.75), new Vector2(1.86, 29.3), new Vector2(1.9, 30.3),
-    new Vector2(1.87, 30.95), new Vector2(1.74, 31.22), new Vector2(1.2, 31.32), new Vector2(0, 31.34),
-  ]);
+  const neck = hoodedNeck().filter((v) => v.y >= HOOD_BASE - 1.6).map((v) => new Vector2(v.x + 0.045, v.y));
+  const capsule = [[1.74, 28.5], [1.8, 28.62], [1.83, 28.8], [1.86, 29.6], [1.87, 30.6], [1.85, 31.6], [1.83, 32.2]]
+    .map(([x, y]) => new Vector2(x, y));
+  const r = 0.62, cx = 1.83 - r, cy = 32.2;    // rounded top corner
+  for (let i = 1; i <= 8; i++) { const a = (i / 8) * (Math.PI / 2); capsule.push(new Vector2(cx + r * Math.cos(a), cy + r * Math.sin(a))); }
+  capsule.push(new Vector2(0.6, 32.86), new Vector2(0, 32.9));
+  return neck.concat(capsule);
 }
 
 function corkProfile() {
@@ -385,28 +405,31 @@ async function start(stage, index = 0) {
       const glass = new MeshPhysicalMaterial({
         color: new Color("#10231a"), roughness: 0.08, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.04, envMapIntensity: 1.6,
       });
-      g.add(new Mesh(new LatheGeometry(sparklingProfile(), 110), glass));
-      if (stage.dataset.foil === "black") {
+      const hooded = stage.dataset.foil === "black";
+      g.add(new Mesh(new LatheGeometry(hooded ? hoodedBottleProfile() : sparklingProfile(), 110), glass));
+      if (hooded) {
         // Satin black foil. The shader trims the bottom edge into a curve (lowest at the front and back, as a hood is
         // cut), crinkles the capsule over the cork, and adds the ring of perforations of the tear strip.
-        const foil = new MeshStandardMaterial({ color: new Color("#161616"), metalness: 0.3, roughness: 0.5, envMapIntensity: 1.0 });
+        const foil = new MeshStandardMaterial({ color: new Color("#161616"), metalness: 0.25, roughness: 0.56, envMapIntensity: 0.8 });
         // Smooth value noise over the hood's surface (angle around, height up), for the crumpled capsule.
         const NOISE = `
           float hoodHash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
           float hoodNoise(vec2 p) {
-            vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f);
+            vec2 i = floor(p), f = fract(p); f = f * f * f * (f * (f * 6.0 - 15.0) + 10.0);
             return mix(mix(hoodHash(i), hoodHash(i + vec2(1.0, 0.0)), f.x), mix(hoodHash(i + vec2(0.0, 1.0)), hoodHash(i + vec2(1.0, 1.0)), f.x), f.y);
           }
           float hoodCrumple(float a, float y) {
             // Soft folds that run mostly up and down, as foil gathers over a cork.
-            return hoodNoise(vec2(a * 4.0, y * 0.9)) * 0.7 + hoodNoise(vec2(a * 9.0, y * 2.2) + 4.7) * 0.3;
+            vec2 q = mat2(0.8, -0.6, 0.6, 0.8) * vec2(a * 3.2, y * 1.3);   // turned, so no grid shows
+            vec2 q2 = mat2(0.6, 0.8, -0.8, 0.6) * vec2(a * 7.0, y * 2.6) + 4.7;
+            return hoodNoise(q) * 0.72 + hoodNoise(q2) * 0.28;
           }`;
         foil.onBeforeCompile = (sh) => {
           sh.vertexShader = sh.vertexShader
             .replace("#include <common>", "#include <common>\nvarying vec3 vHood;" + NOISE)
             .replace("#include <begin_vertex>", `#include <begin_vertex>
               vHood = position;
-              float capV = smoothstep(28.7, 29.1, position.y) * (1.0 - smoothstep(31.2, 31.34, position.y));
+              float capV = smoothstep(28.7, 29.1, position.y) * (1.0 - smoothstep(32.6, 32.85, position.y));
               float angV = atan(position.x, position.z);
               transformed.xz *= 1.0 + capV * (hoodCrumple(angV, position.y) - 0.5) * 0.07;`);
           sh.fragmentShader = sh.fragmentShader
@@ -414,17 +437,17 @@ async function start(stage, index = 0) {
             .replace("#include <clipping_planes_fragment>", `#include <clipping_planes_fragment>
               float hoodAng = atan(vHood.x, vHood.z);
               float hs = sin(hoodAng);
-              if (vHood.y < ${HOOD_BASE.toFixed(2)} + 1.3 * hs * hs) discard;`)
+              if (vHood.y < ${HOOD_BASE.toFixed(2)} + 1.6 * hs * hs) discard;`)
             .replace("#include <normal_fragment_maps>", `#include <normal_fragment_maps>
-              float cap = smoothstep(28.6, 29.0, vHood.y);
+              float cap = smoothstep(28.65, 28.95, vHood.y);
               float e = 0.012, h0 = hoodCrumple(hoodAng, vHood.y);
               float ga = (hoodCrumple(hoodAng + e, vHood.y) - h0) / e;
               float gy = (hoodCrumple(hoodAng, vHood.y + e * 4.0) - h0) / (e * 4.0);
               // Gentle creases down the neck, stronger crumpling over the cork.
               float soft = hoodNoise(vec2(hoodAng * 5.0, vHood.y * 0.35));
-              normal = normalize(normal + cap * vec3(-ga * 0.075, -gy * 0.2, 0.0) + (1.0 - cap) * vec3((soft - 0.5) * 0.12, 0.0, 0.0));`)
+              normal = normalize(normal + cap * vec3(-ga * 0.06, -gy * 0.28, 0.0) + (1.0 - cap) * vec3((soft - 0.5) * 0.12, 0.0, 0.0));`)
             .replace("#include <dithering_fragment>", `#include <dithering_fragment>
-              float ring = 1.0 - smoothstep(0.03, 0.07, abs(vHood.y - 28.5));
+              float ring = 1.0 - smoothstep(0.03, 0.07, abs(vHood.y - ${HOOD_RING.toFixed(2)}));
               float dots = step(0.55, fract(hoodAng * 140.0 / 6.2831853));
               gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(0.0), ring * dots * 0.85);`);
         };
