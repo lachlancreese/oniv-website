@@ -1,0 +1,43 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="base.css"><style>
+/* Example event label: a fictional gala night. Deco sunburst in champagne gold on midnight. */
+@font-face { font-family: "Italiana"; src: url("ready/fonts/italiana-latin-400-normal.woff2"); }
+.label { background: #18202E; color: #F3EBDD; }
+.frame { position: absolute; inset: 34px; border: 2px solid #C8A869; }
+.frame::after { content: ""; position: absolute; inset: 12px; border: 1px solid #C8A869; opacity: 0.55; }
+.sun { position: absolute; top: 118px; left: 50%; width: 600px; margin-left: -300px; }
+.the { position: absolute; top: 440px; width: 100%; text-align: center; font-family: "Italiana", serif; font-size: 66px; letter-spacing: 0.16em; color: #C8A869; text-transform: uppercase; }
+.gala { position: absolute; top: 505px; width: 100%; text-align: center; font-size: 230px; line-height: 1; letter-spacing: 0.01em; }
+.rule { position: absolute; top: 790px; left: 50%; width: 300px; margin-left: -150px; height: 20px; }
+.date { position: absolute; top: 845px; width: 100%; text-align: center; font-size: 28px; opacity: 0.88; }
+.style { position: absolute; top: 1040px; width: 100%; text-align: center; font-size: 24px; color: #C8A869; }
+</style></head><body><div class="label">
+<div class="frame"></div>
+<svg class="sun" viewBox="0 0 600 280" fill="none" stroke="#C8A869">
+  <g stroke-width="2.5">
+    <path d="M60 270 A240 240 0 0 1 540 270"/>
+    <path d="M100 270 A200 200 0 0 1 500 270" stroke-width="1.5" opacity="0.7"/>
+  </g>
+  <g stroke-width="2" id="rays"></g>
+  <path d="M230 270 A70 70 0 0 1 370 270 Z" fill="#C8A869" stroke="none"/>
+  <path d="M200 270 A100 100 0 0 1 400 270" stroke-width="2"/>
+  <line x1="20" y1="270" x2="580" y2="270" stroke-width="2.5"/>
+</svg>
+<div class="the">The Midwinter</div>
+<div class="gala serif">Gala</div>
+<svg class="rule" viewBox="0 0 300 20"><line x1="0" y1="10" x2="128" y2="10" stroke="#C8A869" stroke-width="2"/><line x1="172" y1="10" x2="300" y2="10" stroke="#C8A869" stroke-width="2"/><path d="M150 1 L159 10 L150 19 L141 10 Z" fill="#C8A869"/></svg>
+<div class="date caps">Saturday 20 June 2027</div>
+<div class="style caps">Brut NV &middot; Sparkling</div>
+</div>
+<script>
+// Rays of the sunburst, between the inner sun and the outer arc.
+var g = document.getElementById("rays"), n = 17;
+for (var i = 1; i < n; i++) {
+  var a = Math.PI - (Math.PI * i) / n, c = Math.cos(a), s = Math.sin(a);
+  var l = document.createElementNS("http://www.w3.org/2000/svg", "line");
+  var r1 = 112, r2 = i % 2 ? 228 : 190;
+  l.setAttribute("x1", 300 + c * r1); l.setAttribute("y1", 270 - s * r1);
+  l.setAttribute("x2", 300 + c * r2); l.setAttribute("y2", 270 - s * r2);
+  g.appendChild(l);
+}
+</script>
+</body></html>
