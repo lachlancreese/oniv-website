@@ -103,9 +103,9 @@ Each hero is a `<div class="hero-stage" data-hero3d ...>` in the page file with:
 - `data-glass="flint"` with `data-wine="white"` or `"rose"`: a clear bottle that shows the wine (still bottles)
 
 The home page's "whose name goes on it?" cards show two real client labels (SEIVA, a photo-label Rosé) and an example
-event label (a fictional "Midwinter Gala" on sparkling, `tools/labels/midwinter-gala-*.html`, captioned "Example label
+event label (a fictional "Midwinter Gala" on a sparkling bottle with a black foil hood (`data-foil="black"`), `tools/labels/midwinter-gala-*.html`, captioned "Example label
 design") on turning bottles; their label images are in `public/assets/img/labels/` and their still images are
-`bottle-seiva-2`, `bottle-photo-rose-3` and `bottle-midwinter-gala-1` (made with `tools/hero3d/poster.py`). The
+`bottle-seiva-2`, `bottle-photo-rose-3` and `bottle-midwinter-gala-2` (made with `tools/hero3d/poster.py`). The
 Chocolate Blonde label files are kept for reuse.
 
 The example labels (fictional names, captioned "Example label design") are HTML in `tools/labels/` (the gallery label's painting is drawn by `salt-ochre-art.js`); render them with
